@@ -11,6 +11,8 @@
 <br>
 <br>
 <form th:action="@{/salvar}" method="post" th:object="${individuo}">
+    <input type="hidden" name="id_individuo" th:field="*{id_individuo}">
+    <label>Nombre:</label>
     <input type="text" name="nombre" th:field="*{nombre}">
     <span th:if="${#fields.hasErrors('nombre')}" th:errores="*{nombre}">Campo obligatorio</span>
     <br>
