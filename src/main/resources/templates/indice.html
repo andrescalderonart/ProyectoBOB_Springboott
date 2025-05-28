@@ -39,6 +39,10 @@
 <div th:if="${individuos == null or individuos.empty}">
     La lista no tiene información para mostrar.
 </div>
+<br>
+<form th:action="@{/logout}" method="post">
+    <a href="#" onclick="this.parentNode.submit()">Cerrar sesion</a>
+</form>
 </body>
 </html>
 
