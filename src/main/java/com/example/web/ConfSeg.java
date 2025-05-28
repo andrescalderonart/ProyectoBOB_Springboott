@@ -22,7 +22,7 @@ public class ConfSeg {
                 .password("{noop}123456")
                 .roles("ADMIN")
                 .build();
-        return InMemoryUserDetailsManager (user,admin);
+        return new InMemoryUserDetailsManager (user,admin);
 
     }
 
