@@ -15,7 +15,8 @@ public class Usuario implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id_usuario;
-    private String nombre_usuario;
+    @Column(name = "nombre_usuario")
+    private String NombreUsuario;
     private String pass_usuario;
 
     //Relacion muchos a uno con perfil

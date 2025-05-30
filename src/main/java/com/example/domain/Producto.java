@@ -16,6 +16,4 @@ public class Producto implements Serializable {
 
     private String nombre;
 
-    @OneToOne  (mappedBy = "producto")
-    private CodigoBarras codigoBarras;
 }
