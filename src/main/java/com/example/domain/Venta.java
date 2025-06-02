@@ -20,6 +20,6 @@ public class Venta implements Serializable {
     private Double total;
 
     @ManyToOne
-    @JoinColumn(name = "id_vendedor", referencedColumnName = "id_vendedor")
-    private Vendedor vendedor;
+    @JoinColumn(name = "id_proveedor", referencedColumnName = "id_proveedor")
+    private Proveedor proveedor;
 }

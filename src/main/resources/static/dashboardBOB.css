@@ -1,0 +1,467 @@
+/* General */
+body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    height: 100vh;
+}
+
+/* Header superior */
+.top-bar {
+    background-color: #4d92e9;
+    color: white;
+    padding: 10px 20px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.logo-container {
+    display: flex;
+    align-items: center;
+}
+
+.logo {
+    height: 100px;
+    margin-right: 10px;
+}
+
+.logo-text {
+    font-size: 1.5rem;
+    white-space: nowrap;
+}
+
+.nav-links {
+    list-style: none;
+    display: flex;
+    gap: 30px;
+    margin: 0;
+    padding: 0;
+}
+
+.nav-links li a {
+    color: white;
+    text-decoration: none;
+    font-size: 20px;
+    padding: 8px 12px;
+    border-radius: 4px;
+}
+
+.nav-links li a:hover {
+    background-color: #3b7ed6;
+}
+
+/* Layout principal */
+main {
+    display: flex;
+    flex: 1;
+}
+
+/* Menú lateral */
+.menu-dasboard {
+    width: 170px;
+    background-color: #1c5dae;
+    border-right: 1px solid white;
+    padding-top: 2rem;
+}
+
+.menu .enlace {
+    display: flex;
+    align-items: center;
+    padding: 15px 20px;
+    text-decoration: none;
+    color: #fff;
+    transition: background 0.3s;
+}
+
+.menu .enlace:hover {
+    background-color: white;
+    color: black;
+}
+
+.menu .enlace i {
+    margin-right: 10px;
+}
+
+/* Contenido */
+.content-inventario{
+    flex: 1;
+    overflow-y: auto;
+}
+
+.content-section {
+    display: none;
+    text-align: center;
+}
+.botones{
+    display: flex;
+    flex-direction: column;
+    gap: 10px; /* Espacio entre los botones */
+    align-items: center; /* Centra horizontalmente */
+    justify-content: center; /* Opcional: si quieres que estén en el centro vertical del contenedor */
+    margin-top: 2rem;
+}
+.boton-accinador{
+    flex-direction: column;
+    padding: 10px 20px;
+    background-color: #4d92e9;
+    color: white;
+    border: none;
+    border-radius: 40px;
+    font-size: 20px;
+    cursor: pointer;
+    margin-top: 12px;
+    text-decoration: none;
+}
+
+#inventario{
+    background-image: url('../IMG/inventario.jpg');
+    background-size: cover;
+    background-repeat: no-repeat;
+    background-position: center;
+    min-height: 100vh; /* Ocupa al menos toda la altura del viewport */
+    padding: 2rem;
+    color: white;
+}
+
+#inventario h2{
+    color: whitesmoke;
+    font-size: 30px;
+}
+#inventario p{
+    color: whitesmoke;
+    font-size: 30px;
+}
+
+/*Formulario de inventario*/
+.formulario {
+    display: none;
+    text-align: center;
+    margin-top: 2rem;
+}
+
+#formulario-inventario:target {
+    display: block;
+}
+
+#formulario-inventario{
+    background-image: url('../IMG/inventario.jpg');
+    background-size: cover;
+    background-repeat: no-repeat;
+    background-position: center;
+    min-height: 100vh;
+    padding: 2rem;
+    color: black;
+}
+/*Estilo del formulario*/
+.diseño-formulario {
+    background-color: #4d92e9;
+    border: 5px solid #ccc;
+    border-radius: 40px;
+    padding: 1rem;
+    max-width: 600px;
+    margin: 0 auto;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    text-align: center;
+}
+
+/*Las letras de cada campo*/
+label{
+    color: black;
+    text-transform: uppercase;
+    font-size: 15px;
+    letter-spacing: 1px;
+}
+
+/*Capsulas donde se ponen los datos*/
+input {
+    background: whitesmoke;
+    height: 30px;
+    border-radius: 20px;
+    padding: 0px 20px;
+    border: 1px solid #424242 ;
+    color: black;
+}
+
+/*Parte de tipo de ingreso*/
+select{
+    background: whitesmoke;
+    height: 30px;
+    border-radius: 20px;
+    padding: 0px 20px;
+    border: 1px solid #424242 ;
+    color: black;
+}
+
+/*Boton de registrar*/
+form button {
+    background-color: whitesmoke;
+    color: black;
+    border: none;
+    padding: 10px 10px;
+    border-radius: 20px;
+    font-size: 18px;
+    cursor: pointer;
+    margin-top: 20px;
+}
+
+/*Boton de volver*/
+.boton-mover{
+    text-decoration: none;
+    color: white;
+}
+
+/* Mostrar sección activa con :target */
+.content-section:target {
+    display: block;
+}
+
+
+/*Parte de ver registro*/
+/*Ocultar lo de registro desde el inicio*/
+.ver-registro-material{
+    display: none;
+}
+
+#ver-registro:target{
+    display: block;
+}
+
+.diseño-ver-registro{
+    background-color: #4d92e9;
+    border: 5px solid #ccc;
+    border-radius: 40px;
+    padding: 1rem;
+    max-width: 600px;
+    margin: 0 auto;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    text-align: center;
+}
+
+.diseño-ver-registro h3{  /*configuaracion tamaño de Letras*/
+    font-size: 25px;
+    font-weight: bold;
+    color: #333;
+    margin-bottom: 20px;
+}
+
+.boton-ver{
+    padding: 8px 10px;
+    background-color: white;
+    color: black;
+    border: none;
+    border-radius: 40px;
+    font-size: 20px;
+    cursor: pointer;
+    margin-top: 30px;
+    text-decoration: none;
+}
+
+.boton-regreso{
+    padding: 8px 10px;
+    background-color: white;
+    color: black;
+    border: none;
+    border-radius: 40px;
+    font-size: 20px;
+    cursor: pointer;
+    margin-top: 30px;
+    text-decoration: none;
+}
+
+#ver-registro{
+    background-image: url('../IMG/inventario.jpg');
+    background-size: cover;
+    background-repeat: no-repeat;
+    background-position: center;
+    min-height: 100vh;
+    padding: 2rem;
+    color: black;
+}
+
+
+/*Parte de formulario de actualizar*/
+#actualizar-registro:target {   /*oculta el formulario de actualizar*/
+    display: block;
+}
+
+.diseño-formulario-actualizar {
+    background-color: #4d92e9;
+    border: 5px solid #ccc;
+    border-radius: 40px;
+    padding: 1rem;
+    max-width: 600px;
+    margin: 0 auto;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    text-align: center;
+}
+
+#actualizar-registro{
+    background-image: url('../IMG/inventario.jpg');
+    background-size: cover;
+    background-repeat: no-repeat;
+    background-position: center;
+    min-height: 100vh; /* Ocupa al menos toda la altura del viewport */
+    padding: 2rem;
+    color: black;
+}
+
+
+/*Parte del formulario de borrar*/
+#borrar-registro:target{
+    display: block;
+}
+
+.diseño-borrar-registro{
+    background-color: #4d92e9;
+    border: 5px solid #ccc;
+    border-radius: 40px;
+    padding: 1rem;
+    max-width: 600px;
+    margin: 0 auto;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    text-align: center;
+}
+
+#borrar-registro{
+    background-image: url('../IMG/inventario.jpg');
+    background-size: cover;
+    background-repeat: no-repeat;
+    background-position: center;
+    min-height: 100vh; /* Ocupa al menos toda la altura del viewport */
+    padding: 2rem;
+    color: black;
+}
+
+
+/* Usuarios - Igual que inventario */
+#usuarios {
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    background-size: cover;
+    background-repeat: no-repeat;
+    background-position: center;
+    min-height: 100vh;
+    padding: 2rem;
+    color: black;
+}
+
+.content-usuario {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;     /* Centra horizontalmente */
+    justify-content: center; /* Centra verticalmente */
+    background-color: white;
+    min-height: 100vh;
+    height: 100vh;
+    padding: 2rem;
+}
+
+#usuarios h2, #usuarios p {
+    color: black;
+    font-size: 30px;
+}
+
+
+/*formulario usuarios*/
+.diseño-formulario-usuario{
+    background-color: #4d92e9;
+    border: 5px solid #ccc;
+    border-radius: 40px;
+    padding: 1rem;
+    max-width: 600px;
+    margin: 0 auto;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    text-align: center;
+}
+
+#formulario-usuario{
+    display: none;
+}
+
+#formulario-usuario:target {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+
+/*Ver usuarios*/
+.ver-usuarios-registrados{
+    display: none;
+}
+#ver-usuario:target{
+    display: block;
+}
+.diseño-ver-usuario{
+    background-color: #4d92e9;
+    border: 5px solid #ccc;
+    border-radius: 40px;
+    padding: 1rem;
+    max-width: 600px;
+    margin: 0 auto;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    text-align: center;
+}
+
+
+/*Actualizar Usuarios*/
+#actualizar-usuario:target{
+    display: block;
+}
+
+.diseño-for-act-usuario{
+    background-color: #4d92e9;
+    border: 5px solid #ccc;
+    border-radius: 40px;
+    padding: 1rem;
+    max-width: 600px;
+    margin: 0 auto;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    text-align: center;
+}
+
+
+/*Parte de borrar usuario*/
+#borrar-usuario:target{
+    display: block;
+}
+
+.diseño-borrar-usuario{
+    background-color: #4d92e9;
+    border: 5px solid #ccc;
+    border-radius: 40px;
+    padding: 1rem;
+    max-width: 600px;
+    margin: 0 auto;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    text-align: center;
+}
+
+
+/* Oculta todo el modulo de inventario si el target no es parte de inventario */
+body:has(#usuarios:target) .content-inventario {
+    display: none;
+}
+
+/* Oculta todo el modulo de usuarios si el target no es parte de usuarios */
+body:has(#inventario:target),
+body:has(#formulario-inventario:target),
+body:has(#ver-registro:target),
+body:has(#actualizar-registro:target),
+body:has(#borrar-registro:target) {
+    .content-usuario {
+        display: none;
+    }
+}
+
+
+/* Footer */
+footer {
+    text-align: center;
+    padding: 0;
+    background-color: #1e2a38;
+    color: white;

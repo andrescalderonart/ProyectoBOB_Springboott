@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="static/registrarBOB.css">
+  <title>Registrar</title>
+</head>
+<body>
+<header>
+  <nav class="menu">
+    <!-- Logo y título -->
+    <div class="logo-container">
+      <img src="IMG/imagen bob.png" alt="Logo" class="logo">
+      <h1 class="logo-text">Building Optimization Baseline</h1>
+    </div>
+  </nav>
+</header>
+
+<div class="registrar">
+  <form id="registro" method="POST" action="#">
+    <h1>Registrar</h1>
+
+    <label for="Nombre">Nombre:</label>
+    <input type="text" id="Nombre" name="username" required placeholder="Introduce tu nombre">
+
+    <label for="Apellido">Apellido:</label>
+    <input type="text" id="Apellido" name="lastname" required placeholder="Introduce tu apellido">
+
+    <label for="Cedula">Cédula:</label>
+    <input type="number" id="Cedula" name="cedula" required placeholder="Introduce tu cédula">
+
+    <label for="Correo">Correo:</label>
+    <input type="text" id="Correo" name="correo" required placeholder="Introduce tu correo">
+
+    <label for="Direccion">Dirección:</label>
+    <input type="text" id="Direccion" name="direccion" required placeholder="Introduce tu dirección">
+
+    <label for="Rol">Rol:</label>
+    <select id="Rol" name="tipo" required>
+      <option value="operativo">Operativo</option>
+      <option value="supervision">Supervisión</option>
+      <option value="directivo">Directivo</option>
+    </select>
+
+    <label for="Telefono">Teléfono:</label>
+    <input type="number" id="Telefono" name="telefono" required placeholder="Introduce tu teléfono">
+
+    <label for="password">Contraseña:</label>
+    <input type="password" id="password" name="password" required placeholder="Introduce tu contraseña">
+
+    <button type="submit">Registrar Usuario</button>
+
+    <div class="enlace">
+      <a href="login.html"><span>Regresar</span></a>
+    </div>
+  </form>
+</div>
+
+<!-- Modal de éxito al registrar -->
+<input type="checkbox" id="modalTrigger" class="modal-trigger" />
+<div class="modal">
+  <div class="modal-content">
+    <p>Usuario registrado exitosamente</p>
+    <label for="modalTrigger" class="close-modal">Cerrar</label>
+  </div>
+</div>
+
+<footer>
+  <p>&copy; 2025 Building Optimization Baseline. Todos los derechos reservados.</p>
+</footer>
+</body>
+</html>

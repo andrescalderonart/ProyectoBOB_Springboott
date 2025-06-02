@@ -7,7 +7,7 @@ import java.io.Serializable;
 
 @Data
 @Entity
-@Table(name = "Usuario")
+@Table(name = "usuario")
 public class Usuario implements Serializable {
 
     private static final long serialVersionUID = 1L;
@@ -16,7 +16,7 @@ public class Usuario implements Serializable {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id_usuario;
     @Column(name = "nombre_usuario")
-    private String NombreUsuario;
+    private String nombreUsuario;
     private String pass_usuario;
 
     //Relacion muchos a uno con perfil

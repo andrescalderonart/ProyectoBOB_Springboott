@@ -1,0 +1,134 @@
+}
+body {
+    height: 100%;
+    margin: 0;
+    background-image: url('../IMG/fondo.jpeg');
+}
+header .menu {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+header .logo {
+    width: 120px;
+    height: 100px;
+}
+header .logo-container {
+    display: flex;
+    align-items: center;
+    gap: 70px;
+
+}
+header .logo-text {
+    font-size: 50px;
+    font-weight: bold;
+    color: white;
+    margin: 0;
+}
+
+select {
+    background: rgba(0, 0, 0, 0.1);
+    height: 40px;
+    border-radius: 20px;
+    padding: 0px 15px;
+    border: 1px solid black;
+    color: black;
+    appearance: none; /* Quita el estilo por defecto del navegador */
+    -webkit-appearance: none;
+    -moz-appearance: none;
+}
+
+
+.registrar{
+    border: 3px solid black;
+    width: 400px;
+    height: 800px;
+    padding: 50px;
+    margin: auto;
+    border-radius: 50px;
+    box-shadow: 0px 0px 20px rgba(0, 0, 0, 0.1);
+    background-color: #fdfdfd;
+    margin-top: 150px;
+}
+.registrar form{
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+.registrar h1 {
+    font-size: 20px;
+    font-weight: normal;
+    margin-bottom: 30px;
+}
+label {
+    color: rgb(0, 0, 0);
+    text-transform: uppercase;
+    font-size: 15px;
+    letter-spacing: 1px;
+}
+
+input {
+    background: rgba(0, 0, 0, 0.1);
+    height: 40px;
+    border-radius: 20px;
+    padding: 0px 15px;
+    border: 1px solid black;
+    color: black;
+}
+
+button {
+    background: #4d92e9;
+    height: 40px;
+    line-height: 40px;
+    border-radius: 20px;
+    border: none;
+    margin-top: 20px;
+    box-shadow: 0px 0px 5px rgba(0, 0, 0, 0.3);
+    color: aliceblue;
+    cursor: pointer;
+}
+
+button:hover {
+    background: white;
+    color: black;
+}
+
+  /* Estilos del modal */
+  .modal {
+    display: none; /* El modal está oculto por defecto */
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5); /* Fondo oscuro translúcido */
+    justify-content: center;
+    align-items: center;
+}
+
+.modal-content {
+    background-color: white;
+    padding: 20px;
+    border-radius: 10px;
+    text-align: center;
+}
+
+.close-modal {
+    display: inline-block;
+    margin-top: 10px;
+    padding: 10px;
+    background-color: #007BFF;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+.close-modal:hover {
+    background-color: #0056b3;
+}
+
+/* Mostrar el modal cuando el checkbox está marcado */
+#modalTrigger:checked + .modal {
+    display: flex;
+}

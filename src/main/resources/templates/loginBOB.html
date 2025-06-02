@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="CSS/bob.css">
+  <title>Building Optimization Baseline</title>
+</head>
+<body>
+<!-- Menú superior -->
+<header>
+  <nav class="menu">
+    <!-- Logo y título -->
+    <div class="logo-container">
+      <img src="IMG/imagen bob.png" alt="Logo" class="logo">
+      <h1 class="logo-text">Building Optimization Baseline</h1>
+    </div>
+    <!-- Opciones de navegación -->
+    <ul>
+      <li><a href="inicio.html">Inicio</a></li>
+      <li><a href="login.html">Iniciar sesión</a></li>
+    </ul>
+  </nav>
+</header>
+
+<!-- Sección Iniciar Sesión -->
+<div class="login">
+  <form id="loginForm" action="dashboard2.html" method="POST" onsubmit="return validateForm()">
+    <h1>LOG IN</h1>
+    <label for="username">Usuario</label>
+    <input type="text" id="username" name="username" required placeholder="Introduce tu usuario">
+    <label for="password">Contraseña</label>
+    <input type="password" id="password" name="password" required placeholder="Introduce tu contraseña">
+    <button type="submit">Iniciar sesión</button>
+    <!--<div class="enlace">
+        <a href="registrar.html">
+            <span>Registrarse</span>
+        </a>
+    </div>-->
+  </form>
+</div>
+
+<!-- Script de validación -->
+<script>
+  function validateForm() {
+      // Obtener los valores de los campos de usuario y contraseña
+      const username = document.getElementById('username').value;
+      const password = document.getElementById('password').value;
+
+      // Comprobar que ambos campos no estén vacíos
+      if (username === "" || password === "") {
+          alert("Por favor, rellena todos los campos.");
+          return false; // Evita el envío del formulario si hay campos vacíos
+      }
+
+      // Si todo está bien, el formulario se envía y redirige al dashboard
+      return true; // Permite el envío del formulario
+  }
+</script>
+
+<footer>
+  <p>&copy; 2025 Building Optimization Baseline. Todos los derechos reservados.</p>
+</footer>
+
+</body>
+</html>

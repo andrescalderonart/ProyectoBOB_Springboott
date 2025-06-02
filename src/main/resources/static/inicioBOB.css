@@ -1,0 +1,161 @@
+/* Colores */
+:root {
+    --fondo-oscuro: #121212;
+    --naranja: #ff5722;
+    --gris-claro: #e0e0e0;
+    --gris-medio: #424242;
+    --blanco: #ffffff;
+    --negro: #000000;
+    --BOB-amarillo: #ffcd00;
+}
+
+/* Reset y estilos generales */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    background-color: #ffffff;
+    color: var(--gris-claro);
+    padding-top: 80px; /* Para que no se solape el contenido con el header fijo */
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column; /* Aseguramos que el contenido se organice en columna */
+}
+
+/* Menú superior */
+header {
+    background-color: #4d92e9;
+    color: var(--blanco);
+    padding: 10px 20px;
+    position: fixed;
+    width: 100%;
+    top: 0;
+    z-index: 1000;
+}
+
+header .menu {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+header .logo-container {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+}
+
+header .logo {
+    width: 120px;
+    height: 100px;
+}
+
+header .logo-text {
+    font-size: 50px;
+    font-weight: bold;
+    color: var(--blanco);
+    margin: 0;
+}
+
+/* Menú de navegación */
+header .menu ul {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    gap: 30px;
+}
+
+header .menu a {
+    text-decoration: none;
+    color: var(--blanco);
+    font-size: 20px;
+}
+
+header .menu a:hover {
+    color: var(--BOB-amarillo);
+}
+
+/* Contenido principal */
+main {
+    padding: 50px 20px;
+    margin-top: 80px; /* Evitar que el contenido esté debajo del header fijo */
+    flex: 1;
+}
+
+/* Estilo de los títulos y párrafos */
+#inicio h2 {
+    text-align: center;
+    font-size: 32px;
+    font-weight: bold;
+    color: #1c5dae;
+}
+
+#inicio p {
+    font-size: 18px;
+    text-align: center;
+    margin-top: 10px;
+    color: black;
+}
+
+/* Login */
+.login {
+    border: 3px solid var(--gris-medio);
+    width: 100%;
+    max-width: 500px;
+    padding: 50px;
+    margin: auto;
+    border-radius: 50px;
+    box-shadow: 0px 0px 20px rgba(0, 0, 0, 0.1);
+    background-color: var(--blanco);
+    margin-top: 120px; /* Añadí margen superior para separar del header */
+}
+
+.login form {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.login h1 {
+    font-size: 30px;
+    font-weight: normal;
+    margin-bottom: 30px;
+    color: black;
+}
+
+label {
+    color: var(--gris-medio);
+    text-transform: uppercase;
+    font-size: 15px;
+    letter-spacing: 1px;
+}
+
+input {
+    background: rgba(0, 0, 0, 0.1);
+    height: 40px;
+    border-radius: 20px;
+    padding: 0px 15px;
+    border: 1px solid var(--gris-medio);
+    color: var(--negro);
+}
+
+button {
+    background: var(--naranja);
+    height: 40px;
+    line-height: 40px;
+    border-radius: 20px;
+    border: none;
+    margin-top: 20px;
+    box-shadow: 0px 0px 5px rgba(0, 0, 0, 0.3);
+    color: var(--blanco);
+    cursor: pointer;
+}
+
+button:hover {
+    background: var(--gris-claro);
+    color: var(--fondo-oscuro);
+}
