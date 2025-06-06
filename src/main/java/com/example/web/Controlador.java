@@ -7,6 +7,7 @@ import com.example.servicio.IndividuoServicioImp;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.Errors;
@@ -56,5 +57,33 @@ public class Controlador {
     public String Borrar(Individuo individuo) {
         individuoServicio.borrar(individuo);
         return "redirect:/";
+    }
+
+    @GetMapping("/redirigir")
+    public String redirigirSegunPerfil(Authentication auth){
+        String rol = auth.getAuthorities().iterator().next().getAuthority();
+        switch (rol){
+            case "ROLE_ADMINISTRACION":
+                return "redirect:/";
+            case "ROLE_SECRETARIA":
+                return "redirect:/secretaria";
+            case "ROLE_VENDEDOR":
+                return "redirect:/vendedor";
+            default:
+                return "redirect:/";
+        }
+    }
+
+    @GetMapping("/login")
+    public String mostrarLogin(){
+        return "login";
+    }
+    @GetMapping("/secretaria")
+    public String mostrarSecretaria(){
+        return "secretaria";
+    }
+    @GetMapping("/vendedor")
+    public String mostrarVendedor(){
+        return "vendedor";
     }
 }

@@ -4,5 +4,5 @@ import com.example.domain.Usuario;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 public interface UsuarioDao extends JpaRepository <Usuario, Integer> {
-    Usuario findByNombreUsuario(String username);
+    Usuario findBynombreUsuario(String username);
 }

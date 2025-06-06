@@ -1,11 +1,19 @@
 package com.example.web;
 
+import com.example.servicio.UsuarioDetailsServices;
+import org.springframework.cglib.proxy.NoOp;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
+import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.config.annotation.web.configurers.FormLoginConfigurer;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.crypto.password.NoOpPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.provisioning.InMemoryUserDetailsManager;
 import org.springframework.security.web.SecurityFilterChain;
 
@@ -14,27 +22,42 @@ import org.springframework.security.web.SecurityFilterChain;
 public class ConfSeg {
 
     @Bean
-    public UserDetailsService users(){
-        UserDetails user = User.withUsername("user")
-                .password("{noop}210607")
-                .roles("USER")
-                .build();
-
-        UserDetails admin = User.withUsername("admin")
-                .password("{noop}123456")
-                .roles("ADMIN")
-                .build();
-        return new InMemoryUserDetailsManager (user,admin);
-
+    public PasswordEncoder passwordEncoder() {
+        return NoOpPasswordEncoder.getInstance();
     }
+
+    @Bean
+    public AuthenticationManager authenticationManager(
+            AuthenticationConfiguration authConfig,
+            UsuarioDetailsServices usuarioDetailsServices,
+            PasswordEncoder passwordEncoder)
+            throws Exception {
+        DaoAuthenticationProvider authProvider = new DaoAuthenticationProvider();
+        authProvider.setUserDetailsService(usuarioDetailsServices);
+        authProvider.setPasswordEncoder(passwordEncoder);
+
+        return authConfig.getAuthenticationManager();
+    }
+
+
+
+
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception{
         http
                 .authorizeHttpRequests(authorizationManagerRequestMatcherRegistry ->
-                        authorizationManagerRequestMatcherRegistry.anyRequest().authenticated()
+                        authorizationManagerRequestMatcherRegistry
+                                .requestMatchers("/css/**","/js/**","/login").permitAll()
+                                .anyRequest()
+                                .authenticated()
                 )
-                .formLogin(httpSecurityFormLoginConfigurer ->
-                        httpSecurityFormLoginConfigurer.permitAll())
+                .formLogin( form -> form
+                        .loginPage("/login")
+                        .defaultSuccessUrl("/redirigir", true)
+                        .permitAll()
+                )
+
+
                 .httpBasic(httpSecurityHttpBasicConfigurer -> {});
 
         return http.build();
