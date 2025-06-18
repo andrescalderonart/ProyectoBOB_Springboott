@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Agregar presupuesto</title>
+</head>
+<body>
+<h1>Agregar presupuesto</h1>
+<br>
+<a th:href="@{/}">Regresar</a>
+<br>
+
+<form id="assignmentForm" action="/presupuestos/salvar" method="post">
+    <!-- Project Name -->
+    <div>
+        <label><b>Nombre de la obra:</b></label>
+        <input type="text" name="entryName" required>
+    </div>
+
+    <h3>Materiales:</h3>
+
+    <div id="actividades">
+        <!-- Javascript de DeepSeek -->
+        <div class="activ-fila">
+            <select name="matrizIds" required>
+                <option value="">Seleccione material (actividad)...</option>
+                <option th:each="material : ${materiales}"
+                        th:value="${material.id_m}"
+                        th:text="${material.nombre + ' (' + material.unidades + ')'}">
+                </option>
+            </select>
+            <input type="number" name="quantities" step="0.01" min="0.01" placeholder="Cantidad" required>
+            <span class="btn-remove" onclick="removeRow(this)">✕ Eliminar</span>
+        </div>
+    </div>
+
+    <button type="button" onclick="addMaterialRow()">+ Añadir otro material</button>
+    <br><br>
+    <button type="submit">Guardar presupuesto</button>
+</form>
+<br>
+
+<!-- Inside your form where you want to add materials -->
+<form method="post" action="/presupuestos/salvar">
+    <!-- Other form fields... -->
+
+    <!-- Materials section header -->
+    <h3>Materiales (actividades)</h3>
+
+    <!-- The container for dynamic material rows -->
+    <div id="materialsContainer">
+        <!-- Initial material row (optional) -->
+        <h1>Llamo la matriz de materiales de la BD a mi pagina usando Spring</h1>
+        <br>
+        <div th:if="${individuos != null and !individuos.empty}">
+            <table border="2">
+                <tr>
+                    <th>Nombre:</th>
+                    <th>Apellido:</th>
+                    <th>Edad:</th>
+                    <th>Correo:</th>
+                    <th>Telefono:</th>
+                    <th>Editar</th>
+                    <th>Eliminar</th>
+                </tr>
+                <tr th:each="individuo : ${individuos}">
+                    <td th:text="${individuo.nombre}"></td>
+                    <td th:text="${individuo.apellido}"></td>
+                    <td th:text="${individuo.edad}"></td>
+                    <td th:text="${individuo.correo}"></td>
+                    <td th:text="${individuo.telefono}"></td>
+                    <td><a th:href="@{/cambiar/} + ${individuo.id_individuo}" th:text="Cambiar">
+                    </a></td>
+                    <td><a th:href="@{/borrar/} + ${individuo.id_individuo}" th:text="Eliminar">
+                    </a></td>
+                </tr>
+            </table>
+        </div>
+
+    </div>
+
+</form>
+
+<br>
+<script>
+    // Add new material row
+    function addMaterialRow() {
+        const container = document.getElementById('materialsContainer');
+        const newRow = document.createElement('div');
+        newRow.className = 'material-row';
+        newRow.innerHTML = `
+            <select name="materialIds" required>
+                <option value="">Seleccione material...</option>
+                ${document.querySelector('select[name="materialIds"]').innerHTML.substring(38)}
+            </select>
+            <input type="number" name="quantities" step="0.01" min="0.01" placeholder="Cantidad" required>
+            <span class="btn-remove" onclick="removeRow(this)">✕ Eliminar</span>
+        `;
+        container.appendChild(newRow);
+    }
+
+    // Remove material row
+    function removeRow(button) {
+        const row = button.parentElement;
+        if (document.querySelectorAll('.material-row').length > 1) {
+            row.remove();
+        } else {
+            alert("Debe haber al menos un material");
+        }
+    }
+</script>
+</body>
+</html>

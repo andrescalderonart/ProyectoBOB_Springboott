@@ -1,7 +1,9 @@
 package com.example.web;
 
 import com.example.domain.Individuo;
+import com.example.domain.Presupuesto;
 import com.example.servicio.IndividuoServicio;
+import com.example.servicio.PresupuestoServicio;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
 import org.apache.poi.ss.usermodel.Row;
@@ -15,15 +17,22 @@ import org.springframework.ui.Model;
 import org.springframework.validation.Errors;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import java.io.IOException;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @Controller
 public class Controlador {
 
     @Autowired
     private IndividuoServicio individuoServicio;
+
+    //Presupuesto
+    @Autowired
+    private PresupuestoServicio presupuestoServicio;
 
     @GetMapping("/")
     public String inicio(Model model) {
@@ -61,6 +70,60 @@ public class Controlador {
         return "redirect:/";
     }
 
+    //Acá están los métodos para presupuestos
+    @GetMapping("/presupuestos")
+    public String inicioPresu(Model model){
+        List<Presupuesto> presupuestos = presupuestoServicio.listaPresupuesto();
+        model.addAttribute("presupuestos",presupuestos);
+        return "presupuestos/indice";
+    }
+
+    @GetMapping("/presupuestos/anexar")
+    public String anexarPresupuesto(Model model){
+        model.addAttribute("presupuesto", new Presupuesto());
+        model.addAttribute("materiales", presupuestoServicio.listarMateriales());
+        return "presupuestos/agregarPresupuesto";
+    }
+
+    @PostMapping("/presupuestos/salvar")
+    public String salvarPresupuesto(
+            Errors errores,
+            @RequestParam String obra,
+            @RequestParam List<Integer>materialIds,
+            @RequestParam List<Double> quantities) {
+        if (errores.hasErrors()) {
+            return "presupuestos/agregarPresupuesto";
+        }
+
+        // Convert to Map<Integer, Double> for JSON storage
+        Map<Integer, Double> materialValues = new HashMap<>();
+        for (int i = 0; i < materialIds.size(); i++) {
+            materialValues.put(materialIds.get(i), quantities.get(i));
+        }
+
+        Presupuesto presupuesto = new Presupuesto();
+        presupuesto.setEntryName(obra);
+        presupuesto.setMaterialValues(materialValues);
+
+        presupuestoServicio.salvar(presupuesto);
+        return "redirect:/presupuestos";
+    }
+
+    @GetMapping("/presupuestos/cambiar/{entryId}")
+    public String cambiarPresupuesto(Presupuesto presupuesto, Model model) {
+        presupuesto = presupuestoServicio.localizarPresupuesto(presupuesto);
+        model.addAttribute("presupuesto", presupuesto);
+        return "presupuestos/cambiar";
+    }
+
+    @GetMapping("/presupuestos/borrar/{entryId}")
+    public String borrarPresupuesto(Presupuesto presupuesto) {
+        presupuestoServicio.borrar(presupuesto);
+        return "redirect:/presupuestos";
+    }
+
+
+    //sigue lo que había
     @GetMapping("/redirigir")
     public String redirigirSegunPerfil(Authentication auth){
         String rol = auth.getAuthorities().iterator().next().getAuthority();

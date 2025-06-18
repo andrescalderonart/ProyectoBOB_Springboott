@@ -44,6 +44,11 @@
     <button type="submit">Exportar a Excel</button>
 </form>
 <br>
+
+<h2>Agregar un presupuesto</h2>
+<a th:href="@{/presupuestos/anexar}">Agregar presupuesto</a>
+<br>
+
 <form th:action="@{/logout}" method="post">
     <a href="#" onclick="this.parentNode.submit()">Cerrar sesion</a>
 </form>
