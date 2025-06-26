@@ -3,37 +3,102 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Building Optimization Baseline - Gestión de Obras</title>
   <link rel="stylesheet" href="CSS/inicioBOB.css">
-  <title>Building Optimization Baseline</title>
+  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
 </head>
 <body>
-<!-- Menú superior -->
+
 <header>
   <nav class="menu">
-    <!-- Logo y título -->
+
     <div class="logo-container">
-      <img src="IMG/imagen bob.png" alt="Logo" class="logo">
-      <h1 class="logo-text">Building Optimization Baseline</h1>
+      <img src="../templates/IMG/imagen%20bob.png" alt="Logo BOB" class="logo">
+      <div class="logo-text-container">
+        <h1 class="logo-text">Building Optimization Baseline</h1>
+        <p class="logo-subtext">Gestión inteligente de proyectos de construcción</p>
+      </div>
     </div>
     <!-- Opciones de navegación -->
-    <ul>
-      <li><a href="inicio.html">Inicio</a></li>
+    <ul class="nav-links">
+      <li><a href="inicio.html" class="active">Inicio</a></li>
       <li><a href="login.html">Iniciar Sesión</a></li>
+      <li><a href="#servicios">Servicios</a></li>
+      <li><a href="#contacto">Contacto</a></li>
     </ul>
   </nav>
 </header>
 
+<!-- Hero Section -->
+<section class="hero">
+  <div class="hero-overlay"></div>
+  <div class="hero-content">
+    <h2>Optimización de Proyectos de Construcción</h2>
+    <p>Maximiza la eficiencia, reduce costos y mejora la gestión de tus obras</p>
+    <a href="login.html" class="cta-button">Acceder a la Plataforma</a>
+  </div>
+</section>
+
 <!-- Contenido principal -->
 <main>
-  <!-- Sección Inicio -->
-  <section id="inicio">
-    <h2>Bienvenido a Building Optimization Baseline</h2>
-    <p>Tu plataforma para gestionar proyectos de construcción de manera eficiente.</p>
+  <!-- Sección de características -->
+  <section class="features">
+    <div class="feature-card">
+      <div class="feature-icon">📊</div>
+      <h3>Gestión de Proyectos</h3>
+      <p>Control completo de todos los aspectos de tu obra en un solo lugar.</p>
+    </div>
+    <div class="feature-card">
+      <div class="feature-icon">⏱️</div>
+      <h3>Optimización de Tiempos</h3>
+      <p>Planificación inteligente que reduce los tiempos de ejecución.</p>
+    </div>
+    <div class="feature-card">
+      <div class="feature-icon">💰</div>
+      <h3>Control de Costos</h3>
+      <p>Mantén tu proyecto dentro del presupuesto con nuestro sistema de seguimiento.</p>
+    </div>
+  </section>
+
+  <!-- Sección sobre nosotros -->
+  <section class="about">
+    <div class="about-content">
+      <h2>Sobre Building Optimization Baseline</h2>
+      <p>Somos líderes en soluciones tecnológicas para la gestión de proyectos de construcción. Nuestra plataforma integra las mejores herramientas para optimizar cada fase de tu obra, desde la planificación hasta la entrega final.</p>
+      <p>Con más de 10 años de experiencia en el sector, hemos desarrollado un sistema que se adapta a las necesidades de constructoras, arquitectos y gerentes de proyecto.</p>
+    </div>
+    <div class="about-image">
+      <!-- Imagen representativa -->
+    </div>
   </section>
 </main>
 
 <footer>
-  <p>&copy; 2025 Building Optimization Baseline. Todos los derechos reservados.</p>
+  <div class="footer-content">
+    <div class="footer-section">
+      <h4>Contacto</h4>
+      <p>carta.v.devhouse@gmail.com</p>
+      <p>+57 321 433 8064</p>
+    </div>
+    <div class="footer-section">
+      <h4>Enlaces rápidos</h4>
+      <ul>
+        <li><a href="inicio.html">Inicio</a></li>
+        <li><a href="login.html">Login</a></li>
+        <li><a href="#servicios">Servicios</a></li>
+      </ul>
+    </div>
+    <div class="footer-section">
+      <h4>Legal</h4>
+      <ul>
+        <li><a href="#">Términos y condiciones</a></li>
+        <li><a href="#">Política de privacidad</a></li>
+      </ul>
+    </div>
+  </div>
+  <div class="footer-bottom">
+    <p>&copy; 2025 Building Optimization Baseline. Todos los derechos reservados.</p>
+  </div>
 </footer>
 
 </body>
