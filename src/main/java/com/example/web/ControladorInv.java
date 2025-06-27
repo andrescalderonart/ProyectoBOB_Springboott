@@ -1,7 +1,6 @@
 package com.example.web;
 
 
-import com.example.domain.Individuo;
 import com.example.domain.Inventario;
 import com.example.servicio.InventarioServicio;
 import jakarta.validation.Valid;
@@ -20,12 +19,12 @@ public class ControladorInv {
     @Autowired
     private InventarioServicio inventarioServicio;
 
-    @GetMapping("/")
+    @GetMapping("/inventario")
     public String inventario(Model model){
 
         List<Inventario> inventarios = inventarioServicio.listaInventarios();
         model.addAttribute("inventarios", inventarios);
-        return "inicioBOB";
+        return "indice";
     }
 
     @GetMapping("/crearInv")
@@ -36,9 +35,22 @@ public class ControladorInv {
     @PostMapping("/guardarInv")
     public String guardarInv(@Valid Inventario inventario, Errors errores) {
         if (errores.hasErrors()){
-            return "guardarInv";
+            return "inventario";
         }
-        inventarioServicio.guadarInv(inventario);
-        return "redirect:/";
+        inventarioServicio.guardarInv(inventario);
+        return "redirect:/inventario";
+    }
+
+    @GetMapping("/cambiarInv/{id_inventario}")
+    public String cambiarInv(Inventario inventario, Model model) {
+        inventario = inventarioServicio.localizarInventario(inventario);
+        model.addAttribute("inventario", inventario);
+        return "cambiarInv";
+    }
+
+    @GetMapping("/borrarInv/{id_inventario}")
+    public String borrarInv(Inventario inventario) {
+        inventarioServicio.borrarInv(inventario);
+        return "redirect:/inventario";
     }
 }

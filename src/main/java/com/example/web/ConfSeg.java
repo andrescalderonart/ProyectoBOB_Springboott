@@ -44,8 +44,6 @@ public class ConfSeg {
     }
 
 
-
-
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception{
         http
