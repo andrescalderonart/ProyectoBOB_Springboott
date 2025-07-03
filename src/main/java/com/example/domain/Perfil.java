@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 import lombok.Data;
 
 import java.io.Serializable;
+import java.util.List;
 
 @Data
 @Entity
@@ -16,4 +17,17 @@ public class Perfil implements Serializable {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id_perfil;
     private String descripcion_perfil;
+
+
+    @ManyToMany(fetch = FetchType.EAGER)
+    @JoinTable(
+            name = "perfil_permiso",
+            joinColumns = @JoinColumn(name = "id_perfil"),
+            inverseJoinColumns = @JoinColumn(name = "id")
+    )
+    private List<Permiso> permisos;
+
+    public void setPermiso(List<Permiso> permisos) {
+        this.permisos = permisos;
+    }
 }

@@ -10,6 +10,8 @@ import org.springframework.validation.Errors;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.security.core.Authentication;
+import org.springframework.web.bind.annotation.RequestMapping;
+
 import java.util.List;
 
 @Controller
@@ -27,51 +29,55 @@ public class Controlador {
         return "indice";
     }
 
-    @GetMapping("/anexar")
-    public String anexar(Individuo individuo) {
-        return "agregar";
+    @RequestMapping("/auth")
+    public class AuthController {
 
-    }
-
-    @PostMapping("/salvar")
-    public String salvar(@Valid Individuo individuo, Errors errores) {
-        if (errores.hasErrors()){
-            return "Cambiar";
+        @GetMapping("/login")
+        public String showLogin() {
+            return "login";
         }
-        individuoServicio.salvar(individuo);
-        return "redirect:/";
-    }
 
-    @GetMapping("/login")
-    public String inicio(){
-        return "login";
-    }
+        @GetMapping("/anexar")
+        public String anexar(Individuo individuo) {
+            return "agregar";
 
-    @GetMapping("/cambiar/{id_individuo}")
-    public String Cambiar(Individuo individuo, Model model) {
-        individuo = individuoServicio.localizarIndividuo(individuo);
-        model.addAttribute("individuo", individuo);
-        return "cambiar";
-    }
+        }
 
-    @GetMapping("/borrar/{id_individuo}")
-    public String Borrar(Individuo individuo) {
-        individuoServicio.borrar(individuo);
-        return "redirect:/";
-    }
+        @PostMapping("/salvar")
+        public String salvar(@Valid Individuo individuo, Errors errores) {
+            if (errores.hasErrors()) {
+                return "Cambiar";
+            }
+            individuoServicio.salvar(individuo);
+            return "redirect:/";
+        }
 
-    @GetMapping("/redirigir")
-    public String redirigirSegunPerfil(Authentication auth) {
-        String rol = auth.getAuthorities().iterator().next().getAuthority();
-        switch (rol) {
-            case "ROLE_ADMINISTRACION":
-                return "redirect:/";
-            case "ROLE_SECRETARIA":
-                return "redirect:/secretaria";
-            case "ROLE_VENDEDOR":
-                return "redirect:/vendedor";
-            default:
-                return "redirect:/";
+        @GetMapping("/cambiar/{id_individuo}")
+        public String Cambiar(Individuo individuo, Model model) {
+            individuo = individuoServicio.localizarIndividuo(individuo);
+            model.addAttribute("individuo", individuo);
+            return "cambiar";
+        }
+
+        @GetMapping("/borrar/{id_individuo}")
+        public String Borrar(Individuo individuo) {
+            individuoServicio.borrar(individuo);
+            return "redirect:/";
+        }
+
+        @GetMapping("/redirigir")
+        public String redirigirSegunPerfil(Authentication auth) {
+            String rol = auth.getAuthorities().iterator().next().getAuthority();
+            switch (rol) {
+                case "ROLE_ADMINISTRACION":
+                    return "redirect:/";
+                case "ROLE_SECRETARIA":
+                    return "redirect:/secretaria";
+                case "ROLE_VENDEDOR":
+                    return "redirect:/vendedor";
+                default:
+                    return "redirect:/";
+            }
         }
     }
-    }
+}
