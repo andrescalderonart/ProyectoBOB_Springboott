@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Pagina de inicio</title>
+</head>
+<body>
+
+<h2>Agregar un individuo</h2>
+<a th:href="@{/anexar}">Agregar inidividuos</a>
+<br>
+
+    <h1>Llamo datos de la BD a mi pagina usando Spring</h1>
+    <br>
+    <div th:if="${individuos != null and !individuos.empty}">
+        <table border="2">
+            <tr>
+                <th>Nombre:</th>
+                <th>Apellido:</th>
+                <th>Edad:</th>
+                <th>Correo:</th>
+                <th>Telefono:</th>
+                <th>Editar</th>
+                <th>Eliminar</th>
+            </tr>
+            <tr th:each="individuo : ${individuos}">
+                <td th:text="${individuo.nombre}"></td>
+                <td th:text="${individuo.apellido}"></td>
+                <td th:text="${individuo.edad}"></td>
+                <td th:text="${individuo.correo}"></td>
+                <td th:text="${individuo.telefono}"></td>
+                <td><a th:href="@{/cambiar/} + ${individuo.id_individuo}" th:text="Cambiar">
+                </a></td>
+                <td><a th:href="@{/borrar/} + ${individuo.id_individuo}" th:text="Eliminar">
+                </a></td>
+            </tr>
+        </table>
+    </div>
+<div th:if="${individuos == null or individuos.empty}">
+    La lista no tiene información para mostrar.
+</div>
+<br>
+<form th:action="@{/exportarExcel}" method="get">
+    <button type="submit">Exportar a Excel</button>
+</form>
+<br>
+
+<h2>Agregar un presupuesto</h2>
+<a th:href="@{/presupuestos/anexar}">Agregar presupuesto</a>
+<br>
+
+<form th:action="@{/logout}" method="post">
+    <a href="#" onclick="this.parentNode.submit()">Cerrar sesion</a>
+</form>
+</body>
+</html>
+
+
+
+
+
