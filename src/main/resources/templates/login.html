@@ -37,7 +37,7 @@
       <p>Accede a tu cuenta para gestionar tus proyectos</p>
     </div>
 
-    <form class="login-form" th:action="@{/login}" method="POST">
+    <form class="login-form" th:action="@{/login}" method="post">
       <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}"/>
 
       <div class="form-group">
@@ -123,3 +123,4 @@
   });
 </script>
 </body>
+</html>

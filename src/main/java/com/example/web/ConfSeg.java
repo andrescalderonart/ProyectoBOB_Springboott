@@ -49,7 +49,7 @@ public class ConfSeg {
         http
                 .authorizeHttpRequests(authorizationManagerRequestMatcherRegistry ->
                         authorizationManagerRequestMatcherRegistry
-                                .requestMatchers("/css/**","/js/**","/login").permitAll()
+                                .requestMatchers("/", "/CSS/**","/JS/**","/IMG/**", "/login").permitAll()
                                 .anyRequest()
                                 .authenticated()
                 )
