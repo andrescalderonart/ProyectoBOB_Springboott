@@ -32,7 +32,7 @@ public class Controlador {
 
         List<Individuo> individuos = individuoServicio.listaIndividuos();
         model.addAttribute("individuos", individuos);
-        return "indice";
+        return "index";
     }
 
 
