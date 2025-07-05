@@ -2,11 +2,366 @@
 <html lang="en" xmlns:th="http://www.w3.org/1999/xhtml">
 <head>
     <meta charset="UTF-8">
-    <title>inventario</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Building Optimization Baseline - Inventario</title>
+    <link rel="stylesheet" href="CSS/styles.css">
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
+    <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
 </head>
 <body>
-<h2>Modulo inventario</h2>
-    <a th:href="@{/crearInv}">modulo inventario</a>
+
+<header>
+    <nav class="menu">
+        <div class="logo-container">
+            <img src="../templates/IMG/imagen%20bob.png" alt="Logo BOB" class="logo">
+            <div class="logo-text-container">
+                <h1 class="logo-text">Building Optimization Baseline</h1>
+                <p class="logo-subtext">Gestión inteligente de proyectos de construcción</p>
+            </div>
+        </div>
+        <ul class="nav-links">
+            <li><a href="index.html" class="active">Inicio</a></li>
+            <li><a href="login.html">Iniciar Sesión</a></li>
+            <li><a href="#servicios">Servicios</a></li>
+            <li><a href="#contacto">Contacto</a></li>
+        </ul>
+    </nav>
+</header>
+
+<!-- Menú lateral y contenido -->
+<main>
+    <div class="menu-dasboard">
+        <div class="menu">
+            <a class="enlace" href="dashboardADMIN.html"><i class="bx bx-home"></i><span>Inicio</span></a>
+            <a class="enlace" href="inventario.html"><i class="bx bx-box"></i><span>Inventario</span></a>
+            <a class="enlace" href="avances.html"><i class="bx bx-buildings"></i><span>Avances</span></a>
+            <a class="enlace" href="contratista.html"><i class="bx bx-receipt"></i><span>Contratista</span></a>
+            <a class="enlace" href="presupuesto.html"><i class="bx bx-money-withdraw"></i><span>Presupuesto</span></a>
+            <a class="enlace" href="proveedores.html"><i class="bx bx-hard-hat"></i><span>Proveedores</span></a>
+            <a class="enlace" href="#usuarios"><i class="bx bxs-user-detail"></i><span>Usuarios</span></a>
+            <a class="enlace" href="#reportes"><i class="bx bx-line-chart"></i><span>Reportes</span></a>
+            <a class="enlace" href="#configuracion"><i class="bx bx-cog"></i><span>Configuración</span></a>
+        </div>
+    </div>
+
+    <div class="dashboard-content">
+        <div class="inventory-header">
+            <h2><i class='bx bx-box'></i> Módulo de Inventario</h2>
+            <button class="btn-add" id="addItemBtn">
+                <i class='bx bx-plus'></i> Agregar Item
+            </button>
+        </div>
+
+        <div class="inventory-filters">
+            <div class="search-box">
+                <i class='bx bx-search'></i>
+                <input type="text" id="searchInput" placeholder="Buscar en inventario...">
+            </div>
+            <div class="filter-group">
+                <label for="categoryFilter">Categoría:</label>
+                <select id="categoryFilter">
+                    <option value="">Todas</option>
+                    <option value="Materiales">Materiales</option>
+                    <option value="Herramientas">Herramientas</option>
+                    <option value="Equipos">Equipos</option>
+                    <option value="Insumos">Insumos</option>
+                </select>
+            </div>
+            <div class="filter-group">
+                <label for="statusFilter">Estado:</label>
+                <select id="statusFilter">
+                    <option value="">Todos</option>
+                    <option value="Disponible">Disponible</option>
+                    <option value="Bajo stock">Bajo stock</option>
+                    <option value="Agotado">Agotado</option>
+                </select>
+            </div>
+        </div>
+
+        <div class="inventory-summary">
+            <div class="summary-card">
+                <div class="summary-icon">
+                    <i class='bx bx-package'></i>
+                </div>
+                <div class="summary-content">
+                    <h3>Total Items</h3>
+                    <p class="summary-value">127</p>
+                </div>
+            </div>
+            <div class="summary-card">
+                <div class="summary-icon warning">
+                    <i class='bx bx-error-circle'></i>
+                </div>
+                <div class="summary-content">
+                    <h3>Bajo Stock</h3>
+                    <p class="summary-value">18</p>
+                </div>
+            </div>
+            <div class="summary-card">
+                <div class="summary-icon danger">
+                    <i class='bx bx-x-circle'></i>
+                </div>
+                <div class="summary-content">
+                    <h3>Agotados</h3>
+                    <p class="summary-value">5</p>
+                </div>
+            </div>
+            <div class="summary-card">
+                <div class="summary-icon success">
+                    <i class='bx bx-check-circle'></i>
+                </div>
+                <div class="summary-content">
+                    <h3>Disponibles</h3>
+                    <p class="summary-value">104</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="inventory-table-container">
+            <table class="inventory-table">
+                <thead>
+                <tr>
+                    <th>Código</th>
+                    <th>Nombre</th>
+                    <th>Categoría</th>
+                    <th>Cantidad</th>
+                    <th>Unidad</th>
+                    <th>Ubicación</th>
+                    <th>Estado</th>
+                    <th>Acciones</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr>
+                    <td>MAT-001</td>
+                    <td>Cemento Gris 50kg</td>
+                    <td>Materiales</td>
+                    <td>120</td>
+                    <td>Bultos</td>
+                    <td>Almacén A</td>
+                    <td><span class="status-badge available">Disponible</span></td>
+                    <td class="action-buttons">
+                        <button class="btn-action edit"><i class='bx bx-edit'></i></button>
+                        <button class="btn-action delete"><i class='bx bx-trash'></i></button>
+                        <button class="btn-action view"><i class='bx bx-show'></i></button>
+                    </td>
+                </tr>
+                <tr>
+                    <td>HERR-045</td>
+                    <td>Martillo de Acero</td>
+                    <td>Herramientas</td>
+                    <td>8</td>
+                    <td>Unidades</td>
+                    <td>Taller</td>
+                    <td><span class="status-badge low">Bajo stock</span></td>
+                    <td class="action-buttons">
+                        <button class="btn-action edit"><i class='bx bx-edit'></i></button>
+                        <button class="btn-action delete"><i class='bx bx-trash'></i></button>
+                        <button class="btn-action view"><i class='bx bx-show'></i></button>
+                    </td>
+                </tr>
+                <tr>
+                    <td>EQP-012</td>
+                    <td>Andamio Metálico</td>
+                    <td>Equipos</td>
+                    <td>15</td>
+                    <td>Unidades</td>
+                    <td>Patio</td>
+                    <td><span class="status-badge available">Disponible</span></td>
+                    <td class="action-buttons">
+                        <button class="btn-action edit"><i class='bx bx-edit'></i></button>
+                        <button class="btn-action delete"><i class='bx bx-trash'></i></button>
+                        <button class="btn-action view"><i class='bx bx-show'></i></button>
+                    </td>
+                </tr>
+                <tr>
+                    <td>INS-023</td>
+                    <td>Guantes de Seguridad</td>
+                    <td>Insumos</td>
+                    <td>0</td>
+                    <td>Pares</td>
+                    <td>Almacén B</td>
+                    <td><span class="status-badge out">Agotado</span></td>
+                    <td class="action-buttons">
+                        <button class="btn-action edit"><i class='bx bx-edit'></i></button>
+                        <button class="btn-action delete"><i class='bx bx-trash'></i></button>
+                        <button class="btn-action view"><i class='bx bx-show'></i></button>
+                    </td>
+                </tr>
+                <tr>
+                    <td>MAT-078</td>
+                    <td>Varilla Corrugada 1/2"</td>
+                    <td>Materiales</td>
+                    <td>45</td>
+                    <td>Barras</td>
+                    <td>Patio</td>
+                    <td><span class="status-badge available">Disponible</span></td>
+                    <td class="action-buttons">
+                        <button class="btn-action edit"><i class='bx bx-edit'></i></button>
+                        <button class="btn-action delete"><i class='bx bx-trash'></i></button>
+                        <button class="btn-action view"><i class='bx bx-show'></i></button>
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <div class="pagination-controls">
+            <button class="pagination-btn" disabled><i class='bx bx-chevron-left'></i></button>
+            <span class="page-info">Página 1 de 5</span>
+            <button class="pagination-btn"><i class='bx bx-chevron-right'></i></button>
+        </div>
+    </div>
+
+    <!-- Modal para agregar/editar items -->
+    <div class="modal" id="inventoryModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 id="modalTitle">Agregar Nuevo Item</h3>
+                <button class="close-modal">&times;</button>
+            </div>
+            <div class="modal-body">
+                <form id="inventoryForm">
+                    <div class="form-group">
+                        <label for="itemCode">Código del Item</label>
+                        <input type="text" id="itemCode" placeholder="Ej: MAT-001" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="itemName">Nombre del Item</label>
+                        <input type="text" id="itemName" placeholder="Ej: Cemento Gris 50kg" required>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="itemCategory">Categoría</label>
+                            <select id="itemCategory" required>
+                                <option value="">Seleccionar...</option>
+                                <option value="Materiales">Materiales</option>
+                                <option value="Herramientas">Herramientas</option>
+                                <option value="Equipos">Equipos</option>
+                                <option value="Insumos">Insumos</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="itemQuantity">Cantidad</label>
+                            <input type="number" id="itemQuantity" placeholder="0" min="0" required>
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="itemUnit">Unidad de Medida</label>
+                            <select id="itemUnit" required>
+                                <option value="">Seleccionar...</option>
+                                <option value="Unidades">Unidades</option>
+                                <option value="Bultos">Bultos</option>
+                                <option value="Barras">Barras</option>
+                                <option value="Pares">Pares</option>
+                                <option value="Litros">Litros</option>
+                                <option value="Metros">Metros</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="itemLocation">Ubicación</label>
+                            <input type="text" id="itemLocation" placeholder="Ej: Almacén A" required>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="itemDescription">Descripción</label>
+                        <textarea id="itemDescription" rows="3" placeholder="Descripción detallada del item..."></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label for="itemStatus">Estado</label>
+                        <select id="itemStatus" required>
+                            <option value="Disponible">Disponible</option>
+                            <option value="Bajo stock">Bajo stock</option>
+                            <option value="Agotado">Agotado</option>
+                        </select>
+                    </div>
+                    <div class="form-actions">
+                        <button type="button" class="btn-cancel">Cancelar</button>
+                        <button type="submit" class="btn-save">Guardar Item</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</main>
+
+<footer>
+    <div class="footer-content">
+        <div class="footer-section">
+            <h4>Contacto</h4>
+            <p>carta.v.devhouse@gmail.com</p>
+            <p>+57 321 433 8064</p>
+        </div>
+        <div class="footer-section">
+            <h4>Enlaces rápidos</h4>
+            <ul>
+                <li><a href="index.html">Inicio</a></li>
+                <li><a href="login.html">Login</a></li>
+                <li><a href="#servicios">Servicios</a></li>
+            </ul>
+        </div>
+        <div class="footer-section">
+            <h4>Legal</h4>
+            <ul>
+                <li><a href="#">Términos y condiciones</a></li>
+                <li><a href="#">Política de privacidad</a></li>
+            </ul>
+        </div>
+    </div>
+    <div class="footer-bottom">
+        <p>&copy; 2025 Building Optimization Baseline. Todos los derechos reservados.</p>
+    </div>
+</footer>
+
+<script>
+    // Script básico para funcionalidad del modal
+    document.addEventListener('DOMContentLoaded', function() {
+        const modal = document.getElementById('inventoryModal');
+        const addBtn = document.getElementById('addItemBtn');
+        const closeBtn = document.querySelector('.close-modal');
+        const cancelBtn = document.querySelector('.btn-cancel');
+
+        // Abrir modal al hacer clic en Agregar Item
+        addBtn.addEventListener('click', function() {
+            modal.style.display = 'flex';
+            document.getElementById('modalTitle').textContent = 'Agregar Nuevo Item';
+        });
+
+        // Cerrar modal
+        function closeModal() {
+            modal.style.display = 'none';
+        }
+
+        closeBtn.addEventListener('click', closeModal);
+        cancelBtn.addEventListener('click', closeModal);
+
+        // Cerrar modal al hacer clic fuera del contenido
+        window.addEventListener('click', function(event) {
+            if (event.target === modal) {
+                closeModal();
+            }
+        });
+
+        // Manejar envío del formulario
+        document.getElementById('inventoryForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            // Aquí iría la lógica para guardar el item
+            alert('Item guardado correctamente');
+            closeModal();
+        });
+
+        // Simular funcionalidad de edición
+        const editButtons = document.querySelectorAll('.btn-action.edit');
+        editButtons.forEach(button => {
+            button.addEventListener('click', function() {
+                modal.style.display = 'flex';
+                document.getElementById('modalTitle').textContent = 'Editar Item';
+                // Aquí iría la lógica para cargar los datos del item a editar
+            });
+        });
+    });
+</script>
 
 </body>
 </html>
