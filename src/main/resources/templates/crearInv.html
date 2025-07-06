@@ -7,30 +7,54 @@
 <body>
 <h1>Agregar inventario</h1>
 <br>
-<a th:href="@{/}">Regresar</a>
+<a th:href="@{/indice}">Regresar</a>
 <br>
 <br>
-<form th:action="@{/salvar}" method="post" th:object="${individuo}">
-    <label>Nombre:</label>
-    <input type="text" name="nombre" th:field="*{nombre}">
-    <span th:if="${#fields.hasErrors('nombre')}" th:errores="*{nombre}">Campo obligatorio</span>
+<form th:action="@{/guardarInv}" method="post" th:object="${inventario}">
+    <label>Nombre Gestor:</label>
+    <input type="text" name="nombreGestor" th:field="*{nombreGestor}">
+    <span th:if="${#fields.hasErrors('nombreGestor')}" th:errores="*{nombreGestor}">Campo obligatorio</span>
     <br>
-    <label>Apellido:</label>
-    <input type="text" name="apellido" th:field="*{apellido}">
-    <span th:if="${#fields.hasErrors('apellido')}" th:errores="*{apellido}">Campo obligatorio</span>
+
+    <label>Nombre Obra:</label>
+    <input type="text" name="nombreobra" th:field="*{nombreobra}">
+    <span th:if="${#fields.hasErrors('nombreobra')}" th:errores="*{nombreobra}">Campo obligatorio</span>
     <br>
-    <label>Edad:</label>
-    <input type="number" name="edad" th:field="*{edad}">
-    <span th:if="${#fields.hasErrors('edad')}" th:errores="*{edad}">Campo obligatorio</span>
+
+    <label>Tipo de Registro:</label>
+    <select name="tipoRegistro" th:field="*{tipoRegistro}">
+        <option value="">-- Seleccione --</option>
+        <option value="Ingreso">ingreso</option>
+        <option value="Consumo">consumo</option>
+    </select>
+    <span th:if="${#fields.hasErrors('tipoRegistro')}" th:errores="*{tipoRegistro}">Campo obligatorio</span>
     <br>
-    <label>Correo:</label>
-    <input type="email" name="correo" th:field="*{correo}">
-    <span th:if="${#fields.hasErrors('correo')}" th:errores="*{correo}">Campo obligatorio</span>
+
+    <label>Fecha:</label>
+    <input type="date" name="fecha" th:field="*{fecha}">
+    <span th:if="${#fields.hasErrors('fecha')}" th:errores="*{fecha}">Campo obligatorio</span>
     <br>
-    <label>Telefono:</label>
-    <input type="tel" name="telefono" th:field="*{telefono}">
-    <span th:if="${#fields.hasErrors('telefono')}" th:errores="*{telefono}">Campo obligatorio</span>
+
+    <labe>Unidad de Medida:</labe>
+    <input type="text" name="unidadMedida" th:field="*{unidadMedida}">
+    <spa th:if="${#fields.hasErrors('unidadMedida')}" th:errores="*{unidadMedida}">Campo obligatorio</spa>
     <br>
+
+    <label>Cantidad:</label>
+    <input type="number" name="cantidad" th:field="*{cantidad}">
+    <span th:if="${#fields.hasErrors('cantidad')}" th:errores="*{cantidad}">Campo obligatorio</span>
+    <br>
+
+    <label>Material:</label>
+    <input type="text" name="material" th:field="*{material}">
+    <span th:if="${#fields.hasErrors('material')}" th:errores="*{material}">Campo obligatorio</span>
+    <br>
+
+    <label>Precio por Unidad de medida</label>
+    <input type="number" name="precioUnidad" th:field="*{precioUnidad}">
+    <span th:if="${#fields.hasErrors('precioUnidad')}" th:errores="*{precioUnidad}">Campo obligatorio</span>
+    <br>
+
     <input type="submit" name="salvar" value="Guardar">
 </form>
 </body>

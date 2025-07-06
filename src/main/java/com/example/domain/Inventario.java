@@ -38,6 +38,9 @@ public class Inventario implements Serializable {
     @Positive
     private Integer cantidad;
 
+    @NotNull
+    private String unidadMedida;
+
     @NotEmpty
     private String material;
 

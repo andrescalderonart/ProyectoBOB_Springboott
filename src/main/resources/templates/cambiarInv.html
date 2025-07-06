@@ -2,37 +2,126 @@
 <html lang="es" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <title>Modificar individuo</title>
+    <title>Modificar inventario</title>
 </head>
 <body>
 <h1>Actualizar Inventario</h1>
 <br>
-<a th:href="@{/}">Regresar</a>
+<a th:href="@{/inventario}">Regresar</a>
 <br>
 <br>
-<form th:action="@{/salvar}" method="post" th:object="${individuo}">
-    <input type="hidden" name="id_individuo" th:field="*{id_individuo}">
-    <label>Nombre:</label>
-    <input type="text" name="nombre" th:field="*{nombre}">
-    <span th:if="${#fields.hasErrors('nombre')}" th:errores="*{nombre}">Campo obligatorio</span>
-    <br>
-    <label>Apellido:</label>
-    <input type="text" name="apellido" th:field="*{apellido}">
-    <span th:if="${#fields.hasErrors('apellido')}" th:errores="*{apellido}">Campo obligatorio</span>
-    <br>
-    <label>Edad:</label>
-    <input type="number" name="edad" th:field="*{edad}">
-    <span th:if="${#fields.hasErrors('edad')}" th:errores="*{edad}">Campo obligatorio</span>
-    <br>
-    <label>Correo:</label>
-    <input type="email" name="correo" th:field="*{correo}">
-    <span th:if="${#fields.hasErrors('correo')}" th:errores="*{correo}">Campo obligatorio</span>
-    <br>
-    <label>Telefono:</label>
-    <input type="tel" name="telefono" th:field="*{telefono}">
-    <span th:if="${#fields.hasErrors('telefono')}" th:errores="*{telefono}">Campo obligatorio</span>
-    <br>
-    <input type="submit" name="salvar" value="Modificar">
+
+<h2>Buscar Inventarios</h2>
+<form th:action="@{/cambiarInv}" method="get">
+    <label>Buscar por:</label>
+    <select name="tipoBusqueda">
+        <option value="gestor">Nombre Gestor</option>
+        <option value="obra">Nombre Obra</option>
+        <option value="fecha">Fecha</option>
+    </select>
+
+    <input type="text" name="valorBusqueda" placeholder="Término de búsqueda">
+
+    <input type="submit" value="Buscar">
 </form>
+<br>
+
+<!-- Lista de inventarios -->
+<h2>Inventarios Registrados</h2>
+<table border="1">
+    <thead>
+    <tr>
+        <th>ID</th>
+        <th>Nombre Gestor</th>
+        <th>Nombre Obra</th>
+        <th>Tipo Registro</th>
+        <th>Fecha</th>
+        <th>Unidad de Medida</th>
+        <th>Cantidad</th>
+        <th>Material</th>
+        <th>Precio por Unidad de medida</th>
+        <th>Acciones</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr th:each="inv : ${inventarios}">
+        <td th:text="${inv.id_inventario}"></td>
+        <td th:text="${inv.nombreGestor}"></td>
+        <td th:text="${inv.nombreobra}"></td>
+        <td th:text="${inv.tipoRegistro}"></td>
+        <td th:text="${inv.fecha}"></td>
+        <td th:text="${inv.unidadMedida}"></td>
+        <td th:text="${inv.cantidad}"></td>
+        <td th:text="${inv.material}"></td>
+        <td th:text="${inv.precioUnidad}"></td>
+        <td>
+            <!-- CORRECCIÓN: Enlace correcto para modificar -->
+            <a th:href="@{/cambiarInv/{id}(id=${inv.id_inventario})}">Modificar</a>
+        </td>
+    </tr>
+    </tbody>
+</table>
+
+<!-- Formulario de modificación - Sección mejorada -->
+<div style="margin-top: 30px; padding: 15px; border: 1px solid #ccc; background-color: #f9f9f9;">
+    <h2>
+        <span th:if="${inventario.id_inventario != null}">
+            Editando Registro ID: <span th:text="${inventario.id_inventario}"></span>
+        </span>
+        <span th:if="${inventario.id_inventario == null}">
+            Nuevo Registro
+        </span>
+    </h2>
+
+    <form th:action="@{/guardarInv}" method="post" th:object="${inventario}">
+        <input type="hidden" name="id_inventario" th:field="*{id_inventario}">
+
+        <label>Nombre Gestor:</label>
+        <input type="text" name="nombreGestor" th:field="*{nombreGestor}">
+        <span th:if="${#fields.hasErrors('nombreGestor')}" th:errors="*{nombreGestor}" style="color:red"></span>
+        <br>
+
+        <label>Nombre Obra:</label>
+        <input type="text" name="nombreobra" th:field="*{nombreobra}">
+        <span th:if="${#fields.hasErrors('nombreobra')}" th:errors="*{nombreobra}" style="color:red"></span>
+        <br>
+
+        <label>Tipo de Registro:</label>
+        <select name="tipoRegistro" th:field="*{tipoRegistro}">
+            <option value="">-- Seleccione --</option>
+            <option value="Ingreso">Ingreso</option>
+            <option value="Consumo">Consumo</option>
+        </select>
+        <span th:if="${#fields.hasErrors('tipoRegistro')}" th:errors="*{tipoRegistro}" style="color:red"></span>
+        <br>
+
+        <label>Fecha:</label>
+        <input type="date" name="fecha" th:field="*{fecha}">
+        <span th:if="${#fields.hasErrors('fecha')}" th:errors="*{fecha}" style="color:red"></span>
+        <br>
+
+        <label>Unidad de Medida:</label>
+        <input type="text" name="unidadMedida" th:field="*{unidadMedida}">
+        <span th:if="${#fields.hasErrors('unidadMedida')}" th:errors="*{unidadMedida}" style="color:red"></span>
+        <br>
+
+        <label>Cantidad:</label>
+        <input type="number" name="cantidad" th:field="*{cantidad}" min="0">
+        <span th:if="${#fields.hasErrors('cantidad')}" th:errors="*{cantidad}" style="color:red"></span>
+        <br>
+
+        <label>Material:</label>
+        <input type="text" name="material" th:field="*{material}">
+        <span th:if="${#fields.hasErrors('material')}" th:errors="*{material}" style="color:red"></span>
+        <br>
+
+        <label>Precio por Unidad de medida</label>
+        <input type="number" name="precioUnidad" th:field="*{precioUnidad}" step="0.01" min="0">
+        <span th:if="${#fields.hasErrors('precioUnidad')}" th:errors="*{precioUnidad}" style="color:red"></span>
+        <br>
+
+        <input type="submit" name="salvar" value="Guardar Cambios">
+    </form>
+</div>
 </body>
 </html>

@@ -2,32 +2,13 @@
 <html lang="es" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <title>Eliminar Inventario</title>
+    <title>Inventario Completo</title>
 </head>
 <body>
-<h1>Eliminar Registros de Inventario</h1>
-<br>
+<h1>Inventario Completo</h1>
 <a th:href="@{/inventario}">Regresar al inicio</a>
-<br>
-<br>
+<br><br>
 
-<h2>Buscar Inventarios</h2>
-<form th:action="@{/borrarInv}" method="get">
-    <label>Buscar por:</label>
-    <select name="tipoBusqueda">
-        <option value="gestor">Nombre Gestor</option>
-        <option value="obra">Nombre Obra</option>
-        <option value="fecha">Fecha</option>
-    </select>
-
-    <input type="text" name="valorBusqueda" placeholder="Término de búsqueda">
-
-    <input type="submit" value="Buscar">
-</form>
-<br>
-
-<!-- Lista de inventarios -->
-<h2>Inventarios Registrados</h2>
 <table border="1">
     <thead>
     <tr>
@@ -39,8 +20,7 @@
         <th>Unidad de Medida</th>
         <th>Cantidad</th>
         <th>Material</th>
-        <th>Precio por Unidad de medida</th>
-        <th>Acciones</th>
+        <th>Precio por Unidad</th>
     </tr>
     </thead>
     <tbody>
@@ -54,10 +34,6 @@
         <td th:text="${inv.cantidad}"></td>
         <td th:text="${inv.material}"></td>
         <td th:text="${inv.precioUnidad}"></td>
-        <td>
-            <a th:href="@{/borrarInv/{id}(id=${inv.id_inventario})}"
-               onclick="return confirm('¿Estás seguro de que quieres eliminar este registro?');">Eliminar</a>
-        </td>
     </tr>
     </tbody>
 </table>
@@ -65,5 +41,9 @@
 <div th:if="${inventarios == null or inventarios.empty}">
     <p>No hay registros de inventario para mostrar.</p>
 </div>
+
+<form th:action="@{/exportarExcelInv}" method="get">
+    <button type="submit">Exportar a Excel</button>
+</form>
 </body>
 </html>
