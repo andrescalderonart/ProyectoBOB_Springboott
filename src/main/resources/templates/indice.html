@@ -40,13 +40,25 @@
     La lista no tiene información para mostrar.
 </div>
 <br>
+
 <form th:action="@{/exportarExcel}" method="get">
     <button type="submit">Exportar a Excel</button>
 </form>
 <br>
 
+
+
 <h2>Inventario</h2>
-<a th:href="@{/crearInv}">modulo inventario</a>
+<a th:href="@{/crearInv}">Crear inventario</a>
+<br>
+
+<a th:href="@{/verInv}">Visualizar inventario</a>
+<br>
+
+<a th:href="@{/cambiarInv}">Modificar inventario</a>
+<br>
+
+<a th:href="@{/borrarInv}">Eliminar un inventario</a>
 <br>
 
 <form th:action="@{/logout}" method="post">

@@ -1,20 +1,22 @@
 package com.example.servicio;
 
-
 import com.example.domain.Inventario;
-
 import java.util.List;
 
 public interface InventarioServicio {
 
-    public List<Inventario> listaInventarios();
+    List<Inventario> listaInventarios();
 
-    public void guardarInv(Inventario inventario);
+    void guardarInv(Inventario inventario);
 
-    public void cambiarInv(Inventario inventario);
+    void cambiarInv(Inventario inventario);
 
-    public void borrarInv(Inventario inventario);
+    void borrarInv(Inventario inventario);
 
-    public Inventario localizarInventario(Inventario inventario);
+    Inventario localizarInventarioPorId(Long id);
 
+    //Metodo de busqueda para el de modificar inventario
+    List<Inventario> buscarPorNombreGestor(String nombreGestor);
+    List<Inventario> buscarPorNombreObra(String nombreObra);
+    List<Inventario> buscarPorFecha(String fecha);
 }
