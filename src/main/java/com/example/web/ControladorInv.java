@@ -30,7 +30,7 @@ public class ControladorInv {
     public String inventario(Model model) {
         List<Inventario> inventarios = inventarioServicio.listaInventarios();
         model.addAttribute("inventarios", inventarios);
-        return "indice";
+        return "/inventario";
     }
 
     @GetMapping("/crearInv")

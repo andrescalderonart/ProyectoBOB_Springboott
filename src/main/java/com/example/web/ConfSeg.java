@@ -52,12 +52,14 @@ public class ConfSeg {
                                 .requestMatchers("/css/**","/js/**","/login").permitAll()
                                 .anyRequest()
                                 .authenticated()
+
                 )
                 .formLogin( form -> form
                         .loginPage("/login")
                         .defaultSuccessUrl("/redirigir", true)
                         .permitAll()
                 )
+
 
 
                 .httpBasic(httpSecurityHttpBasicConfigurer -> {});

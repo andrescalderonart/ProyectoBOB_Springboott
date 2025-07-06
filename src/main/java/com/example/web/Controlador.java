@@ -83,16 +83,16 @@ public class Controlador {
 
     // *******************************************************************
     // NUEVOS MÉTODOS: Páginas específicas para otros roles (ejemplos)
-    // Asegúrate de crear las vistas 'secretaria.html' y 'vendedor.html'
+    // Asegúrate de crear las vistas 'supervisor.html' y 'operativo.html'
     // *******************************************************************
-    @GetMapping("/secretaria")
-    public String mostrarSecretaria() {
-        return "secretaria"; // Retorna la vista 'secretaria.html'
+    @GetMapping("/dashboardOPERA")
+    public String mostrarOperativoo() {
+        return "dashboardOPERA"; // Retorna la vista 'supervisor.html'
     }
 
-    @GetMapping("/vendedor")
-    public String mostrarVendedor() {
-        return "vendedor"; // Retorna la vista 'vendedor.html'
+    @GetMapping("/dashboardSUPER")
+    public String mostrarSupervisor() {
+        return "dashboardSUPER"; // Retorna la vista 'operativo.html'
     }
 
     @GetMapping ("/dashboardADMIN")
@@ -107,14 +107,14 @@ public class Controlador {
         switch (rol) {
             case "ROLE_ADMINISTRACION":
                 return "redirect:/dashboardADMIN"; // Redirige al índice específico para administradores
-            case "ROLE_SECRETARIA":
-                return "redirect:/secretaria"; // Redirige a la página de secretaria
-            case "ROLE_VENDEDOR":
-                return "redirect:/vendedor"; // Redirige a la página de vendedor
+            case "ROLE_OPERAATIVO":
+                return "redirect:/dashboardOPERA"; // Redirige a la página de operativo
+            case "ROLE_SUPERVISOR":
+                return "redirect:/dashboardSUPER"; // Redirige a la página de supervisor
             default:
                 // Si el rol no coincide con ninguno de los anteriores,
                 // redirige a una página por defecto (ej. /indice)
-                return "redirect:/indice"; // <-- ¡CAMBIO AQUÍ! Ya no redirige a la raíz
+                return "redirect:/dashboardADMIN"; // <-- ¡CAMBIO AQUÍ! Ya no redirige a la raíz
         }
     }
 
