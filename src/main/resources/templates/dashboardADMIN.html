@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
     <title>Building Optimization Baseline - Dashboard</title>
     <link rel="stylesheet" href="https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css"/>
-    <link rel="stylesheet" th:href="@{CSS/styles.css}"/>
+    <link rel="stylesheet" href="../static/CSS/styles.css"/>
     <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
 </head>
 <body>
@@ -15,7 +15,7 @@
     <nav class="menu">
 
         <div class="logo-container">
-            <img th:src="@{IMG/imagen-bob.png}" alt="Logo BOB" class="logo">
+            <img src="../static/IMG/imagen-bob.png" alt="Logo BOB" class="logo">
             <div class="logo-text-container">
                 <h1 class="logo-text">Building Optimization Baseline</h1>
                 <p class="logo-subtext">Gestión inteligente de proyectos de construcción</p>
@@ -33,13 +33,12 @@
 <main>
     <div class="menu-dasboard">
         <div class="menu">
-            <a class="enlace" th:href="@{dashboardADMIN.html}"><i class="bx bx-home"></i><span>Inicio</span></a>
             <a class="enlace" href="inventario.html"><i class="bx bx-box"></i><span>Inventario</span></a>
             <a class="enlace" href="avances.html"><i class="bx bx-buildings"></i><span>Avances</span></a>
             <a class="enlace" href="contratista.html"><i class="bx bx-receipt"></i><span>Contratista</span></a>
-            <a class="enlace" href="#presupuesto.html"><i class="bx bx-money-withdraw"></i><span>Presupuesto</span></a>
-            <a class="enlace" href="#proveedores.html"><i class="bx bx-hard-hat"></i><span>Proveedores</span></a>
-            <a class="enlace" href="#usuarios"><i class="bx bxs-user-detail"></i><span>Usuarios</span></a>
+            <a class="enlace" href="presupuesto.html"><i class="bx bx-money-withdraw"></i><span>Presupuesto</span></a>
+            <a class="enlace" href="proveedores.html"><i class="bx bx-hard-hat"></i><span>Proveedores</span></a>
+            <a class="enlace" href="usuarios.html"><i class="bx bxs-user-detail"></i><span>Usuarios</span></a>
             <a class="enlace" href="#reportes"><i class="bx bx-line-chart"></i><span>Reportes</span></a>
             <a class="enlace" href="#configuracion"><i class="bx bx-cog"></i><span>Configuración</span></a>
         </div>
@@ -155,28 +154,6 @@
 </main>
 
 <footer>
-    <div class="footer-content">
-        <div class="footer-section">
-            <h4>Contacto</h4>
-            <p>carta.v.devhouse@gmail.com</p>
-            <p>+57 321 433 8064</p>
-        </div>
-        <div class="footer-section">
-            <h4>Enlaces rápidos</h4>
-            <ul>
-                <li><a href="index.html">Inicio</a></li>
-                <li><a href="login.html">Login</a></li>
-                <li><a href="#servicios">Servicios</a></li>
-            </ul>
-        </div>
-        <div class="footer-section">
-            <h4>Legal</h4>
-            <ul>
-                <li><a href="#">Términos y condiciones</a></li>
-                <li><a href="#">Política de privacidad</a></li>
-            </ul>
-        </div>
-    </div>
     <div class="footer-bottom">
         <p>&copy; 2025 Building Optimization Baseline. Todos los derechos reservados.</p>
     </div>

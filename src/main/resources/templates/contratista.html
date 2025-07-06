@@ -1,0 +1,345 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://thymeleaf.org">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>Building Optimization Baseline - Dashboard</title>
+    <link rel="stylesheet" href="https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css"/>
+    <link rel="stylesheet" href="../static/CSS/styles.css"/>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
+</head>
+<body>
+
+<!-- Menú superior -->
+<header>
+    <nav class="menu">
+
+        <div class="logo-container">
+            <img src="../static/IMG/imagen-bob.png" alt="Logo BOB" class="logo">
+            <div class="logo-text-container">
+                <h1 class="logo-text">Building Optimization Baseline</h1>
+                <p class="logo-subtext">Gestión inteligente de proyectos de construcción</p>
+            </div>
+        </div>
+
+        <ul class="nav-links">
+            <li><a th:href="@{error404.html}">Perfil</a></li>
+            <li><a th:href="@{index.html}" class="active">Cerrar Sesión</a></li>
+        </ul>
+    </nav>
+</header>
+
+<!-- Menú lateral y contenido -->
+<main>
+    <div class="menu-dasboard">
+        <div class="menu">
+            <a class="enlace" href="dashboardADMIN.html"><i class="bx bx-home"></i><span>Inicio</span></a>
+            <a class="enlace" href="inventario.html"><i class="bx bx-box"></i><span>Inventario</span></a>
+            <a class="enlace" href="avances.html"><i class="bx bx-buildings"></i><span>Avances</span></a>
+            <a class="enlace" href="contratista.html"><i class="bx bx-receipt"></i><span>Contratista</span></a>
+            <a class="enlace" href="presupuesto.html"><i class="bx bx-money-withdraw"></i><span>Presupuesto</span></a>
+            <a class="enlace" href="proveedores.html"><i class="bx bx-hard-hat"></i><span>Proveedores</span></a>
+            <a class="enlace" href="usuarios.html"><i class="bx bxs-user-detail"></i><span>Usuarios</span></a>
+            <a class="enlace" href="#reportes"><i class="bx bx-line-chart"></i><span>Reportes</span></a>
+            <a class="enlace" href="#configuracion"><i class="bx bx-cog"></i><span>Configuración</span></a>
+        </div>
+    </div>
+
+    <!-- Reemplaza el espacio vacío después del menú lateral con este contenido -->
+    <div class="dashboard-content">
+        <div class="contractor-header">
+            <h2><i class='bx bx-receipt'></i> Gestión de Contratistas</h2>
+            <button class="btn-add" id="addContractorBtn">
+                <i class='bx bx-plus'></i> Nuevo Contratista
+            </button>
+        </div>
+
+        <div class="contractor-filters">
+            <div class="search-box">
+                <i class='bx bx-search'></i>
+                <input type="text" placeholder="Buscar contratista...">
+            </div>
+            <div class="filter-group">
+                <label for="statusFilter">Estado:</label>
+                <select id="statusFilter">
+                    <option value="all">Todos</option>
+                    <option value="active">Activos</option>
+                    <option value="inactive">Inactivos</option>
+                </select>
+            </div>
+            <div class="filter-group">
+                <label for="specialtyFilter">Especialidad:</label>
+                <select id="specialtyFilter">
+                    <option value="all">Todas</option>
+                    <option value="construction">Construcción</option>
+                    <option value="electricity">Electricidad</option>
+                    <option value="plumbing">Plomería</option>
+                    <option value="painting">Pintura</option>
+                </select>
+            </div>
+        </div>
+
+        <div class="contractor-summary">
+            <div class="summary-card">
+                <div class="summary-icon">
+                    <i class='bx bx-group'></i>
+                </div>
+                <div class="summary-content">
+                    <h3>Contratistas Totales</h3>
+                    <div class="summary-value">24</div>
+                </div>
+            </div>
+            <div class="summary-card">
+                <div class="summary-icon success">
+                    <i class='bx bx-check-circle'></i>
+                </div>
+                <div class="summary-content">
+                    <h3>Activos</h3>
+                    <div class="summary-value">18</div>
+                </div>
+            </div>
+            <div class="summary-card">
+                <div class="summary-icon warning">
+                    <i class='bx bx-time-five'></i>
+                </div>
+                <div class="summary-content">
+                    <h3>En evaluación</h3>
+                    <div class="summary-value">4</div>
+                </div>
+            </div>
+            <div class="summary-card">
+                <div class="summary-icon danger">
+                    <i class='bx bx-x-circle'></i>
+                </div>
+                <div class="summary-content">
+                    <h3>Inactivos</h3>
+                    <div class="summary-value">2</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="contractor-table-container">
+            <table class="contractor-table">
+                <thead>
+                <tr>
+                    <th>Nombre</th>
+                    <th>Especialidad</th>
+                    <th>Contacto</th>
+                    <th>Proyectos</th>
+                    <th>Estado</th>
+                    <th>Acciones</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr>
+                    <td>
+                        <div class="contractor-info">
+                            <img src="https://randomuser.me/api/portraits/men/32.jpg" alt="Contractor" class="contractor-avatar">
+                            <div>
+                                <strong>Constructora ABC S.A.</strong>
+                                <small>NIT: 123456789-1</small>
+                            </div>
+                        </div>
+                    </td>
+                    <td>Construcción general</td>
+                    <td>
+                        <div class="contact-info">
+                            <div><i class='bx bx-user'></i> Juan Pérez</div>
+                            <div><i class='bx bx-phone'></i> 300 123 4567</div>
+                            <div><i class='bx bx-envelope'></i> juan@constructoraabc.com</div>
+                        </div>
+                    </td>
+                    <td>5 activos</td>
+                    <td><span class="status-badge active">Activo</span></td>
+                    <td>
+                        <div class="action-buttons">
+                            <button class="btn-action edit" title="Editar"><i class='bx bx-edit'></i></button>
+                            <button class="btn-action view" title="Ver detalles"><i class='bx bx-show'></i></button>
+                            <button class="btn-action delete" title="Desactivar"><i class='bx bx-trash'></i></button>
+                        </div>
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <div class="contractor-info">
+                            <img src="https://randomuser.me/api/portraits/women/44.jpg" alt="Contractor" class="contractor-avatar">
+                            <div>
+                                <strong>Electricidad Moderna Ltda.</strong>
+                                <small>NIT: 987654321-1</small>
+                            </div>
+                        </div>
+                    </td>
+                    <td>Instalaciones eléctricas</td>
+                    <td>
+                        <div class="contact-info">
+                            <div><i class='bx bx-user'></i> María Gómez</div>
+                            <div><i class='bx bx-phone'></i> 310 987 6543</div>
+                            <div><i class='bx bx-envelope'></i> maria@electricidadmoderna.com</div>
+                        </div>
+                    </td>
+                    <td>3 activos</td>
+                    <td><span class="status-badge active">Activo</span></td>
+                    <td>
+                        <div class="action-buttons">
+                            <button class="btn-action edit" title="Editar"><i class='bx bx-edit'></i></button>
+                            <button class="btn-action view" title="Ver detalles"><i class='bx bx-show'></i></button>
+                            <button class="btn-action delete" title="Desactivar"><i class='bx bx-trash'></i></button>
+                        </div>
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <div class="contractor-info">
+                            <img src="https://randomuser.me/api/portraits/men/67.jpg" alt="Contractor" class="contractor-avatar">
+                            <div>
+                                <strong>Hidrosanitarios S.A.S.</strong>
+                                <small>NIT: 456789123-1</small>
+                            </div>
+                        </div>
+                    </td>
+                    <td>Plomería y saneamiento</td>
+                    <td>
+                        <div class="contact-info">
+                            <div><i class='bx bx-user'></i> Carlos Rodríguez</div>
+                            <div><i class='bx bx-phone'></i> 320 456 7890</div>
+                            <div><i class='bx bx-envelope'></i> carlos@hidrosanitarios.com</div>
+                        </div>
+                    </td>
+                    <td>2 activos</td>
+                    <td><span class="status-badge pending">En evaluación</span></td>
+                    <td>
+                        <div class="action-buttons">
+                            <button class="btn-action edit" title="Editar"><i class='bx bx-edit'></i></button>
+                            <button class="btn-action view" title="Ver detalles"><i class='bx bx-show'></i></button>
+                            <button class="btn-action delete" title="Desactivar"><i class='bx bx-trash'></i></button>
+                        </div>
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <div class="contractor-info">
+                            <img src="https://randomuser.me/api/portraits/women/28.jpg" alt="Contractor" class="contractor-avatar">
+                            <div>
+                                <strong>Pinturas y Decoraciones</strong>
+                                <small>NIT: 789123456-1</small>
+                            </div>
+                        </div>
+                    </td>
+                    <td>Pintura y acabados</td>
+                    <td>
+                        <div class="contact-info">
+                            <div><i class='bx bx-user'></i> Laura Martínez</div>
+                            <div><i class='bx bx-phone'></i> 315 789 1234</div>
+                            <div><i class='bx bx-envelope'></i> laura@pinturasdeco.com</div>
+                        </div>
+                    </td>
+                    <td>1 activo</td>
+                    <td><span class="status-badge inactive">Inactivo</span></td>
+                    <td>
+                        <div class="action-buttons">
+                            <button class="btn-action edit" title="Editar"><i class='bx bx-edit'></i></button>
+                            <button class="btn-action view" title="Ver detalles"><i class='bx bx-show'></i></button>
+                            <button class="btn-action activate" title="Activar"><i class='bx bx-check'></i></button>
+                        </div>
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <div class="pagination-controls">
+            <button class="pagination-btn" disabled>
+                <i class='bx bx-chevron-left'></i>
+            </button>
+            <span class="page-info">Página 1 de 3</span>
+            <button class="pagination-btn">
+                <i class='bx bx-chevron-right'></i>
+            </button>
+        </div>
+    </div>
+
+    <!-- Modal para agregar/editar contratista -->
+    <div class="modal" id="contractorModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 id="modalTitle">Agregar Nuevo Contratista</h3>
+                <button class="close-modal">&times;</button>
+            </div>
+            <div class="modal-body">
+                <form id="contractorForm">
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="contractorName">Nombre/Razón Social</label>
+                            <input type="text" id="contractorName" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="contractorNIT">NIT/Identificación</label>
+                            <input type="text" id="contractorNIT" required>
+                        </div>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="contractorSpecialty">Especialidad</label>
+                            <select id="contractorSpecialty" required>
+                                <option value="">Seleccionar...</option>
+                                <option value="construction">Construcción general</option>
+                                <option value="electricity">Instalaciones eléctricas</option>
+                                <option value="plumbing">Plomería y saneamiento</option>
+                                <option value="painting">Pintura y acabados</option>
+                                <option value="other">Otra</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="contractorStatus">Estado</label>
+                            <select id="contractorStatus" required>
+                                <option value="active">Activo</option>
+                                <option value="pending">En evaluación</option>
+                                <option value="inactive">Inactivo</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="contractorContact">Persona de contacto</label>
+                        <input type="text" id="contractorContact" required>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="contractorPhone">Teléfono</label>
+                            <input type="tel" id="contractorPhone" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="contractorEmail">Email</label>
+                            <input type="email" id="contractorEmail" required>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="contractorAddress">Dirección</label>
+                        <input type="text" id="contractorAddress">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="contractorExperience">Experiencia relevante</label>
+                        <textarea id="contractorExperience" rows="3"></textarea>
+                    </div>
+
+                    <div class="form-actions">
+                        <button type="button" class="btn-cancel">Cancelar</button>
+                        <button type="submit" class="btn-save">Guardar Contratista</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+    </main>
+
+    <footer>
+        <div class="footer-bottom">
+            <p>&copy; 2025 Building Optimization Baseline. Todos los derechos reservados.</p>
+        </div>
+    </footer>
+</body>
+</html>
