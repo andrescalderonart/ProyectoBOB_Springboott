@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
     <title>Building Optimization Baseline - Dashboard</title>
     <link rel="stylesheet" href="https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css"/>
-    <link rel="stylesheet" href="../static/CSS/styles.css"/>
+    <link rel="stylesheet" href="CSS/styles.css"/>
     <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
 </head>
 <body>
@@ -24,7 +24,9 @@
 
         <ul class="nav-links">
             <li><a th:href="@{error404.html}">Perfil</a></li>
-            <li><a th:href="@{index.html}" class="active">Cerrar Sesión</a></li>
+            <li><form th:action="@{/login}" method="post">
+                <a href="#" onclick="this.parentNode.submit()">Cerrar sesion</a>
+            </form></li>
         </ul>
     </nav>
 </header>
@@ -33,10 +35,10 @@
 <main>
     <div class="menu-dasboard">
         <div class="menu">
-            <a class="enlace" href="inventario.html"><i class="bx bx-box"></i><span>Inventario</span></a>
+            <a class="enlace" th:href="@{/inventario}"><i class="bx bx-box"></i><span>Inventario</span></a>
+            <a class="enlace" th:href="@{presupuesto}"><i class="bx bx-money-withdraw"></i><span>Presupuesto</span></a>
             <a class="enlace" href="avances.html"><i class="bx bx-buildings"></i><span>Avances</span></a>
             <a class="enlace" href="contratista.html"><i class="bx bx-receipt"></i><span>Contratista</span></a>
-            <a class="enlace" href="presupuesto.html"><i class="bx bx-money-withdraw"></i><span>Presupuesto</span></a>
             <a class="enlace" href="proveedores.html"><i class="bx bx-hard-hat"></i><span>Proveedores</span></a>
             <a class="enlace" href="#reportes"><i class="bx bx-line-chart"></i><span>Reportes</span></a>
             <a class="enlace" href="#configuracion"><i class="bx bx-cog"></i><span>Configuración</span></a>

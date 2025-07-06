@@ -39,6 +39,11 @@ public class Controlador {
     public String inicioLogin() { // Cambié el nombre del método para evitar conflictos
         return "login"; // Retorna la vista 'login.html'
     }
+    @GetMapping("/index")
+    public String mostrarIndex() {
+        return "index"; // Esto resuelve a src/main/resources/templates/index.html
+    }
+
 
     // Método para la página de agregar un nuevo individuo
     @GetMapping("/anexar")
@@ -104,17 +109,19 @@ public class Controlador {
     @GetMapping("/redirigir")
     public String redirigirSegunPerfil(Authentication auth) {
         String rol = auth.getAuthorities().iterator().next().getAuthority();
+        System.out.println("Usuario detectado");
         switch (rol) {
             case "ROLE_ADMINISTRACION":
                 return "redirect:/dashboardADMIN"; // Redirige al índice específico para administradores
-            case "ROLE_OPERAATIVO":
+            case "ROLE_OPERATIVO":
                 return "redirect:/dashboardOPERA"; // Redirige a la página de operativo
             case "ROLE_SUPERVISOR":
                 return "redirect:/dashboardSUPER"; // Redirige a la página de supervisor
             default:
                 // Si el rol no coincide con ninguno de los anteriores,
-                // redirige a una página por defecto (ej. /indice)
+                // redirige a una página por defecto
                 return "redirect:/dashboardADMIN"; // <-- ¡CAMBIO AQUÍ! Ya no redirige a la raíz
+
         }
     }
 

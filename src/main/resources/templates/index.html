@@ -13,7 +13,7 @@
   <nav class="menu">
 
     <div class="logo-container">
-      <img src="../templates/IMG/imagen%20bob.png" alt="Logo BOB" class="logo">
+      <img th:src="@{IMG/imagen-bob.png}" alt="Logo BOB" class="logo">
       <div class="logo-text-container">
         <h1 class="logo-text">Building Optimization Baseline</h1>
         <p class="logo-subtext">Gestión inteligente de proyectos de construcción</p>
@@ -21,7 +21,7 @@
     </div>
 
     <ul class="nav-links">
-      <li><a href="index.html" class="active">Inicio</a></li>
+      <li><a th:href="@{/index}" class="active">Inicio</a></li>
       <li><a th:href="@{/login}">Iniciar Sesión</a></li>
       <li><a href="#servicios">Servicios</a></li>
       <li><a href="#contacto">Contacto</a></li>
@@ -35,7 +35,7 @@
   <div class="hero-content">
     <h2>Optimización de Proyectos de Construcción</h2>
     <p>Maximiza la eficiencia, reduce costos y mejora la gestión de tus obras</p>
-    <a href="login.html" class="cta-button">Acceder a la Plataforma</a>
+    <a th:href="@{login}" class="cta-button">Acceder a la Plataforma</a>
   </div>
 </section>
 
