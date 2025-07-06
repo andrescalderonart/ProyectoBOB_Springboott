@@ -1,8 +1,8 @@
 package com.example.servicio;
 
-import com.example.dao.MaterialDao;
+import com.example.dao.MatrizDao;
 import com.example.dao.PersupuestoDao;
-import com.example.domain.Material;
+import com.example.domain.Matriz;
 import com.example.domain.Presupuesto;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -17,7 +17,7 @@ public class PresupuestoServicioImp implements PresupuestoServicio{
     private PersupuestoDao presuDao;
 
     @Autowired
-    private MaterialDao mateDao;
+    private MatrizDao mateDao;
 
     @Override
     @Transactional(readOnly = true)
@@ -37,12 +37,22 @@ public class PresupuestoServicioImp implements PresupuestoServicio{
         presuDao.delete(presu);
     }
 
-    @Transactional(readOnly = true)
     @Override
-    public Presupuesto localizarPresupuesto(Presupuesto presu) {
-        return presuDao.findById(presu.getEntryId()).orElse(null);
+    @Transactional
+    public void actualizar(Presupuesto presu) {
+        presuDao.save(presu);
     }
-    public List<Material> listarMateriales() {
-        return (List<Material>) mateDao.findAll();
+
+    @Override
+    @Transactional(readOnly = true)
+
+    public Presupuesto localizarPresupuesto(Integer entryId) {
+        return presuDao.findById(entryId).orElse(null);
     }
+    public List<Matriz> listarMateriales() {
+        return (List<Matriz>) mateDao.findAll();
+    }
+
+
+
 }

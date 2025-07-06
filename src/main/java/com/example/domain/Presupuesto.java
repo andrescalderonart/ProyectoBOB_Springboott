@@ -17,14 +17,14 @@ public class Presupuesto implements Serializable{
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id_obra")
-    private Integer entryId;
+    private Integer id_obra;
 
     @Column(name = "nombre", nullable = false)
-    private String entryName;
+    private String obraName;
 
-    @Column(name = "products", columnDefinition = "JSON")
+    @Column(name = "productos", columnDefinition = "JSON")
     @Convert(converter = ViernesTrece.class)
-    private Map<Integer, Double> materialValues;
+    private Map<Integer, Double> activiValues;
 
 
 }

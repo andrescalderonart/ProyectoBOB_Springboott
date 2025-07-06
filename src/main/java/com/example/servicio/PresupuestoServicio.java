@@ -1,8 +1,7 @@
 package com.example.servicio;
 
-import com.example.domain.Material;
+import com.example.domain.Matriz;
 import com.example.domain.Presupuesto;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -12,9 +11,11 @@ public interface PresupuestoServicio {
 
     public void salvar(Presupuesto presu);
 
+    void actualizar(Presupuesto presu);
+
     public void borrar(Presupuesto presu);
 
-    Presupuesto localizarPresupuesto(Presupuesto presu);
+    Presupuesto localizarPresupuesto(Integer entryId);
 
-    public List<Material> listarMateriales();
+    public List<Matriz> listarMateriales();
 }
