@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <title>Asignar Permisos</title>
+</head>
+<body>
+
+<h2 th:text="'Asignar permisos a ' + ${perfil.descripcion_perfil}"></h2>
+
+<form th:action="@{'/perfiles/' + ${perfil.id_perfil} + '/permisos'}" method="post">
+  <ul>
+    <li th:each="permiso : ${todosPermisos}">
+      <input type="checkbox"
+             name="permisosIds"
+             th:value="${permiso.id}"
+             th:checked="${perfil.permisos.contains(permiso)}"/>
+      <span th:text="${permiso.nombre}"></span>
+    </li>
+  </ul>
+  <button type="submit">Guardar permisos</button>
+</form>
+
+</body>
+</html>

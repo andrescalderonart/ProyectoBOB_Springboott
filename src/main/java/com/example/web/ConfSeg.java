@@ -19,12 +19,16 @@ import org.springframework.security.provisioning.InMemoryUserDetailsManager;
 import org.springframework.security.web.SecurityFilterChain;
 
 @Configuration
+
 public class ConfSeg {
 
     @Bean
     public PasswordEncoder passwordEncoder() {
+
+        //return NoOpPasswordEncoder.getInstance();
         return new BCryptPasswordEncoder();
     }
+
 
     @Bean
     public AuthenticationManager authenticationManager(
@@ -39,25 +43,24 @@ public class ConfSeg {
         return authConfig.getAuthenticationManager();
     }
 
+
     @Bean
-    public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
+    public SecurityFilterChain filterChain(HttpSecurity http) throws Exception{
         http
-                .csrf(csrf -> csrf.disable()) // Deshabilitar CSRF para simplificar (en producción deberías habilitarlo)
-                .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/", "/CSS/**", "/JS/**", "/IMG/**", "/login", "/redirigir").permitAll()
-                        .anyRequest().authenticated()
+                .authorizeHttpRequests(authorizationManagerRequestMatcherRegistry ->
+                        authorizationManagerRequestMatcherRegistry
+                                .requestMatchers("/css/**","/js/**","/login").permitAll()
+                                .anyRequest()
+                                .authenticated()
                 )
-                .formLogin(form -> form
+                .formLogin( form -> form
                         .loginPage("/login")
-                        .loginProcessingUrl("/login") // Asegúrate que coincide con el action del formulario
                         .defaultSuccessUrl("/redirigir", true)
-                        .failureUrl("/login?error=true") // Redirige a login con parámetro de error
                         .permitAll()
                 )
-                .logout(logout -> logout
-                        .logoutSuccessUrl("/login?logout=true")
-                        .permitAll()
-                );
+
+
+                .httpBasic(httpSecurityHttpBasicConfigurer -> {});
 
         return http.build();
     }

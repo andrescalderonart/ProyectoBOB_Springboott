@@ -95,6 +95,10 @@ public class Controlador {
         return "vendedor"; // Retorna la vista 'vendedor.html'
     }
 
+    @GetMapping ("/dashboardADMIN")
+    public String ADMIN(){
+        return "dashboardADMIN";
+    }
 
     // Método para redirigir según el perfil del usuario después del login
     @GetMapping("/redirigir")
@@ -102,7 +106,7 @@ public class Controlador {
         String rol = auth.getAuthorities().iterator().next().getAuthority();
         switch (rol) {
             case "ROLE_ADMINISTRACION":
-                return "redirect:/indice"; // Redirige al índice específico para administradores
+                return "redirect:/dashboardADMIN"; // Redirige al índice específico para administradores
             case "ROLE_SECRETARIA":
                 return "redirect:/secretaria"; // Redirige a la página de secretaria
             case "ROLE_VENDEDOR":
@@ -113,4 +117,41 @@ public class Controlador {
                 return "redirect:/indice"; // <-- ¡CAMBIO AQUÍ! Ya no redirige a la raíz
         }
     }
+
+
+
+    @GetMapping("/exportarExcel")
+
+    public void exportarExcel(HttpServletResponse response) throws IOException{
+        response.setContentType("aplication/vnd.openxmlformats-officedocument.spreadsheetml.sheet");
+        response.setHeader("Content-Disposition", "attachment; filename=individuos.xlsx");
+
+        List<Individuo> lista = individuoServicio.listaIndividuos();
+
+        Workbook workbook = new XSSFWorkbook();
+        Sheet hoja = workbook.createSheet("Individuos");
+
+
+        Row header = hoja.createRow(0);
+        header.createCell(0).setCellValue("Nombre");
+        header.createCell(1).setCellValue("Apellido");
+        header.createCell(2).setCellValue("Edad");
+        header.createCell(3).setCellValue("Correo");
+        header.createCell(4).setCellValue("Telefono");
+
+        int fila = 1;
+        for (Individuo ind : lista){
+            Row row = hoja.createRow(fila++);
+            row.createCell(0).setCellValue(ind.getNombre());
+            row.createCell(1).setCellValue(ind.getApellido());
+            row.createCell(2).setCellValue(ind.getEdad());
+            row.createCell(3).setCellValue(ind.getCorreo());
+            row.createCell(4).setCellValue(ind.getTelefono());
+        }
+
+        workbook.write(response.getOutputStream());
+        workbook.close();
+    }
+
+
 }
