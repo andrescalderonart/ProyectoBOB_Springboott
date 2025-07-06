@@ -70,14 +70,15 @@
 <!-- Edit form (shown only in edit mode) -->
 <form th:if="${Editando}"
       th:action="@{${presupuesto.id_obra != null ? '/presupuestos/actualizar/' + presupuesto.id_obra : '/presupuestos/salvar'}}"
-      method="post" th:object="${presupuesto}">
+      method="post"
+      th:object="${presupuesto}">
 
   <input type="hidden" th:field="*{id_obra}">
 
   <!-- Work name input (editable in edit mode) -->
   <div th:if="${Editando}">
     <label><b>Nombre de la obra:</b></label>
-    <input type="text" th:field="*{obraName}" required>
+    <input type="text" th:field="*{obraName}" name="obraName" required>
   </div>
 
   <!-- Display work name (view mode) -->
@@ -89,6 +90,8 @@
   <div th:if="${Editando}">
     <!-- Edit mode  interface -->
     <div id="actividadesContainer">
+      <!-- Check if there are existing activities -->
+      <div th:if="${not #lists.isEmpty(actividadIds)}">
       <!-- Loop through existing activities -->
       <div th:each="actividadId, stat : ${actividadIds}" class="material-row">
         <select name="actividadIds" required>
@@ -98,12 +101,13 @@
                   th:selected="${mat.id_m == actividadId}"
                   th:data-nombre="${mat.nombre}"
                   th:data-unidades="${mat.unidades}"
-                  th:text="${mat.nombre} + ' (' + mat.unidades + ')'">
+                  th:text="${mat.nombre} + ' ('+${mat.unidades}+')'">
           </option>
         </select>
         <input type="number" name="cantidades" step="0.01" min="0.01"
                th:value="${cantidades[stat.index]}" placeholder="Cantidad" required>
-        <span class="btn-remove" onclick="removeRow(this)">✕ Eliminar</span>
+        <span class="btn-remove" onclick="removeActivity(this)">✕ Eliminar</span>
+      </div>
       </div>
 
       <!-- Empty row template for new materials -->
@@ -120,8 +124,8 @@
       </div>
     </div>-->
 
-    <button type="button" onclick="addMaterialRow()" class="btn" style="background-color: #2196F3;">
-      + Añadir otro material
+    <button type="button" onclick="addActivity()" class="btn" style="background-color: #2196F3;">
+      + Añadir otra actividad
     </button>
     <br><br>
 
@@ -191,44 +195,68 @@
   /**
    * Adds a new material row to the form
    */
-  function addMaterialRow() {
-    const container = document.getElementById('actividadesContainer');
-    const newRow = document.createElement('div');
-    newRow.className = 'material-row';
+  function addActivity() {
+        const container = document.getElementById('actividadesContainer');
 
-    newRow.innerHTML = `
-        <select name="actividadIds" required>
-            <option value="">Seleccione actividad...</option>
-            <option th:each="mat : ${matriz}"
-                    th:value="${mat.id_m}"
-                    th:text="${mat.nombre} + ' (' + mat.unidades + ')'">
-            </option>
-        </select>
-        <input type="number" name="quantities" step="0.01" min="0.01" placeholder="Cantidad" required>
-        <span class="btn-remove" onclick="removeRow(this)">✕ Eliminar</span>
-    `;
+        // Create new row div
+        const newRow = document.createElement('div');
+        newRow.className = 'material-row';
 
-    container.appendChild(newRow);
-}
+        // Create the select dropdown
+        const select = document.createElement('select');
+        select.name = 'actividadIds';
+        select.required = true;
 
-  /**
-   * Removes a material row from the form
-   */
-  function removeRow(button) {
-    const row = button.closest('.material-row');
-    const rowCount = document.querySelectorAll('.material-row').length;
+        // Add default option
+        const defaultOption = document.createElement('option');
+        defaultOption.value = '';
+        defaultOption.textContent = 'Seleccione...';
+        select.appendChild(defaultOption);
 
-    if (rowCount > 1) {
-        row.remove();
-    } else {
-        alert("Debe haber al menos una actividad");
+        // Add options from Thymeleaf (this will be filled by the browser)
+        const options = document.querySelectorAll('select[name="actividadIds"] option:not([value=""])');
+        options.forEach(option => {
+            const newOption = option.cloneNode(true);
+            select.appendChild(newOption);
+        });
+
+        // Create quantity input
+        const quantityInput = document.createElement('input');
+        quantityInput.type = 'number';
+        quantityInput.name = 'cantidades';
+        quantityInput.step = '0.01';
+        quantityInput.min = '0.01';
+        quantityInput.placeholder = 'Cantidad';
+        quantityInput.required = true;
+
+        // Create remove button
+        const removeBtn = document.createElement('span');
+        removeBtn.className = 'btn-remove';
+        removeBtn.textContent = '✕ Eliminar';
+        removeBtn.onclick = function() { removeRow(this); };
+
+        // Append all elements to the row
+        newRow.appendChild(select);
+        newRow.appendChild(quantityInput);
+        newRow.appendChild(removeBtn);
+
+        // Add the row to the container
+        container.appendChild(newRow);
     }
-}
+
+
+
+    function removeActivity(activityId, element) {
+               // Remove visual element
+        element.parentElement.remove();
+
+    }
+
 
   // Initialize the form when page loads
   document.addEventListener('DOMContentLoaded', function() {
       if (document.querySelectorAll('.material-row').length === 0) {
-          addMaterialRow();
+          addActivity();
       }
   });
 </script>

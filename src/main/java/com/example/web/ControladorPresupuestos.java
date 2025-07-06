@@ -45,13 +45,13 @@ public class ControladorPresupuestos
 
             @RequestParam String obraName,
             @RequestParam List<Integer>actividadIds,
-            @RequestParam List<Double> quantities) {
+            @RequestParam List<Double> cantidades) {
 
 
         // Convert to Map<Integer, Double> for JSON storage
         Map<Integer, Double> activiValues = new HashMap<>();
         for (int i = 0; i < actividadIds.size(); i++) {
-            activiValues.put(actividadIds.get(i), quantities.get(i));
+            activiValues.put(actividadIds.get(i), cantidades.get(i));
         }
 
         Presupuesto presupuesto = new Presupuesto();
@@ -100,26 +100,24 @@ public class ControladorPresupuestos
     //funcionalidad para guardar cambios
     @PostMapping("/actualizar/{id_obra}")
     public String actualizarPresupuesto(
-            @PathVariable Integer id_obra,
-            @RequestParam String obra,
-            @RequestParam List<Integer> actividadIds,
-            @RequestParam List<Double> quantities,
-
-            BindingResult result,
-            Model model) {
-
+        @PathVariable Integer id_obra,
+        @RequestParam String obraName,
+        @ModelAttribute Presupuesto presupuesto,
+        BindingResult result,
+        @RequestParam List<Integer> actividadIds,
+        @RequestParam List<Double> cantidades,
+        Model model) {
         if (result.hasErrors() || actividadIds.isEmpty()) {
-
             return "redirect:/presupuestos/cambiar/" + id_obra;
         }
 
         Map<Integer, Double> activiValues = new HashMap<>();
         for (int i = 0; i < actividadIds.size(); i++) {
-            activiValues.put(actividadIds.get(i), quantities.get(i));
+            activiValues.put(actividadIds.get(i), cantidades.get(i));
         }
 
-        Presupuesto presupuesto = presupuestoServicio.localizarPresupuesto(id_obra);
-        presupuesto.setObraName(obra);
+
+        presupuesto.setObraName(obraName);
         presupuesto.setActiviValues(activiValues);
 
         presupuestoServicio.actualizar(presupuesto);
@@ -150,4 +148,3 @@ public class ControladorPresupuestos
     private MatrizServicio matrizServicio;
 
 }
-
