@@ -15,7 +15,7 @@
     <nav class="menu">
 
         <div class="logo-container">
-            <img src="../static/IMG/imagen-bob.png" alt="Logo BOB" class="logo">
+            <img th:src="@{IMG/imagen-bob.png}" alt="Logo BOB" class="logo">
             <div class="logo-text-container">
                 <h1 class="logo-text">Building Optimization Baseline</h1>
                 <p class="logo-subtext">Gestión inteligente de proyectos de construcción</p>
@@ -36,7 +36,7 @@
     <div class="menu-dasboard">
         <div class="menu">
             <a class="enlace" th:href="@{/inventario}"><i class="bx bx-box"></i><span>Inventario</span></a>
-            <a class="enlace" th:href="@{presupuesto}"><i class="bx bx-money-withdraw"></i><span>Presupuesto</span></a>
+            <a class="enlace" th:href="@{/presupuesto}"><i class="bx bx-money-withdraw"></i><span>Presupuesto</span></a>
             <a class="enlace" href="avances.html"><i class="bx bx-buildings"></i><span>Avances</span></a>
             <a class="enlace" href="contratista.html"><i class="bx bx-receipt"></i><span>Contratista</span></a>
             <a class="enlace" href="proveedores.html"><i class="bx bx-hard-hat"></i><span>Proveedores</span></a>
