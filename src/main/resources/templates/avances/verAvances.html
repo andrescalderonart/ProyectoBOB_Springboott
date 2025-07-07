@@ -1,0 +1,264 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <!-- Dynamic title based on edit/view mode -->
+  <title th:text="${Editando ? 'Editar Presupuesto' : 'Detalle de Presupuesto'}"></title>
+
+  <style>
+    /* Style for each material row */
+    .material-row {
+        margin: 10px 0;
+        padding: 5px;
+        border: 1px solid #ddd;
+    }
+
+    /* Base styles for form elements */
+    input, select, button {
+        margin: 5px 0;
+        display: block;
+    }
+
+    /* Style for remove buttons */
+    .btn-remove {
+        color: red;
+        cursor: pointer;
+        margin-left: 10px;
+    }
+
+    /* Base button styling */
+    .btn {
+        padding: 8px 16px;
+        background-color: #4CAF50;
+        color: white;
+        border: none;
+        cursor: pointer;
+        margin: 10px 0;
+    }
+
+    /* Container for activities section */
+    #actividadesContainer {
+        margin: 20px 0;
+    }
+
+    table {
+        border-collapse: collapse;
+        width: 100%;
+    }
+
+    th, td {
+        border: 1px solid #ddd;
+        padding: 8px;
+        text-align: left;
+    }
+
+    th {
+        background-color: #f2f2f2;
+    }
+  </style>
+</head>
+
+<body>
+<!-- Dynamic heading based on edit/view mode -->
+<h1 th:text="${Editando ? 'Editar Presupuesto (ID: ' + presupuesto.id_obra + ')' :
+                  'Detalle de Presupuesto'}"></h1>
+
+<!-- Back button -->
+<a th:href="@{/presupuestos/inicioPresupuestos}" class="btn">Regresar</a>
+<br><br>
+
+<!-- Edit form (shown only in edit mode) -->
+<form th:if="${Editando}"
+      th:action="@{${presupuesto.id_obra != null ? '/presupuestos/actualizar/' + presupuesto.id_obra : '/presupuestos/salvar'}}"
+      method="post"
+      th:object="${presupuesto}">
+
+  <input type="hidden" th:field="*{id_obra}">
+
+  <!-- Work name input (editable in edit mode) -->
+  <div th:if="${Editando}">
+    <label><b>Nombre de la obra:</b></label>
+    <input type="text" th:field="*{obraName}" name="obraName" required>
+  </div>
+
+  <!-- Display work name (view mode) -->
+  <h2 th:unless="${Editando}" th:text="${presupuesto.obraName}"></h2>
+
+  <h3>Actividades:</h3>
+
+  <!--  different display based on mode -->
+  <div th:if="${Editando}">
+    <!-- Edit mode  interface -->
+    <div id="actividadesContainer">
+      <!-- Check if there are existing activities -->
+      <div th:if="${not #lists.isEmpty(actividadIds)}">
+      <!-- Loop through existing activities -->
+      <div th:each="actividadId, stat : ${actividadIds}" class="material-row">
+        <select name="actividadIds" required>
+          <option value="">Seleccione...</option>
+          <option th:each="mat : ${matriz}"
+                  th:value="${mat.id_m}"
+                  th:selected="${mat.id_m == actividadId}"
+                  th:data-nombre="${mat.nombre}"
+                  th:data-unidades="${mat.unidades}"
+                  th:text="${mat.nombre} + ' ('+${mat.unidades}+')'">
+          </option>
+        </select>
+        <input type="number" name="cantidades" step="0.01" min="0.01"
+               th:value="${cantidades[stat.index]}" placeholder="Cantidad" required>
+        <span class="btn-remove" onclick="removeActivity(this)">✕ Eliminar</span>
+      </div>
+      </div>
+
+      <!-- Empty row template for new materials -->
+      <!-- <div th:if="${actividadesConCantidad == null or actividadesConCantidad.empty}" class="material-row">
+        <select name="actividadIds" required>
+          <option value="">Seleccione actividad...</option>
+          <option th:each="act : ${actividades}"
+                  th:value="${act.id_m}"
+                  th:text="${#strings.abbreviate(act.nombre, 100) + ' (' + act.unidades + ')'}">
+          </option>
+        </select>
+        <input type="number" name="quantities" step="0.01" min="0.01" placeholder="Cantidad" required>
+        <span class="btn-remove" onclick="removeRow(this)">✕ Eliminar</span>
+      </div>
+    </div>-->
+
+    <button type="button" onclick="addActivity()" class="btn" style="background-color: #2196F3;">
+      + Añadir otra actividad
+    </button>
+    <br><br>
+
+    <button type="submit" class="btn">Guardar presupuesto</button>
+  </div>
+
+  <!-- View mode display -->
+  <div th:unless="${Editando}">
+    <div th:if="${listActividades != null and !listActividades.empty}">
+      <table>
+        <thead>
+        <tr>
+          <th>ID Actividad</th>
+          <th>Nombre</th>
+          <th>Unidades</th>
+          <th>Cantidad</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="actividad : ${listActividades}">
+          <td th:text="${actividad.id_m}"></td>
+          <td th:text="${actividad.nombre}"></td>
+          <td th:text="${actividad.unidades}"></td>
+        </tr>
+        </tbody>
+      </table>
+    </div>
+    <div th:if="${listActividades == null or listActividades.empty}">
+      <p>No hay actividades registradas para este presupuesto</p>
+    </div>
+  </div>
+  </div>
+</form>
+
+<!-- View mode display when not editing -->
+<div th:unless="${Editando}">
+  <h2 th:text="${presupuesto.obraName}"></h2>
+
+  <h3>actividades:</h3>
+  <div th:if="${listActividades != null and !listActividades.empty}">
+    <table>
+      <thead>
+      <tr>
+        <th>ID Material</th>
+        <th>Nombre</th>
+        <th>Unidades</th>
+        <th>Cantidad</th>
+      </tr>
+      </thead>
+      <tbody>
+      <tr th:each="actividad : ${listActividades}">
+        <td th:text="${actividad.key.id_m}"></td>
+        <td th:text="${actividad.key.nombre}"></td>
+        <td th:text="${actividad.key.unidades}"></td>
+        <td th:text="${actividad.value}"></td>
+      </tr>
+      </tbody>
+    </table>
+  </div>
+  <div th:if="${listActividades == null or listActividades.empty}">
+    <p>No hay actividades registrados para este presupuesto</p>
+  </div>
+</div>
+
+<!-- JavaScript for dynamic form behavior -->
+<script th:if="${Editando}">
+  /**
+   * Adds a new material row to the form
+   */
+  function addActivity() {
+        const container = document.getElementById('actividadesContainer');
+
+        // Create new row div
+        const newRow = document.createElement('div');
+        newRow.className = 'material-row';
+
+        // Create the select dropdown
+        const select = document.createElement('select');
+        select.name = 'actividadIds';
+        select.required = true;
+
+        // Add default option
+        const defaultOption = document.createElement('option');
+        defaultOption.value = '';
+        defaultOption.textContent = 'Seleccione...';
+        select.appendChild(defaultOption);
+
+        // Add options from Thymeleaf (this will be filled by the browser)
+        const options = document.querySelectorAll('select[name="actividadIds"] option:not([value=""])');
+        options.forEach(option => {
+            const newOption = option.cloneNode(true);
+            select.appendChild(newOption);
+        });
+
+        // Create quantity input
+        const quantityInput = document.createElement('input');
+        quantityInput.type = 'number';
+        quantityInput.name = 'cantidades';
+        quantityInput.step = '0.01';
+        quantityInput.min = '0.01';
+        quantityInput.placeholder = 'Cantidad';
+        quantityInput.required = true;
+
+        // Create remove button
+        const removeBtn = document.createElement('span');
+        removeBtn.className = 'btn-remove';
+        removeBtn.textContent = '✕ Eliminar';
+        removeBtn.onclick = function() { removeRow(this); };
+
+        // Append all elements to the row
+        newRow.appendChild(select);
+        newRow.appendChild(quantityInput);
+        newRow.appendChild(removeBtn);
+
+        // Add the row to the container
+        container.appendChild(newRow);
+    }
+
+
+
+    function removeActivity(activityId, element) {
+               // Remove visual element
+        element.parentElement.remove();
+
+    }
+
+
+  // Initialize the form when page loads
+  document.addEventListener('DOMContentLoaded', function() {
+      if (document.querySelectorAll('.material-row').length === 0) {
+          addActivity();
+      }
+  });
+</script>
+</body>
+</html>
