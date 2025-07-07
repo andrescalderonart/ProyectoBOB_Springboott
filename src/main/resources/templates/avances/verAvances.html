@@ -162,10 +162,10 @@
 
 <!-- View mode display when not editing -->
 <div th:unless="${Editando}">
-  <h2 th:text="${presupuesto.obraName}"></h2>
+  <h2 th:text="${avance.id_avance}"></h2>
 
-  <h3>actividades:</h3>
-  <div th:if="${listActividades != null and !listActividades.empty}">
+  <h3>Avance reportado:</h3>
+  <div>
     <table>
       <thead>
       <tr>
@@ -176,18 +176,22 @@
       </tr>
       </thead>
       <tbody>
-      <tr th:each="actividad : ${listActividades}">
-        <td th:text="${actividad.key.id_m}"></td>
-        <td th:text="${actividad.key.nombre}"></td>
-        <td th:text="${actividad.key.unidades}"></td>
-        <td th:text="${actividad.value}"></td>
+      <tr>
+        <td th:text="${avance.id_matriz}"></td>
+        <td th:each="item : ${matriz}"
+            th:if="${avance.id_matriz == item.id_m}"
+            th:text="${item.nombre}">
+        </td>
+        <td th:each="item : ${matriz}"
+            th:if="${avance.id_matriz == item.id_m}"
+            th:text="${item.unidades}">
+        </td>
+        <td th:text="${avance.cantidad}"></td>
       </tr>
       </tbody>
     </table>
   </div>
-  <div th:if="${listActividades == null or listActividades.empty}">
-    <p>No hay actividades registrados para este presupuesto</p>
-  </div>
+
 </div>
 
 <!-- JavaScript for dynamic form behavior -->

@@ -39,10 +39,14 @@ public class ControladorAvance
     }
 
     //Agregar nuevo
-    @GetMapping("/agregarAvances")
+    @GetMapping("/agregarAvance")
     public String formAnexarAvance(Model model){
+        List<Presupuesto> presupuestos = presupuestoServicio.listaPresupuesto();
+        List<Matriz> matriz = matrizServicio.listarElementos();
+
         model.addAttribute("avance", new Avance());
-        model.addAttribute("matriz", matrizServicio.listarElementos());
+        model.addAttribute("presupuestos",presupuestos);
+        model.addAttribute("matriz", matriz);
         return "avances/agregarAvance";
     }
 
@@ -67,8 +71,9 @@ public class ControladorAvance
         return "redirect:/avances/inicioAvances";
     }
 
+
     //Función y forma de editado
-    @GetMapping("/cambiar/{id_avance}")
+    /*@GetMapping("/cambiar/{id_avance}")
     public String cambiarAvance(@PathVariable Integer id_avance, Model model) {
         Avance avance = avanceServicio.localizarAvance(id_avance);
 
@@ -77,9 +82,9 @@ public class ControladorAvance
         model.addAttribute("Editando", true); // ← This forces EDIT mode
         model.addAttribute("matriz", matrizServicio.listarElementos());
 
-
         return "avances/verAvances";
-    }
+    }*/
+
 
     //borrar
     @GetMapping("/borrar/{id_avance}")
@@ -119,11 +124,11 @@ public class ControladorAvance
     @GetMapping("/detalle/{id_avance}")
     public String detalleAvance(@PathVariable Integer id_avance, Model model) {
         Avance avance = avanceServicio.localizarAvance(id_avance);
-
-
+        List<Matriz> matriz = matrizServicio.listarElementos();
 
         model.addAttribute("avance", avance);
-        model.addAttribute("Actividad", avanceServicio.localizarAvance(id_avance));
+        model.addAttribute("actividad", avanceServicio.localizarAvance(id_avance));
+        model.addAttribute("matriz", matriz);
         model.addAttribute("Editando", false); // ← This forces VIEW mode
         return "avances/verAvances";
     }

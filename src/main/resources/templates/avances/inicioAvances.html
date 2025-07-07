@@ -16,6 +16,7 @@
         <thead>
         <tr>
             <th>ID Avance</th>
+            <th>ID Obra</th>
             <th>Nombre de la obra</th>
             <th>Fecha</th>
             <th>Acciones</th>
@@ -26,7 +27,15 @@
             <td th:text="${avance.id_avance}"></td>
             <td th:text="${avance.id_obra}"></td>
             <td>
-                <a th:href="@{/avances/cambiar/} + ${avance.id_avance}" class="btn">Editar</a>
+                <span th:each="presupuesto : ${presupuestos}"
+                      th:if="${presupuesto.id_obra == avance.id_obra}"
+                      th:text="${presupuesto.obraName}">
+                </span>
+            </td>
+            <td th:text="${avance.fecha}"></td>
+            <td>
+                <!-- Creo que es mejor no editar avances para no complicarse por su formato -->
+                <!--<a th:href="@{/avances/cambiar/} + ${avance.id_avance}" class="btn">Editar</a>-->
                 <a th:href="@{/avances/borrar/} + ${avance.id_avance}" class="btn"
                    onclick="return confirm('¿Está seguro que desea eliminar este avance?')">Eliminar</a>
                 <a th:href="@{/avances/detalle/}+${avance.id_avance}" class="btn">Ver Detalle</a>

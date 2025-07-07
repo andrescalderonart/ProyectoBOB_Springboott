@@ -2,7 +2,7 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <title>Crear Nuevo Presupuesto</title> <!-- Static title since we only create -->
+    <title>Reportar nuevo avance de obra</title> <!-- Static title since we only create -->
 
     <style>
         /* Style for material rows (same as before) */
@@ -39,136 +39,123 @@
     </style>
 </head>
 <body>
-<h1>Crear Nuevo Presupuesto</h1>
+<h1>Reportar nuevo avance</h1>
 
 <!-- Back button -->
-<a th:href="@{/presupuestos/inicioPresupuestos}" class="btn">Regresar</a>
+<a th:href="@{/avances/inicioAvances}" class="btn">Regresar</a>
 <br><br>
 
 <!-- Create Form (now the only form) -->
-<form th:action="@{/presupuestos/salvar}" method="post" th:object="${presupuesto}">
+<form th:action="@{/avances/salvar}" method="post" th:object="${avance}" id="avanceForm">
 
     <!-- Work Name Input -->
     <div>
         <label><b>Nombre de la obra:</b></label>
-        <input type="text" th:field="*{obraName}" required>
+        <select id="obraDropdown" name="id_obra" required>
+            <option value="">Seleccione...</option>
+            <option th:each="pre : ${presupuestos}"
+                    th:value="${pre.id_obra}"
+                    th:data-activities="${pre.activiValues != null ? #strings.listJoin(pre.activiValues.keySet(), ',') : ''}"
+                    th:text="${pre.obraName}">
+            </option>
+        </select>
     </div>
 
-    <h3>Actividades:</h3>
+    <div>
+        <label><b>Fecha:</b></label>
+        <input type="date" name="fecha" required>
+    </div>
+
+    <h3>Actividad:</h3>
 
     <!-- Single dropdown for selection -->
     <div>
-        <select id="activityDropdown">
-            <option value="">Seleccione...</option>
-            <option th:each="mat : ${matriz}"
+        <select id="activityDropdown" name="id_matriz" required disabled>
+            <option value="">Debe seleccionar una obra</option>
+            <!--<option th:each="mat : ${matriz}"
                     th:value="${mat.id_m}"
                     th:data-nombre="${mat.nombre}"
                     th:data-unidades="${mat.unidades}"
                     th:text="${mat.nombre} + ' (' + mat.unidades + ')'">
-            </option>
+            </option>-->
         </select>
 
-        <input type="number" id="activityQuantity" step="0.01" min="0.01"
+        <input type="number" id="inputcantidad" name="cantidad" step="0.01" min="0.01"
                placeholder="Cantidad" class="quantity-input">
 
-        <button type="button" onclick="addactivity()" class="btn btn-add">
-            Añadir actividad
-        </button>
     </div>
 
-    <!-- Container for selected  -->
-    <div id="selectedActivities">
-        <!-- Selected activities will appear here -->
+
+
+
+    <!-- Container for selected
+    <div id="selectedActivity"> -->
+        <!-- Selected activity will appear here -->
     </div>
 
     <!-- Hidden inputs that will be submitted -->
-    <div id="hiddenInputs"></div>
+    <div id="hiddenInputs">
+        <input type="hidden" name="id_usuario" value="4">
+        <!-- Hidden input for user ID (you might want to set this from session) -->
+        <!-- Hidden input for user ID (you might want to set this from session) -->
+        <!-- Hidden input for user ID (you might want to set this from session) -->
+        <!-- Hidden input for user ID (you might want to set this from session) -->
+    </div>
 
     <!-- Submit Button -->
-    <button type="submit" class="btn">Guardar presupuesto</button>
+    <button type="submit" class="btn">Guardar</button>
 </form>
 
-<script>
-    // Store added activities to prevent duplicates
-    const addedActivities = new Set();
 
-    function addActivity() {
-        const dropdown = document.getElementById('activityDropdown');
-        const quantityInput = document.getElementById('activityQuantity');
-        const selectedActivitiesDiv = document.getElementById('selectedActivities');
-        const hiddenInputsDiv = document.getElementById('hiddenInputs');
+<script th:inline="javascript">
+    document.addEventListener('DOMContentLoaded', function() {
+        const obraDropdown = document.getElementById('obraDropdown');
+        const activityDropdown = document.getElementById('activityDropdown');
+        const allMatriz = /*[[${matriz}]]*/ [];
 
-        const selectedOption = dropdown.options[dropdown.selectedIndex];
-        const activityId = selectedOption.value;
-        const activityName = selectedOption.getAttribute('data-nombre');
-        const activityUnits = selectedOption.getAttribute('data-unidades');
-        const quantity = quantityInput.value;
+        // Create a map of all available activities for quick lookup
+        const matrizMap = new Map();
+        allMatriz.forEach(mat => {
+            matrizMap.set(mat.id_m, mat);
+        });
 
-        // Validate selection
-        if (!activityId) {
-            alert("Por favor seleccione una actividad");
-            return;
-        }
+        obraDropdown.addEventListener('change', function() {
+            const selectedObraId = this.value;
+            activityDropdown.innerHTML = '<option value="">Seleccione...</option>';
+            activityDropdown.disabled = true;
 
-        if (!quantity || parseFloat(quantity) <= 0) {
-            alert("Por favor ingrese una cantidad válida");
-            return;
-        }
+            if (!selectedObraId) return;
 
-        // Check if activity already added
-        if (addedActivities.has(activityId)) {
-            alert("Esta actividad ya fue agregada");
-            return;
-        }
+            // Get the selected option
+            const selectedOption = this.options[this.selectedIndex];
+            // Get the activities IDs from data-attribute
+            const activityIdsString = selectedOption.getAttribute('data-activities');
 
-        // Add to set
-        addedActivities.add(activityId);
+            if (activityIdsString && activityIdsString.trim() !== '') {
+                const activityIds = activityIdsString.split(',');
 
-        // Create visible display
-        const activityDiv = document.createElement('div');
-        activityDiv.className = 'selected-activity';
-        activityDiv.innerHTML = `
-            <span>${activityName} (${activityUnits}) - Cantidad: ${quantity}</span>
-            <span class="btn-remove" onclick="removeActivity('${activityId}', this)">✕ Eliminar</span>
-        `;
-        selectedActivitiesDiv.appendChild(activityDiv);
+                // Populate the activities dropdown
+                activityIds.forEach(id => {
+                    const numericId = parseInt(id.trim());
+                    if (!isNaN(numericId)) {
+                        const mat = matrizMap.get(numericId);
+                        if (mat) {
+                            const option = document.createElement('option');
+                            option.value = mat.id_m;
+                            option.textContent = `${mat.nombre} (${mat.unidades})`;
+                            activityDropdown.appendChild(option);
+                        }
+                    }
+                });
 
-        // Create hidden inputs for form submission
-        const materialIdInput = document.createElement('input');
-        materialIdInput.type = 'hidden';
-        materialIdInput.name = 'activityIds';
-        materialIdInput.value = activityId;
-
-        const quantityInputHidden = document.createElement('input');
-        quantityInputHidden.type = 'hidden';
-        quantityInputHidden.name = 'quantities';
-        quantityInputHidden.value = quantity;
-
-        hiddenInputsDiv.appendChild(activityIdInput);
-        hiddenInputsDiv.appendChild(quantityInputHidden);
-
-        // Reset inputs
-        dropdown.selectedIndex = 0;
-        quantityInput.value = '';
-    }
-
-    function removeActivity(activityId, element) {
-        // Remove from set
-        addedActivities.delete(activityId);
-
-        // Remove visual element
-        element.parentElement.remove();
-
-        // Remove corresponding hidden inputs
-        const hiddenInputs = document.querySelectorAll('#hiddenInputs input');
-        for (let i = 0; i < hiddenInputs.length; i++) {
-            if (hiddenInputs[i].name === 'activityIds' && hiddenInputs[i].value === activityId) {
-                hiddenInputs[i].remove();
-                hiddenInputs[i+1].remove(); // Remove the corresponding quantity input
-                break;
+                activityDropdown.disabled = false;
+            } else {
+                console.log('No activities found for this work');
             }
-        }
-    }
+        });
+    });
 </script>
+
+
 </body>
 </html>
