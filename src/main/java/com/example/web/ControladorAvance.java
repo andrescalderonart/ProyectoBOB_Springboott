@@ -125,9 +125,11 @@ public class ControladorAvance
     public String detalleAvance(@PathVariable Integer id_avance, Model model) {
         Avance avance = avanceServicio.localizarAvance(id_avance);
         List<Matriz> matriz = matrizServicio.listarElementos();
+        List<Presupuesto> presupuestos = presupuestoServicio.listaPresupuesto();
 
         model.addAttribute("avance", avance);
         model.addAttribute("actividad", avanceServicio.localizarAvance(id_avance));
+        model.addAttribute("presupuestos",presupuestos);
         model.addAttribute("matriz", matriz);
         model.addAttribute("Editando", false); // ← This forces VIEW mode
         return "avances/verAvances";
