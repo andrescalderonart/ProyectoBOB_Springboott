@@ -1,65 +1,102 @@
 <!DOCTYPE html>
-<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml">
 <head>
     <meta charset="UTF-8">
-    <title>Inventario</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Building Optimization Baseline - Inventario</title>
+    <link rel="stylesheet" th:href="@{/CSS/INVENTARIO/inventario.css}">
+
     <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="CSS/inventario.css">
+    <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
 </head>
 <body>
-<!-- Título principal -->
-<a class="main-title">Gestión de Inventario</a>
 
-<!-- Contenedor principal -->
-<div class="container">
-    <!-- Subtítulo -->
-    <h2 class="section-title">Inventario</h2>
-
-    <!-- Contenedor de opciones -->
-    <div class="options-container">
-        <!-- Crear inventario -->
-        <div class="option-card">
-            <a th:href="@{/crearInv}" class="option-link">
-                <span class="option-icon">📝</span>
-                <h3 class="option-title">Crear inventario</h3>
-                <p class="option-description">Crear un nuevo registro de inventario en el sistema</p>
-            </a>
+<header>
+    <nav class="menu">
+        <div class="logo-container">
+            <img th:src="@{IMG/imagen-bob.png}" alt="Logo BOB" class="logo">
+            <div class="logo-text-container">
+                <h1 class="logo-text">Building Optimization Baseline</h1>
+                <p class="logo-subtext">Gestión inteligente de proyectos de construcción</p>
+            </div>
         </div>
+        <ul class="nav-links">
+            <li><a th:href="@{error404.html}">Perfil</a></li>
+        </ul>
+    </nav>
+</header>
 
-        <!-- Visualizar inventario -->
-        <div class="option-card">
-            <a th:href="@{/verInv}" class="option-link">
-                <span class="option-icon">👁️</span>
-                <h3 class="option-title">Visualizar inventario</h3>
-                <p class="option-description">Ver y consultar todos los registros de inventario</p>
-            </a>
-        </div>
-
-        <!-- Modificar inventario -->
-        <div class="option-card">
-            <a th:href="@{/cambiarInv}" class="option-link">
-                <span class="option-icon">✏️</span>
-                <h3 class="option-title">Modificar inventario</h3>
-                <p class="option-description">Editar y actualizar registros existentes</p>
-            </a>
-        </div>
-
-        <!-- Eliminar inventario -->
-        <div class="option-card">
-            <a th:href="@{/borrarInv}" class="option-link">
-                <span class="option-icon">🗑️</span>
-                <h3 class="option-title">Eliminar un inventario</h3>
-                <p class="option-description">Eliminar registros de inventario del sistema</p>
-            </a>
+<main>
+    <div class="menu-dasboard">
+        <div class="menu">
+            <a class="enlace" th:href="@{/inventario}"><i class="bx bx-box"></i><span>Inventario</span></a>
+            <a class="enlace" th:href="@{/avances}"><i class="bx bx-buildings"></i><span>Avances</span></a>
+            <a class="enlace" th:href="@{/contratista}"><i class="bx bx-receipt"></i><span>Contratista</span></a>
+            <a class="enlace" th:href="@{/presupuesto}"><i class="bx bx-money-withdraw"></i><span>Presupuesto</span></a>
+            <a class="enlace" th:href="@{/proveedores}"><i class="bx bx-hard-hat"></i><span>Proveedores</span></a>
+            <a class="enlace" th:href="@{/usuarios}"><i class="bx bxs-user-detail"></i><span>Usuarios</span></a>
+            <a class="enlace" href="#reportes"><i class="bx bx-line-chart"></i><span>Reportes</span></a>
+            <a class="enlace" href="#configuracion"><i class="bx bx-cog"></i><span>Configuración</span></a>
         </div>
     </div>
 
-    <!-- Sección de logout -->
-    <div class="logout-container">
-        <form class="logout-form" th:action="@{/login}" method="post">
-            <a href="#" class="logout-btn" onclick="this.parentNode.submit()">Cerrar sesión</a>
-        </form>
+    <div class="dashboard-content">
+    <!-- Título principal -->
+    <h1>Gestión de Inventario</h1>
+
+    <!-- Contenedor principal -->
+    <div class="container">
+        <!-- Subtítulo -->
+        <h2 class="section-title">Inventario</h2>
+
+        <!-- Contenedor de opciones -->
+        <div class="options-container">
+            <!-- Crear inventario -->
+            <div class="option-card">
+                <a th:href="@{/crearInv}" class="option-link">
+                    <span class="option-icon">📝</span>
+                    <h3 class="option-title">Crear inventario</h3>
+                    <p class="option-description">Crear un nuevo registro de inventario en el sistema</p>
+                </a>
+            </div>
+
+            <!-- Visualizar inventario -->
+            <div class="option-card">
+                <a th:href="@{/verInv}" class="option-link">
+                    <span class="option-icon">👁</span>
+                    <h3 class="option-title">Visualizar inventario</h3>
+                    <p class="option-description">Ver y consultar todos los registros de inventario</p>
+                </a>
+            </div>
+
+            <!-- Modificar inventario -->
+            <div class="option-card">
+                <a th:href="@{/cambiarInv}" class="option-link">
+                    <span class="option-icon">✏</span>
+                    <h3 class="option-title">Modificar inventario</h3>
+                    <p class="option-description">Editar y actualizar registros existentes</p>
+                </a>
+            </div>
+
+            <!-- Eliminar inventario -->
+            <div class="option-card">
+                <a th:href="@{/borrarInv}" class="option-link">
+                    <span class="option-icon">🗑</span>
+                    <h3 class="option-title">Eliminar un inventario</h3>
+                    <p class="option-description">Eliminar registros de inventario del sistema</p>
+                </a>
+            </div>
+        </div>
+
+        <!-- Sección de logout -->
+        <div class="logout-container">
+            <form class="logout-form" th:action="@{/login}" method="post">
+                <a href="#" class="logout-btn" onclick="this.parentNode.submit()">Cerrar sesión</a>
+            </form>
+        </div>
     </div>
-</div>
+    </div>
+</main>
+
 </body>
 </html>
