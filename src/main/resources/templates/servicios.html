@@ -1,0 +1,259 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Nuestros Servicios - Construcción Civil</title>
+  <link rel="stylesheet" href="CSS/servicios.css">
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+</head>
+<body>
+<div class="container">
+  <!-- Header Principal -->
+  <header class="main-header">
+    <img th:src="@{IMG/imagen-bob.png}" alt="Logo BOB" class="logo">
+    <div class="header-content">
+      <h1>Nuestros Servicios</h1>
+      <p>Soluciones integrales en construcción civil para Colombia</p>
+    </div>
+    <div class="header-decoration"></div>
+  </header>
+
+  <!-- Navegación -->
+  <nav class="navigation-section">
+    <a th:href="@{/index}" class="btn btn-secondary">
+      <i class="fas fa-home"></i> Inicio
+    </a>
+    <a href="#contacto" class="btn btn-outline">
+      <i class="fas fa-phone"></i> Contacto
+    </a>
+  </nav>
+
+  <!-- Introducción de Servicios -->
+  <section class="intro-section">
+    <div class="intro-content">
+      <h2>Experiencia y Calidad en Cada Proyecto</h2>
+      <p>Con más de 15 años de experiencia en el sector de la construcción civil en Colombia, ofrecemos servicios especializados que cumplen con las normas técnicas colombianas (NTC) y los estándares internacionales de calidad.</p>
+    </div>
+  </section>
+
+  <!-- Servicios Principales -->
+  <section class="services-grid">
+    <div class="service-card featured">
+      <div class="service-icon">
+        <i class="fas fa-building"></i>
+      </div>
+      <h3>Construcción de Edificaciones</h3>
+      <p>Desarrollamos proyectos residenciales, comerciales e industriales, desde la planificación hasta la entrega final. Cumplimos con la NSR-10 y todas las normativas colombianas.</p>
+      <ul class="service-features">
+        <li>Edificios residenciales y comerciales</li>
+        <li>Naves industriales</li>
+        <li>Centros comerciales</li>
+        <li>Oficinas corporativas</li>
+      </ul>
+    </div>
+
+    <div class="service-card">
+      <div class="service-icon">
+        <i class="fas fa-road"></i>
+      </div>
+      <h3>Infraestructura Vial</h3>
+      <p>Especialistas en construcción y mantenimiento de carreteras, puentes y obras de infraestructura vial urbana y rural.</p>
+      <ul class="service-features">
+        <li>Construcción de carreteras</li>
+        <li>Puentes peatonales y vehiculares</li>
+        <li>Pavimentación urbana</li>
+        <li>Obras de arte vial</li>
+      </ul>
+    </div>
+
+    <div class="service-card">
+      <div class="service-icon">
+        <i class="fas fa-hard-hat"></i>
+      </div>
+      <h3>Interventoría y Consultoría</h3>
+      <p>Servicios de interventoría técnica, administrativa y financiera para garantizar la calidad y cumplimiento de proyectos.</p>
+      <ul class="service-features">
+        <li>Interventoría técnica</li>
+        <li>Supervisión de obras</li>
+        <li>Consultoría en ingeniería</li>
+        <li>Estudios de factibilidad</li>
+      </ul>
+    </div>
+
+    <div class="service-card">
+      <div class="service-icon">
+        <i class="fas fa-water"></i>
+      </div>
+      <h3>Obras Hidráulicas</h3>
+      <p>Construcción de sistemas de acueducto, alcantarillado y obras de control de aguas pluviales según normativa RAS.</p>
+      <ul class="service-features">
+        <li>Redes de acueducto</li>
+        <li>Sistemas de alcantarillado</li>
+        <li>Plantas de tratamiento</li>
+        <li>Control de aguas lluvias</li>
+      </ul>
+    </div>
+
+    <div class="service-card">
+      <div class="service-icon">
+        <i class="fas fa-mountain"></i>
+      </div>
+      <h3>Obras Geotécnicas</h3>
+      <p>Estudios de suelos, cimentaciones especiales y estabilización de taludes para proyectos de alta complejidad.</p>
+      <ul class="service-features">
+        <li>Estudios geotécnicos</li>
+        <li>Cimentaciones profundas</li>
+        <li>Estabilización de taludes</li>
+        <li>Muros de contención</li>
+      </ul>
+    </div>
+
+    <div class="service-card">
+      <div class="service-icon">
+        <i class="fas fa-tools"></i>
+      </div>
+      <h3>Mantenimiento y Reparación</h3>
+      <p>Servicios de mantenimiento preventivo y correctivo para prolongar la vida útil de las estructuras existentes.</p>
+      <ul class="service-features">
+        <li>Mantenimiento de edificios</li>
+        <li>Reparaciones estructurales</li>
+        <li>Rehabilitación de fachadas</li>
+        <li>Reforzamiento sísmico</li>
+      </ul>
+    </div>
+  </section>
+
+  <!-- Sección de Certificaciones -->
+  <section class="certifications-section">
+    <h2>Certificaciones y Cumplimiento Normativo</h2>
+    <div class="certifications-grid">
+      <div class="cert-item">
+        <i class="fas fa-certificate"></i>
+        <h4>NSR-10</h4>
+        <p>Cumplimiento de la Norma Sismo Resistente Colombiana</p>
+      </div>
+      <div class="cert-item">
+        <i class="fas fa-award"></i>
+        <h4>ISO 9001</h4>
+        <p>Sistema de Gestión de Calidad Certificado</p>
+      </div>
+      <div class="cert-item">
+        <i class="fas fa-shield-alt"></i>
+        <h4>OHSAS 18001</h4>
+        <p>Seguridad y Salud Ocupacional</p>
+      </div>
+      <div class="cert-item">
+        <i class="fas fa-leaf"></i>
+        <h4>ISO 14001</h4>
+        <p>Gestión Ambiental</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- Sección de Proceso -->
+  <section class="process-section">
+    <h2>Nuestro Proceso de Trabajo</h2>
+    <div class="process-timeline">
+      <div class="process-step">
+        <div class="step-number">1</div>
+        <div class="step-content">
+          <h4>Consulta y Evaluación</h4>
+          <p>Análisis detallado de requerimientos y estudios de factibilidad</p>
+        </div>
+      </div>
+      <div class="process-step">
+        <div class="step-number">2</div>
+        <div class="step-content">
+          <h4>Diseño y Planificación</h4>
+          <p>Desarrollo de planos técnicos y cronogramas de ejecución</p>
+        </div>
+      </div>
+      <div class="process-step">
+        <div class="step-number">3</div>
+        <div class="step-content">
+          <h4>Ejecución de Obra</h4>
+          <p>Construcción con supervisión técnica y control de calidad</p>
+        </div>
+      </div>
+      <div class="process-step">
+        <div class="step-number">4</div>
+        <div class="step-content">
+          <h4>Entrega y Garantía</h4>
+          <p>Finalización del proyecto con garantías extendidas</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Sección de Contacto -->
+  <section class="contact-section" id="contacto">
+    <div class="contact-content">
+      <h2>¿Listo para Comenzar tu Proyecto?</h2>
+      <p>Contáctanos para una consulta gratuita y cotización personalizada</p>
+      <div class="contact-info">
+        <div class="contact-item">
+          <i class="fas fa-phone"></i>
+          <div>
+            <h4>Teléfono</h4>
+            <p>+57 3213788556</p>
+          </div>
+        </div>
+        <div class="contact-item">
+          <i class="fas fa-envelope"></i>
+          <div>
+            <h4>Email</h4>
+            <p>carta.v.devhouse@gmail.com</p>
+          </div>
+        </div>
+        <div class="contact-item">
+          <i class="fas fa-map-marker-alt"></i>
+          <div>
+            <h4>Ubicación</h4>
+            <p>Bogotá, Colombia</p>
+          </div>
+        </div>
+      </div>
+      <div class="contact-actions">
+        <a href="tel:+57 3213788556" class="btn btn-primary">
+          <i class="fas fa-phone"></i> Llamar Ahora
+        </a>
+        <a href="carta.v.devhouse@gmail.com" class="btn btn-secondary">
+          <i class="fas fa-envelope"></i> Enviar Email
+        </a>
+      </div>
+    </div>
+  </section>
+</div>
+
+<script>
+  // Animación de entrada para las tarjetas de servicios
+  const observerOptions = {
+      threshold: 0.1,
+      rootMargin: '0px 0px -50px 0px'
+  };
+
+  const observer = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+          if (entry.isIntersecting) {
+              entry.target.classList.add('animate-in');
+          }
+      });
+  }, observerOptions);
+
+  document.querySelectorAll('.service-card, .process-step, .cert-item').forEach(card => {
+      observer.observe(card);
+  });
+
+  // Smooth scroll para enlaces internos
+  document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+      anchor.addEventListener('click', function (e) {
+          e.preventDefault();
+          document.querySelector(this.getAttribute('href')).scrollIntoView({
+              behavior: 'smooth'
+          });
+      });
+  });
+</script>
+</body>
+</html>

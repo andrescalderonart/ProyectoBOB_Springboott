@@ -48,6 +48,18 @@ header {
     max-width: 1400px;
     margin: 0 auto;
 }
+.btn-outline {
+    background: transparent;
+    color: var(--primary-color);
+    border-color: var(--primary-color);
+}
+
+.btn-outline:hover {
+    background: var(--primary-color);
+    color: var(--white);
+    transform: translateY(-2px);
+}
+
 
 .logo-container {
     display: flex;

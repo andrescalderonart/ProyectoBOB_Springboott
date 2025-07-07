@@ -44,6 +44,12 @@ public class Controlador {
         return "index"; // Esto resuelve a src/main/resources/templates/index.html
     }
 
+    @GetMapping("/servicios")
+    public String mostrarServicios() {
+        // Asume que tienes un archivo 'servicios.html' en src/main/resources/templates/
+        return "servicios";
+    }
+
 
     // Método para la página de agregar un nuevo individuo
     @GetMapping("/anexar")
