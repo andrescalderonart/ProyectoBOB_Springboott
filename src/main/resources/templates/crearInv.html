@@ -90,7 +90,7 @@
 
                     <div class="form-group">
                         <label>Cantidad:</label>
-                        <input type="number" name="cantidad" th:field="*{cantidad}" placeholder="Ingrese cantidad">
+                        <input type="number" name="cantidad" th:field="*{cantidad}" placeholder="Ingrese cantidad" min="0">
                         <span class="error-message" th:if="${#fields.hasErrors('cantidad')}" th:errors="*{cantidad}">Campo obligatorio</span>
                     </div>
 
@@ -102,7 +102,7 @@
 
                     <div class="form-group">
                         <label>Precio por Unidad de medida:</label>
-                        <input type="number" name="precioUnidad" th:field="*{precioUnidad}">
+                        <input type="number" name="precioUnidad" th:field="*{precioUnidad}" min="0">
                         <span class="error-message" th:if="${#fields.hasErrors('precioUnidad')}" th:errors="*{precioUnidad}">Campo obligatorio</span>
                     </div>
 
