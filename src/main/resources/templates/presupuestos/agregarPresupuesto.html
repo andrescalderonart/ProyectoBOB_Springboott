@@ -58,7 +58,7 @@
 
     <!-- Single dropdown for selection -->
     <div>
-        <select id="activityDropdown">
+        <select id="activityDropdown" name="actividadIds">
             <option value="">Seleccione...</option>
             <option th:each="mat : ${matriz}"
                     th:value="${mat.id_m}"
@@ -69,17 +69,21 @@
         </select>
 
         <input type="number" id="activityQuantity" step="0.01" min="0.01"
-               placeholder="Cantidad" class="quantity-input">
+               placeholder="Cantidad" class="quantity-input" name="cantidades">
 
-        <button type="button" onclick="addactivity()" class="btn btn-add">
+        <button type="button" onclick="addActivity()" class="btn btn-add">
             Añadir actividad
         </button>
     </div>
+
+    <br>
 
     <!-- Container for selected  -->
     <div id="selectedActivities">
         <!-- Selected activities will appear here -->
     </div>
+
+    <br>
 
     <!-- Hidden inputs that will be submitted -->
     <div id="hiddenInputs"></div>

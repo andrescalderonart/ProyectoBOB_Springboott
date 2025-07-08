@@ -11,6 +11,46 @@
 <a th:href="@{/avances/agregarAvance}" class="btn">Reportar nuevo avance</a>
 <br><br>
 
+<!-- Search Form -->
+<div>
+    <form th:action="@{/avances/inicioAvances}" method="get">
+        <div>
+            <div>
+                <label for="id_obra">ID Obra:</label>
+                <input type="number" id="id_obra" name="id_obra" th:value="${param.id_obra}">
+            </div>
+            <div>
+                <label for="id_usuario">ID Usuario:</label>
+                <input type="number" id="id_usuario" name="id_usuario" th:value="${param.id_usuario}">
+            </div>
+            <div>
+                <label for="id_obra">Nombre de la obra:</label>
+                <select id="id_obraByName" name="id_obra" th:value="${param.id_obra}">
+                    <option value="">-- Todas las obras --</option>
+                    <option th:each="presupuesto : ${presupuestos}"
+                            th:value="${presupuesto.id_obra}"
+                            th:text="${presupuesto.obraName}"
+                            th:selected="${param.id_obra == presupuesto.id_obra}">
+                    </option>
+                </select>
+            </div>
+        </div>
+
+        <div>
+            <div>
+                <label for="fecha">Fecha:</label>
+                <input type="text" id="fecha" name="fecha" placeholder="YYYY-MM-DD" th:value="${param.fecha}">
+            </div>
+        </div>
+
+        <div>
+            <button type="submit">Buscar</button>
+            <a th:href="@{/avances/inicioAvances}">Limpiar filtros</a>
+        </div>
+    </form>
+</div>
+
+
 <div th:if="${avances != null and !avances.empty}">
     <table id="avancesTable">
         <thead>
@@ -24,11 +64,11 @@
         </thead>
         <tbody>
         <tr th:each="avance : ${avances}">
-            <td th:text="${avance.id_avance}"></td>
-            <td th:text="${avance.id_obra}"></td>
+            <td th:text="${avance.idAvance}"></td>
+            <td th:text="${avance.idObra}"></td>
             <td>
                 <span th:each="presupuesto : ${presupuestos}"
-                      th:if="${presupuesto.id_obra == avance.id_obra}"
+                      th:if="${presupuesto.id_obra == avance.idObra}"
                       th:text="${presupuesto.obraName}">
                 </span>
             </td>
@@ -36,9 +76,9 @@
             <td>
                 <!-- Creo que es mejor no editar avances para no complicarse por su formato -->
                 <!--<a th:href="@{/avances/cambiar/} + ${avance.id_avance}" class="btn">Editar</a>-->
-                <a th:href="@{/avances/borrar/} + ${avance.id_avance}" class="btn"
+                <a th:href="@{/avances/borrar/} + ${avance.idAvance}" class="btn"
                    onclick="return confirm('¿Está seguro que desea eliminar este avance?')">Eliminar</a>
-                <a th:href="@{/avances/detalle/}+${avance.id_avance}" class="btn">Ver Detalle</a>
+                <a th:href="@{/avances/detalle/}+${avance.idAvance}" class="btn">Ver Detalle</a>
             </td>
         </tr>
         </tbody>

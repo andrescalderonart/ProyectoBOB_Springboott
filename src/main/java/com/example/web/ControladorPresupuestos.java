@@ -147,4 +147,42 @@ public class ControladorPresupuestos
     @Autowired
     private MatrizServicio matrizServicio;
 
+    //Funcionalidad del filtro
+    @GetMapping("/filtroPr")
+    public String filtroPre(
+            @RequestParam(value = "tipoBusqueda", required = false) String tipoBusqueda,
+            @RequestParam(value = "valorBusqueda", required = false) String valorBusqueda,
+            Integer id_obra,
+            Model model) {
+
+        List<Presupuesto> presupuestos = new ArrayList<>(); // Initialize with empty list
+        Presupuesto presupuesto = null; // Initialize as null
+        String error = null;
+
+        if (tipoBusqueda != null && valorBusqueda != null && !valorBusqueda.isEmpty()) {
+            switch (tipoBusqueda) {
+                case "idObra":
+                    presupuesto = presupuestoServicio.localizarPresupuesto(Integer.parseInt(valorBusqueda));
+                    break;
+                case "obraName":
+                    presupuestos = presupuestoServicio.findByObraNameContaining(valorBusqueda);
+                    break;
+
+                default:
+                    presupuestos = presupuestoServicio.listaPresupuesto();
+            }
+        } else {
+            presupuestos = presupuestoServicio.listaPresupuesto();
+        }
+
+        model.addAttribute("presupuestos", presupuestos);
+        model.addAttribute("presupuesto", presupuesto);
+
+        if (error != null) {
+            model.addAttribute("error", error);
+        }
+
+        return "presupuestos/inicioPresupuestos";
+    }
+
 }

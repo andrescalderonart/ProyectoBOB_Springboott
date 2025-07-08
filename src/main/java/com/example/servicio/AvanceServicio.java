@@ -18,5 +18,21 @@ public interface AvanceServicio {
 
     Avance localizarAvance(Integer entryId);
 
+    // New search methods
+    List<Avance> buscarPorIdAvance(Integer id_avance);
+    List<Avance> buscarPorIdUsuario(Integer id_usuario);
+    List<Avance> buscarPorIdObra(Integer id_obra);
+    List<Avance> buscarPorIdMatriz(Integer id_matriz);
+
+    List<Avance> buscarPorFecha(String fecha);
+    List<Avance> buscarPorFechaConteniendo(String fecha);
+
+
+
+    // Combined search methods
+    List<Avance> buscarPorUsuarioYFecha(Integer id_usuario, String fecha);
+
+
+
     public List<Matriz> listarMateriales();
 }

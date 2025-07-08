@@ -16,6 +16,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 @Controller
 @RequestMapping("/avances")
@@ -30,11 +31,45 @@ public class ControladorAvance
     private PresupuestoServicio presupuestoServicio;
     //Acá están los métodos
     @GetMapping("/inicioAvances")
-    public String inicioAvance(Model model){
-        List<Avance> avances = avanceServicio.listaAvance();
+    public String inicioAvance(
+            @RequestParam(required = false) String obraName,
+            @RequestParam(required = false) Integer id_obra,
+            @RequestParam(required = false) Integer id_usuario,
+            @RequestParam(required = false) Integer id_matriz,
+            @RequestParam(required = false) String fecha,
+            Model model){
+        //En vez de cargar la lista entera al principio sólo declaro la variable
+        List<Avance> avances;
+
+        //Necesito cargar presupuestos para mostrar nombres de obra
         List<Presupuesto> presupuestos = presupuestoServicio.listaPresupuesto();
-        model.addAttribute("avances",avances);
         model.addAttribute("presupuestos",presupuestos);
+
+//Este if es para las búsqeudas por ID
+        if (id_usuario != null && fecha != null) {
+            avances = avanceServicio.buscarPorUsuarioYFecha(id_usuario, fecha);
+        }
+        else if (id_obra != null) {
+            avances = avanceServicio.buscarPorIdObra(id_obra);
+        }
+        else if (id_usuario != null) {
+            avances = avanceServicio.buscarPorIdUsuario(id_usuario);
+        }
+        else if (id_matriz != null) {
+            avances = avanceServicio.buscarPorIdMatriz(id_matriz);
+        }
+        else if (fecha != null) {
+            avances = avanceServicio.buscarPorFechaConteniendo(fecha);
+        }
+        else {
+            // No filters - get all avances
+            avances = avanceServicio.listaAvance();
+        }
+
+
+
+        model.addAttribute("avances",avances);
+
         return "avances/inicioAvances";
     }
 
@@ -60,10 +95,10 @@ public class ControladorAvance
             @RequestParam Double cantidad) {
 
         Avance avance = new Avance();
-        avance.setId_usuario(id_usuario);
-        avance.setId_obra(id_obra);
+        avance.setIdUsuario(id_usuario);
+        avance.setIdObra(id_obra);
         avance.setFecha(fecha);
-        avance.setId_matriz(id_matriz);
+        avance.setIdMatriz(id_matriz);
         avance.setCantidad(cantidad);
 
 
@@ -109,10 +144,10 @@ public class ControladorAvance
             return "redirect:/avances/cambiar/" + id_avance;
         }
 
-        avance.setId_usuario(id_usuario);
-        avance.setId_obra(id_obra);
+        avance.setIdUsuario(id_usuario);
+        avance.setIdObra(id_obra);
         avance.setFecha(fecha);
-        avance.setId_matriz(id_matriz);
+        avance.setIdMatriz(id_matriz);
         avance.setCantidad(cantidad);
 
 
@@ -136,8 +171,12 @@ public class ControladorAvance
     }
 
 
+
+
     //Materiales (para el manejo de la matriz)
     @Autowired
     private MatrizServicio matrizServicio;
+
+
 
 }
