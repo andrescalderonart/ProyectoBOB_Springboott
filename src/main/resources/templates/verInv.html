@@ -1,49 +1,114 @@
 <!DOCTYPE html>
-<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml">
 <head>
     <meta charset="UTF-8">
-    <title>Inventario Completo</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Building Optimization Baseline - Inventario</title>
+    <link rel="stylesheet" href="CSS/INVENTARIO/verInv.css">
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
+    <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
 </head>
+
 <body>
-<h1>Inventario Completo</h1>
-<a th:href="@{/inventario}">Regresar al inicio</a>
-<br><br>
 
-<table border="1">
-    <thead>
-    <tr>
-        <th>ID</th>
-        <th>Nombre Gestor</th>
-        <th>Nombre Obra</th>
-        <th>Tipo Registro</th>
-        <th>Fecha</th>
-        <th>Unidad de Medida</th>
-        <th>Cantidad</th>
-        <th>Material</th>
-        <th>Precio por Unidad</th>
-    </tr>
-    </thead>
-    <tbody>
-    <tr th:each="inv : ${inventarios}">
-        <td th:text="${inv.id_inventario}"></td>
-        <td th:text="${inv.nombreGestor}"></td>
-        <td th:text="${inv.nombreobra}"></td>
-        <td th:text="${inv.tipoRegistro}"></td>
-        <td th:text="${inv.fecha}"></td>
-        <td th:text="${inv.unidadMedida}"></td>
-        <td th:text="${inv.cantidad}"></td>
-        <td th:text="${inv.material}"></td>
-        <td th:text="${inv.precioUnidad}"></td>
-    </tr>
-    </tbody>
-</table>
+<header>
+    <nav class="menu">
+        <div class="logo-container">
+            <img th:src="@{IMG/imagen-bob.png}" alt="Logo BOB" class="logo">
+            <div class="logo-text-container">
+                <h1 class="logo-text">Building Optimization Baseline</h1>
+                <p class="logo-subtext">Gestión inteligente de proyectos de construcción</p>
+            </div>
+        </div>
+        <ul class="nav-links">
+            <li><a th:href="@{error404.html}">Perfil</a></li>
+        </ul>
+    </nav>
+</header>
 
-<div th:if="${inventarios == null or inventarios.empty}">
-    <p>No hay registros de inventario para mostrar.</p>
-</div>
+<main>
+    <div class="menu-dasboard">
+        <div class="menu">
+            <a class="enlace" th:href="@{/indice}"><i class="bx bxs-user-detail"></i><span>Gestion de Usuarios</span></a>
+            <a class="enlace" th:href="@{/inventario}"><i class="bx bx-box"></i><span>Inventario</span></a>
+            <a class="enlace" th:href="@{/avances}"><i class="bx bx-buildings"></i><span>Avances</span></a>
+            <a class="enlace" th:href="@{/contratista}"><i class="bx bx-receipt"></i><span>Contratista</span></a>
+            <a class="enlace" th:href="@{/presupuesto}"><i class="bx bx-money-withdraw"></i><span>Presupuesto</span></a>
+            <a class="enlace" href="proveedores.html"><i class="bx bx-hard-hat"></i><span>Proveedores</span></a>
+            <a class="enlace" href="#reportes"><i class="bx bx-line-chart"></i><span>Reportes</span></a>
+            <a class="enlace" href="#configuracion"><i class="bx bx-cog"></i><span>Configuración</span></a>
+        </div>
+    </div>
 
-<form th:action="@{/exportarExcelInv}" method="get">
-    <button type="submit">Exportar a Excel</button>
-</form>
+    <div class="dashboard-content">
+        <div class="inventory-header">
+            <h2><i class='bx bx-box'></i> Módulo de Inventario</h2>
+        </div>
+
+        <a class="back-link" th:href="@{/inventario}">
+            <i class='bx bx-arrow-back'></i> Regresar al inicio</a>
+
+        <div class="search-container">
+            <h2><i class='bx bx-search-alt'></i> Buscar Inventarios</h2>
+            <form class="search-form" th:action="@{/verInv}" method="get">
+                <label for="tipoBusqueda"><i class='bx bx-filter'></i> Buscar por:</label>
+                <select name="tipoBusqueda" id="tipoBusqueda">
+                    <option value="gestor">Nombre Gestor</option>
+                    <option value="obra">Nombre Obra</option>
+                    <option value="fecha">Fecha</option>
+                </select>
+
+                <input type="text" name="valorBusqueda" placeholder="Ingrese término de búsqueda...">
+
+                <input type="submit" value="Buscar">
+            </form>
+        </div>
+
+        <div class="table-container">
+            <table>
+                <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Nombre Gestor</th>
+                    <th>Nombre Obra</th>
+                    <th>Tipo Registro</th>
+                    <th>Fecha</th>
+                    <th>Unidad de Medida</th>
+                    <th>Cantidad</th>
+                    <th>Material</th>
+                    <th>Precio por Unidad</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr th:each="inv : ${inventarios}">
+                    <td th:text="${inv.id_inventario}"></td>
+                    <td th:text="${inv.nombreGestor}"></td>
+                    <td th:text="${inv.nombreobra}"></td>
+                    <td th:text="${inv.tipoRegistro}"></td>
+                    <td th:text="${inv.fecha}"></td>
+                    <td th:text="${inv.unidadMedida}"></td>
+                    <td th:text="${inv.cantidad}"></td>
+                    <td th:text="${inv.material}"></td>
+                    <td th:text="${inv.precioUnidad}"></td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <div class="no-records" th:if="${inventarios == null or inventarios.empty}">
+            <p>No hay registros de inventario para mostrar.</p>
+        </div>
+
+        <div class="export-container">
+            <form th:action="@{/exportarExcelInv}" method="get">
+                <button type="submit">
+                    <i class='bx bx-export'></i> Exportar a Excel
+                </button>
+            </form>
+        </div>
+    </div>
+</main>
+
+
 </body>
 </html>
