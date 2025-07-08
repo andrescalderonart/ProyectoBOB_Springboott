@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Avances</title>
+
+</head>
+<body>
+<h1>Lista de Avances de obra</h1>
+
+<a th:href="@{/avances/agregarAvance}" class="btn">Reportar nuevo avance</a>
+<br><br>
+
+<div th:if="${avances != null and !avances.empty}">
+    <table id="avancesTable">
+        <thead>
+        <tr>
+            <th>ID Avance</th>
+            <th>ID Obra</th>
+            <th>Nombre de la obra</th>
+            <th>Fecha</th>
+            <th>Acciones</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="avance : ${avances}">
+            <td th:text="${avance.id_avance}"></td>
+            <td th:text="${avance.id_obra}"></td>
+            <td>
+                <span th:each="presupuesto : ${presupuestos}"
+                      th:if="${presupuesto.id_obra == avance.id_obra}"
+                      th:text="${presupuesto.obraName}">
+                </span>
+            </td>
+            <td th:text="${avance.fecha}"></td>
+            <td>
+                <!-- Creo que es mejor no editar avances para no complicarse por su formato -->
+                <!--<a th:href="@{/avances/cambiar/} + ${avance.id_avance}" class="btn">Editar</a>-->
+                <a th:href="@{/avances/borrar/} + ${avance.id_avance}" class="btn"
+                   onclick="return confirm('¿Está seguro que desea eliminar este avance?')">Eliminar</a>
+                <a th:href="@{/avances/detalle/}+${avance.id_avance}" class="btn">Ver Detalle</a>
+            </td>
+        </tr>
+        </tbody>
+    </table>
+</div>
+<div th:if="${avances == null or avances.empty}">
+    <p>No hay avances registrados</p>
+</div>
+
+<a th:href="@{/avances/inicioAvances}" class="btn btn-secondary">Regresar</a>
+
+</body>
+</html>

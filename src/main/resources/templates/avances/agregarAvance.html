@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Reportar nuevo avance de obra</title> <!-- Static title since we only create -->
+
+    <style>
+        /* Style for material rows (same as before) */
+        .material-row {
+            margin: 10px 0;
+            padding: 5px;
+            border: 1px solid #ddd;
+        }
+
+        /* Form styling */
+        input, select, button {
+            margin: 5px 0;
+            display: block;
+        }
+
+        .btn-remove {
+            color: red;
+            cursor: pointer;
+            margin-left: 10px;
+        }
+
+        .btn {
+            padding: 8px 16px;
+            background-color: #4CAF50; /* Green */
+            color: white;
+            border: none;
+            cursor: pointer;
+        }
+
+        /* Blue "add" button */
+        .btn-add {
+            background-color: #2196F3;
+        }
+    </style>
+</head>
+<body>
+<h1>Reportar nuevo avance</h1>
+
+<!-- Back button -->
+<a th:href="@{/avances/inicioAvances}" class="btn">Regresar</a>
+<br><br>
+
+<!-- Create Form (now the only form) -->
+<form th:action="@{/avances/salvar}" method="post" th:object="${avance}" id="avanceForm">
+
+    <!-- Work Name Input -->
+    <div>
+        <label><b>Nombre de la obra:</b></label>
+        <select id="obraDropdown" name="id_obra" required>
+            <option value="">Seleccione...</option>
+            <option th:each="pre : ${presupuestos}"
+                    th:value="${pre.id_obra}"
+                    th:data-activities="${pre.activiValues != null ? #strings.listJoin(pre.activiValues.keySet(), ',') : ''}"
+                    th:text="${pre.obraName}">
+            </option>
+        </select>
+    </div>
+
+    <div>
+        <label><b>Fecha:</b></label>
+        <input type="date" name="fecha" required>
+    </div>
+
+    <h3>Actividad:</h3>
+
+    <!-- Single dropdown for selection -->
+    <div>
+        <select id="activityDropdown" name="id_matriz" required disabled>
+            <option value="">Debe seleccionar una obra</option>
+            <!--<option th:each="mat : ${matriz}"
+                    th:value="${mat.id_m}"
+                    th:data-nombre="${mat.nombre}"
+                    th:data-unidades="${mat.unidades}"
+                    th:text="${mat.nombre} + ' (' + mat.unidades + ')'">
+            </option>-->
+        </select>
+
+        <input type="number" id="inputcantidad" name="cantidad" step="0.01" min="0.01"
+               placeholder="Cantidad" class="quantity-input">
+
+    </div>
+
+
+
+
+    <!-- Container for selected
+    <div id="selectedActivity"> -->
+        <!-- Selected activity will appear here -->
+    </div>
+
+    <!-- Hidden inputs that will be submitted -->
+    <div id="hiddenInputs">
+        <input type="hidden" name="id_usuario" value="4">
+        <!-- Hidden input for user ID (you might want to set this from session) -->
+        <!-- Hidden input for user ID (you might want to set this from session) -->
+        <!-- Hidden input for user ID (you might want to set this from session) -->
+        <!-- Hidden input for user ID (you might want to set this from session) -->
+    </div>
+
+    <!-- Submit Button -->
+    <button type="submit" class="btn">Guardar</button>
+</form>
+
+
+<script th:inline="javascript">
+    document.addEventListener('DOMContentLoaded', function() {
+        const obraDropdown = document.getElementById('obraDropdown');
+        const activityDropdown = document.getElementById('activityDropdown');
+        const allMatriz = /*[[${matriz}]]*/ [];
+
+        // Create a map of all available activities for quick lookup
+        const matrizMap = new Map();
+        allMatriz.forEach(mat => {
+            matrizMap.set(mat.id_m, mat);
+        });
+
+        obraDropdown.addEventListener('change', function() {
+            const selectedObraId = this.value;
+            activityDropdown.innerHTML = '<option value="">Seleccione...</option>';
+            activityDropdown.disabled = true;
+
+            if (!selectedObraId) return;
+
+            // Get the selected option
+            const selectedOption = this.options[this.selectedIndex];
+            // Get the activities IDs from data-attribute
+            const activityIdsString = selectedOption.getAttribute('data-activities');
+
+            if (activityIdsString && activityIdsString.trim() !== '') {
+                const activityIds = activityIdsString.split(',');
+
+                // Populate the activities dropdown
+                activityIds.forEach(id => {
+                    const numericId = parseInt(id.trim());
+                    if (!isNaN(numericId)) {
+                        const mat = matrizMap.get(numericId);
+                        if (mat) {
+                            const option = document.createElement('option');
+                            option.value = mat.id_m;
+                            option.textContent = `${mat.nombre} (${mat.unidades})`;
+                            activityDropdown.appendChild(option);
+                        }
+                    }
+                });
+
+                activityDropdown.disabled = false;
+            } else {
+                console.log('No activities found for this work');
+            }
+        });
+    });
+</script>
+
+
+</body>
+</html>

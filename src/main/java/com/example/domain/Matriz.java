@@ -4,14 +4,13 @@ import jakarta.persistence.*;
 import lombok.Data;
 
 import java.io.Serializable;
-import java.util.Map;
 
 @Data
 @Entity
 @Table(name = "matriz")
 
 
-public class Material implements Serializable{
+public class Matriz implements Serializable{
 
     @Id
     @Column(name = "id_matriz")
