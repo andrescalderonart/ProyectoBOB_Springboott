@@ -2,203 +2,227 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
   <meta charset="UTF-8">
-  <!-- Dynamic title based on edit/view mode -->
   <title th:text="${'Detalle de Avance ID#'+ avance.id_avance}"></title>
-
-  <style>
-    /* Style for each material row */
-    .material-row {
-        margin: 10px 0;
-        padding: 5px;
-        border: 1px solid #ddd;
-    }
-
-    /* Base styles for form elements */
-    input, select, button {
-        margin: 5px 0;
-        display: block;
-    }
-
-    /* Style for remove buttons */
-    .btn-remove {
-        color: red;
-        cursor: pointer;
-        margin-left: 10px;
-    }
-
-    /* Base button styling */
-    .btn {
-        padding: 8px 16px;
-        background-color: #4CAF50;
-        color: white;
-        border: none;
-        cursor: pointer;
-        margin: 10px 0;
-    }
-
-    /* Container for activities section */
-    #actividadesContainer {
-        margin: 20px 0;
-    }
-
-    table {
-        border-collapse: collapse;
-        width: 100%;
-    }
-
-    th, td {
-        border: 1px solid #ddd;
-        padding: 8px;
-        text-align: left;
-    }
-
-    th {
-        background-color: #f2f2f2;
-    }
-  </style>
+  <link rel="stylesheet" href="detalle-avance-styles.css">
+  <link rel="stylesheet" th:href="@{/CSS/verAvance.css}">
+  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
 </head>
-
 <body>
-<!-- heading -->
-<h1 th:text="${'Detalle de Avance (ID: ' + avance.id_avance + ')'}"></h1>
-
-<!-- Edit form (shown only in edit mode) -->
-<!--<form th:if="${Editando}"
-      th:action="@{${presupuesto.id_obra != null ? '/presupuestos/actualizar/' + presupuesto.id_obra : '/presupuestos/salvar'}}"
-      method="post"
-      th:object="${presupuesto}">
-
-  <input type="hidden" th:field="*{id_obra}">-->
-
-  <!-- Work name input (editable in edit mode) -->
-<!--<div th:if="${Editando}">
-  <label><b>Nombre de la obra:</b></label>
-  <input type="text" th:field="*{obraName}" name="obraName" required>
-</div>-->
-
-<!-- Display work name (view mode) -->
-<!--<h2 th:unless="${Editando}" th:text="${presupuesto.obraName}"></h2>
-
-<h3>Actividades:</h3>-->
-
-<!--  different display based on mode -->
-<!--<div th:if="${Editando}">-->
-<!-- Edit mode  interface
-    <div id="actividadesContainer">
-      Check if there are existing activities
-      <div th:if="${not #lists.isEmpty(actividadIds)}">
-      Loop through existing activities
-      <div th:each="actividadId, stat : ${actividadIds}" class="material-row">
-        <select name="actividadIds" required>
-          <option value="">Seleccione...</option>
-          <option th:each="mat : ${matriz}"
-                  th:value="${mat.id_m}"
-                  th:selected="${mat.id_m == actividadId}"
-                  th:data-nombre="${mat.nombre}"
-                  th:data-unidades="${mat.unidades}"
-                  th:text="${mat.nombre} + ' ('+${mat.unidades}+')'">
-          </option>
-        </select>
-        <input type="number" name="cantidades" step="0.01" min="0.01"
-               th:value="${cantidades[stat.index]}" placeholder="Cantidad" required>
-        <span class="btn-remove" onclick="removeActivity(this)">✕ Eliminar</span>
+<!-- Header -->
+<header>
+  <div class="menu">
+    <div class="logo-container">
+      <img th:src="@{../IMG/imagen-bob.png}" alt="Logo BOB" class="logo">
+      <div class="logo-text-container">
+        <h1 class="logo-text">Building Optimization Baseline</h1>
+        <p class="logo-subtext">Gestión de Proyectos</p>
       </div>
-      </div>-->
-      <!-- Empty row template for new materials -->
-      <!-- <div th:if="${actividadesConCantidad == null or actividadesConCantidad.empty}" class="material-row">
-        <select name="actividadIds" required>
-          <option value="">Seleccione actividad...</option>
-          <option th:each="act : ${actividades}"
-                  th:value="${act.id_m}"
-                  th:text="${#strings.abbreviate(act.nombre, 100) + ' (' + act.unidades + ')'}">
-          </option>
-        </select>
-        <input type="number" name="quantities" step="0.01" min="0.01" placeholder="Cantidad" required>
-        <span class="btn-remove" onclick="removeRow(this)">✕ Eliminar</span>
+    </div>
+    <nav>
+      <ul class="nav-links">
+        <li><a href="/">Inicio</a></li>
+        <li><a href="/avances/inicioAvances" class="active">Avances</a></li>
+        <li><a href="/presupuestos">Presupuestos</a></li>
+        <li><a href="/reportes">Reportes</a></li>
+      </ul>
+    </nav>
+  </div>
+</header>
+
+<!-- Main Content -->
+<main class="main-content">
+  <div class="detail-container">
+    <!-- Header Section -->
+    <div class="detail-header">
+      <div class="detail-title">
+        <i class="fas fa-clipboard-list"></i>
+        <h1 th:text="${'Detalle de Avance (ID: ' + avance.id_avance + ')'}"></h1>
+      </div>
+      <div class="detail-actions">
+        <a th:href="@{/avances/inicioAvances}" class="btn btn-back">
+          <i class="fas fa-arrow-left"></i>
+          Regresar
+        </a>
       </div>
     </div>
 
-    <button type="button" onclick="addActivity()" class="btn" style="background-color: #2196F3;">
-      + Añadir otra actividad
-    </button>
-    <br><br>
+    <!-- Content Card -->
+    <div class="detail-card">
+      <!-- Project Info Section -->
+      <div class="info-section">
+        <div class="section-header">
+          <i class="fas fa-building"></i>
+          <h2>Información del Proyecto</h2>
+        </div>
+        <div class="info-content">
+          <div class="info-item">
+                            <span class="info-label">
+                                <i class="fas fa-hashtag"></i>
+                                ID de Avance:
+                            </span>
+            <span class="info-value" th:text="${avance.id_avance}"></span>
+          </div>
+          <div class="info-item">
+                            <span class="info-label">
+                                <i class="fas fa-hammer"></i>
+                                Obra:
+                            </span>
+            <span class="info-value"
+                  th:each="presupuesto : ${presupuestos}"
+                  th:if="${presupuesto.id_obra == avance.id_obra}"
+                  th:text="${presupuesto.obraName}"></span>
+          </div>
+          <div class="info-item">
+                            <span class="info-label">
+                                <i class="fas fa-calendar-alt"></i>
+                                Fecha:
+                            </span>
+            <span class="info-value" th:text="${avance.fecha}"></span>
+          </div>
+        </div>
+      </div>
 
-    <button type="submit" class="btn">Guardar presupuesto</button>
-  </div>-->
 
-  <!-- View mode display -->
-  <div th:unless="${Editando}">
-    <div th:if="${listActividades != null and !listActividades.empty}">
-      <table>
-        <thead>
-        <tr>
-          <th>ID Actividad</th>
-          <th>Nombre</th>
-          <th>Unidades</th>
-          <th>Cantidad</th>
-        </tr>
-        </thead>
-        <tbody>
-        <tr th:each="actividad : ${listActividades}">
-          <td th:text="${actividad.id_m}"></td>
-          <td th:text="${actividad.nombre}"></td>
-          <td th:text="${actividad.unidades}"></td>
-        </tr>
-        </tbody>
-      </table>
+        <!-- Activities Table -->
+        <div th:if="${listActividades != null and !listActividades.empty}" class="table-container">
+          <table class="data-table">
+            <thead>
+            <tr>
+              <th>
+                <i class="fas fa-hashtag"></i>
+                ID Actividad
+              </th>
+              <th>
+                <i class="fas fa-list-ul"></i>
+                Nombre
+              </th>
+              <th>
+                <i class="fas fa-ruler"></i>
+                Unidades
+              </th>
+              <th>
+                <i class="fas fa-calculator"></i>
+                Cantidad
+              </th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:each="actividad : ${listActividades}">
+              <td th:text="${actividad.id_m}"></td>
+              <td th:text="${actividad.nombre}"></td>
+              <td th:text="${actividad.unidades}"></td>
+              <td class="quantity-cell">
+                <span class="quantity-badge" th:text="${actividad.cantidad}"></span>
+              </td>
+            </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- Progress Details Section -->
+      <div th:unless="${Editando}" class="progress-section">
+        <div class="section-header">
+          <i class="fas fa-chart-line"></i>
+          <h2>Detalle del Avance</h2>
+        </div>
+
+        <div class="progress-card">
+          <div class="progress-header">
+            <i class="fas fa-clipboard-check"></i>
+            <h3>Progreso Reportado</h3>
+          </div>
+
+          <div class="table-container">
+            <table class="data-table">
+              <thead>
+              <tr>
+                <th>
+                  <i class="fas fa-hashtag"></i>
+                  ID Material
+                </th>
+                <th>
+                  <i class="fas fa-tag"></i>
+                  Nombre
+                </th>
+                <th>
+                  <i class="fas fa-ruler"></i>
+                  Unidades
+                </th>
+                <th>
+                  <i class="fas fa-calculator"></i>
+                  Cantidad
+                </th>
+              </tr>
+              </thead>
+              <tbody>
+              <tr class="highlight-row">
+                <td class="id-cell" th:text="${avance.id_matriz}"></td>
+                <td th:each="item : ${matriz}"
+                    th:if="${avance.id_matriz == item.id_m}"
+                    th:text="${item.nombre}">
+                </td>
+                <td th:each="item : ${matriz}"
+                    th:if="${avance.id_matriz == item.id_m}"
+                    th:text="${item.unidades}">
+                </td>
+                <td class="quantity-cell">
+                  <span class="quantity-badge primary" th:text="${avance.cantidad}"></span>
+                </td>
+              </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <!-- Edit Mode Section (if needed) -->
+      <div th:if="${Editando}" class="edit-section">
+        <div class="section-header">
+          <i class="fas fa-edit"></i>
+          <h2>Editar Avance</h2>
+        </div>
+
+        <div id="actividadesContainer" class="activities-container">
+          <!-- Dynamic content will be added here -->
+        </div>
+
+        <div class="edit-actions">
+          <button type="button" class="btn btn-secondary" onclick="addActivity()">
+            <i class="fas fa-plus"></i>
+            Agregar Actividad
+          </button>
+        </div>
+      </div>
     </div>
-    <h2 th:each="presupuesto : ${presupuestos}"
-        th:if="${presupuesto.id_obra == avance.id_obra}"
-        th:text="${'Obra: ' + presupuesto.obraName}"></h2>
   </div>
+</main>
+
+<!-- Footer -->
+<footer>
+  <div class="footer-content">
+    <div class="footer-section">
+      <h4>Contacto</h4>
+      <p><i class="fas fa-envelope"></i> carta.v.devhouse@gmail.com</p>
+      <p><i class="fas fa-phone"></i> +57 3213788556</p>
+    </div>
+    <div class="footer-section">
+      <h4>Enlaces</h4>
+      <a href="/avances/inicioAvances">Gestión de Avances</a>
+      <a href="/presupuestos">Presupuestos</a>
+      <a href="/reportes">Reportes</a>
+    </div>
+    <div class="footer-section">
+      <h4>Soporte</h4>
+      <a href="/ayuda">Centro de Ayuda</a>
+      <a href="/documentacion">Documentación</a>
+    </div>
   </div>
-
-
-
-</form>
-
-<!-- View mode display when not editing -->
-<div th:unless="${Editando}">
-  <h2 th:text="${avance.id_avance}"></h2>
-  <h2 th:each="presupuesto : ${presupuestos}"
-      th:if="${presupuesto.id_obra == avance.id_obra}"
-      th:text="${'Obra: ' + presupuesto.obraName}"></h2>
-
-  <h3>Avance reportado:</h3>
-  <div>
-    <table>
-      <thead>
-      <tr>
-        <th>ID Material</th>
-        <th>Nombre</th>
-        <th>Unidades</th>
-        <th>Cantidad</th>
-      </tr>
-      </thead>
-      <tbody>
-      <tr>
-        <td th:text="${avance.id_matriz}"></td>
-        <td th:each="item : ${matriz}"
-            th:if="${avance.id_matriz == item.id_m}"
-            th:text="${item.nombre}">
-        </td>
-        <td th:each="item : ${matriz}"
-            th:if="${avance.id_matriz == item.id_m}"
-            th:text="${item.unidades}">
-        </td>
-        <td th:text="${avance.cantidad}"></td>
-      </tr>
-      </tbody>
-    </table>
+  <div class="footer-bottom">
+    <p>&copy; 2025 Building Optimization Baseline. Todos los derechos reservados.</p>
   </div>
-
-</div>
-
-<br><br>
-
-<!-- Back button -->
-<a th:href="@{/avances/inicioAvances}" class="btn">Regresar</a>
-<br><br>
+</footer>
 
 <!-- JavaScript for dynamic form behavior -->
 <script th:if="${Editando}">
@@ -206,62 +230,70 @@
    * Adds a new material row to the form
    */
   function addActivity() {
-        const container = document.getElementById('actividadesContainer');
+      const container = document.getElementById('actividadesContainer');
 
-        // Create new row div
-        const newRow = document.createElement('div');
-        newRow.className = 'material-row';
+      // Create new row div
+      const newRow = document.createElement('div');
+      newRow.className = 'material-row';
 
-        // Create the select dropdown
-        const select = document.createElement('select');
-        select.name = 'actividadIds';
-        select.required = true;
+      // Create the select dropdown
+      const select = document.createElement('select');
+      select.name = 'actividadIds';
+      select.required = true;
+      select.className = 'form-select';
 
-        // Add default option
-        const defaultOption = document.createElement('option');
-        defaultOption.value = '';
-        defaultOption.textContent = 'Seleccione...';
-        select.appendChild(defaultOption);
+      // Add default option
+      const defaultOption = document.createElement('option');
+      defaultOption.value = '';
+      defaultOption.textContent = 'Seleccione...';
+      select.appendChild(defaultOption);
 
-        // Add options from Thymeleaf (this will be filled by the browser)
-        const options = document.querySelectorAll('select[name="actividadIds"] option:not([value=""])');
-        options.forEach(option => {
-            const newOption = option.cloneNode(true);
-            select.appendChild(newOption);
-        });
+      // Add options from Thymeleaf (this will be filled by the browser)
+      const options = document.querySelectorAll('select[name="actividadIds"] option:not([value=""])');
+      options.forEach(option => {
+          const newOption = option.cloneNode(true);
+          select.appendChild(newOption);
+      });
 
-        // Create quantity input
-        const quantityInput = document.createElement('input');
-        quantityInput.type = 'number';
-        quantityInput.name = 'cantidades';
-        quantityInput.step = '0.01';
-        quantityInput.min = '0.01';
-        quantityInput.placeholder = 'Cantidad';
-        quantityInput.required = true;
+      // Create quantity input
+      const quantityInput = document.createElement('input');
+      quantityInput.type = 'number';
+      quantityInput.name = 'cantidades';
+      quantityInput.step = '0.01';
+      quantityInput.min = '0.01';
+      quantityInput.placeholder = 'Cantidad';
+      quantityInput.required = true;
+      quantityInput.className = 'form-input';
 
-        // Create remove button
-        const removeBtn = document.createElement('span');
-        removeBtn.className = 'btn-remove';
-        removeBtn.textContent = '✕ Eliminar';
-        removeBtn.onclick = function() { removeRow(this); };
+      // Create remove button
+      const removeBtn = document.createElement('button');
+      removeBtn.type = 'button';
+      removeBtn.className = 'btn btn-remove';
+      removeBtn.innerHTML = '<i class="fas fa-times"></i> Eliminar';
+      removeBtn.onclick = function() { removeRow(this); };
 
-        // Append all elements to the row
-        newRow.appendChild(select);
-        newRow.appendChild(quantityInput);
-        newRow.appendChild(removeBtn);
+      // Create input group
+      const inputGroup = document.createElement('div');
+      inputGroup.className = 'input-group';
+      inputGroup.appendChild(select);
+      inputGroup.appendChild(quantityInput);
+      inputGroup.appendChild(removeBtn);
 
-        // Add the row to the container
-        container.appendChild(newRow);
-    }
+      // Append to row
+      newRow.appendChild(inputGroup);
 
+      // Add the row to the container
+      container.appendChild(newRow);
+  }
 
+  function removeRow(button) {
+      button.closest('.material-row').remove();
+  }
 
-    function removeActivity(activityId, element) {
-               // Remove visual element
-        element.parentElement.remove();
-
-    }
-
+  function removeActivity(activityId, element) {
+      // Remove visual element
+      element.parentElement.remove();
+  }
 
   // Initialize the form when page loads
   document.addEventListener('DOMContentLoaded', function() {

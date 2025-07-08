@@ -2,110 +2,150 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <title>Reportar nuevo avance de obra</title> <!-- Static title since we only create -->
-
-    <style>
-        /* Style for material rows (same as before) */
-        .material-row {
-            margin: 10px 0;
-            padding: 5px;
-            border: 1px solid #ddd;
-        }
-
-        /* Form styling */
-        input, select, button {
-            margin: 5px 0;
-            display: block;
-        }
-
-        .btn-remove {
-            color: red;
-            cursor: pointer;
-            margin-left: 10px;
-        }
-
-        .btn {
-            padding: 8px 16px;
-            background-color: #4CAF50; /* Green */
-            color: white;
-            border: none;
-            cursor: pointer;
-        }
-
-        /* Blue "add" button */
-        .btn-add {
-            background-color: #2196F3;
-        }
-    </style>
+    <title>Reportar nuevo avance de obra</title>
+    <link rel="stylesheet" th:href="@{/CSS/agregarAvance.css}">
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
 </head>
 <body>
-<h1>Reportar nuevo avance</h1>
-
-<!-- Back button -->
-<a th:href="@{/avances/inicioAvances}" class="btn">Regresar</a>
-<br><br>
-
-<!-- Create Form (now the only form) -->
-<form th:action="@{/avances/salvar}" method="post" th:object="${avance}" id="avanceForm">
-
-    <!-- Work Name Input -->
-    <div>
-        <label><b>Nombre de la obra:</b></label>
-        <select id="obraDropdown" name="id_obra" required>
-            <option value="">Seleccione...</option>
-            <option th:each="pre : ${presupuestos}"
-                    th:value="${pre.id_obra}"
-                    th:data-activities="${pre.activiValues != null ? #strings.listJoin(pre.activiValues.keySet(), ',') : ''}"
-                    th:text="${pre.obraName}">
-            </option>
-        </select>
+<!-- Header -->
+<header>
+    <div class="menu">
+        <div class="logo-container">
+            <img th:src="@{../IMG/imagen-bob.png}" alt="Logo BOB" class="logo">
+            <div class="logo-text-container">
+                <h1 class="logo-text">Building Optimization Baseline</h1>
+                <p class="logo-subtext">Gestión de Proyectos</p>
+            </div>
+        </div>
+        <nav>
+            <ul class="nav-links">
+                <li><a href="/" class="active">Inicio</a></li>
+                <li><a href="/avances/inicioAvances">Avances</a></li>
+                <li><a href="/presupuestos">Presupuestos</a></li>
+                <li><a href="/reportes">Reportes</a></li>
+            </ul>
+        </nav>
     </div>
+</header>
 
-    <div>
-        <label><b>Fecha:</b></label>
-        <input type="date" name="fecha" required>
+<!-- Main Content -->
+<main class="main-content">
+    <div class="form-container">
+        <div class="form-header">
+            <div class="form-title">
+                <i class="fas fa-clipboard-list"></i>
+                <h1>Reportar nuevo avance</h1>
+            </div>
+            <a th:href="@{/avances/inicioAvances}" class="btn btn-back">
+                <i class="fas fa-arrow-left"></i>
+                Regresar
+            </a>
+        </div>
+
+        <div class="form-card">
+            <form th:action="@{/avances/salvar}" method="post" th:object="${avance}" id="avanceForm">
+
+                <!-- Obra Selection -->
+                <div class="form-section">
+                    <h3 class="section-title">
+                        <i class="fas fa-building"></i>
+                        Información del Proyecto
+                    </h3>
+
+                    <div class="form-group">
+                        <label class="form-label">
+                            <i class="fas fa-hammer"></i>
+                            Nombre de la obra
+                        </label>
+                        <select id="obraDropdown" name="id_obra" class="form-select" required>
+                            <option value="">Seleccione una obra...</option>
+                            <option th:each="pre : ${presupuestos}"
+                                    th:value="${pre.id_obra}"
+                                    th:data-activities="${pre.activiValues != null ? #strings.listJoin(pre.activiValues.keySet(), ',') : ''}"
+                                    th:text="${pre.obraName}">
+                            </option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label">
+                            <i class="fas fa-calendar-alt"></i>
+                            Fecha
+                        </label>
+                        <input type="date" name="fecha" class="form-input" required>
+                    </div>
+                </div>
+
+                <!-- Activity Selection -->
+                <div class="form-section">
+                    <h3 class="section-title">
+                        <i class="fas fa-tasks"></i>
+                        Actividad y Progreso
+                    </h3>
+
+                    <div class="form-group">
+                        <label class="form-label">
+                            <i class="fas fa-list-ul"></i>
+                            Actividad
+                        </label>
+                        <select id="activityDropdown" name="id_matriz" class="form-select" required disabled>
+                            <option value="">Debe seleccionar una obra</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label">
+                            <i class="fas fa-calculator"></i>
+                            Cantidad
+                        </label>
+                        <input type="number"
+                               id="inputcantidad"
+                               name="cantidad"
+                               step="0.01"
+                               min="0.01"
+                               placeholder="Ingrese la cantidad"
+                               class="form-input">
+                    </div>
+                </div>
+
+                <!-- Hidden Inputs -->
+                <div id="hiddenInputs">
+                    <input type="hidden" name="id_usuario" value="4">
+                </div>
+
+                <!-- Submit Button -->
+                <div class="form-actions">
+                    <button type="submit" class="btn btn-primary">
+                        <i class="fas fa-save"></i>
+                        Guardar Avance
+                    </button>
+                </div>
+            </form>
+        </div>
     </div>
+</main>
 
-    <h3>Actividad:</h3>
+<!-- Footer -->
+<footer>
+    <div class="footer-content">
 
-    <!-- Single dropdown for selection -->
-    <div>
-        <select id="activityDropdown" name="id_matriz" required disabled>
-            <option value="">Debe seleccionar una obra</option>
-            <!--<option th:each="mat : ${matriz}"
-                    th:value="${mat.id_m}"
-                    th:data-nombre="${mat.nombre}"
-                    th:data-unidades="${mat.unidades}"
-                    th:text="${mat.nombre} + ' (' + mat.unidades + ')'">
-            </option>-->
-        </select>
-
-        <input type="number" id="inputcantidad" name="cantidad" step="0.01" min="0.01"
-               placeholder="Cantidad" class="quantity-input">
-
+        <div class="footer-section">
+            <h4>Enlaces</h4>
+            <a th:href="@{/inicioAvances}">Gestión de Avances</a>
+            <a href="/presupuestos">Presupuestos</a>
+            <a href="/reportes">Reportes</a>
+        </div>
+        <div class="footer-section">
+            <h4>Soporte</h4>
+            <a href="/ayuda">Centro de Ayuda</a>
+            <a href="/documentacion">Documentación</a>
+        </div>
     </div>
-
-
-
-
-    <!-- Container for selected
-    <div id="selectedActivity"> -->
-        <!-- Selected activity will appear here -->
+    <div class="footer-bottom">
+        <p>&copy; 2024 Building Optimization Baseline. Todos los derechos reservados.</p>
     </div>
-
-    <!-- Hidden inputs that will be submitted -->
-    <div id="hiddenInputs">
-        <input type="hidden" name="id_usuario" value="4">
-        <!-- Hidden input for user ID (you might want to set this from session) -->
-        <!-- Hidden input for user ID (you might want to set this from session) -->
-        <!-- Hidden input for user ID (you might want to set this from session) -->
-        <!-- Hidden input for user ID (you might want to set this from session) -->
-    </div>
-
-    <!-- Submit Button -->
-    <button type="submit" class="btn">Guardar</button>
-</form>
-
+</footer>
 
 <script th:inline="javascript">
     document.addEventListener('DOMContentLoaded', function() {
@@ -155,7 +195,5 @@
         });
     });
 </script>
-
-
 </body>
 </html>

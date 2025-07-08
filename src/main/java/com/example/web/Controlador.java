@@ -1,4 +1,3 @@
-
 package com.example.web;
 
 import com.example.domain.Individuo;
@@ -62,7 +61,7 @@ public class Controlador {
     @PostMapping("/salvar")
     public String salvar(@Valid Individuo individuo, Errors errores) {
         if (errores.hasErrors()) {
-            return "Cambiar"; // Si hay errores, vuelve a la vista 'Cambiar' (revisa si esto es lo que quieres)
+            return "agregar"; // Si hay errores, vuelve a la vista 'Cambiar' (revisa si esto es lo que quieres)
         }
         individuoServicio.salvar(individuo);
         return "redirect:/indice"; // Redirige a la nueva página de índice después de salvar

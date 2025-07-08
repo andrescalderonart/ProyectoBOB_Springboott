@@ -1,92 +1,85 @@
+
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <title>Crear Nuevo Presupuesto</title> <!-- Static title since we only create -->
-
-    <style>
-        /* Style for material rows (same as before) */
-        .material-row {
-            margin: 10px 0;
-            padding: 5px;
-            border: 1px solid #ddd;
-        }
-
-        /* Form styling */
-        input, select, button {
-            margin: 5px 0;
-            display: block;
-        }
-
-        .btn-remove {
-            color: red;
-            cursor: pointer;
-            margin-left: 10px;
-        }
-
-        .btn {
-            padding: 8px 16px;
-            background-color: #4CAF50; /* Green */
-            color: white;
-            border: none;
-            cursor: pointer;
-        }
-
-        /* Blue "add" button */
-        .btn-add {
-            background-color: #2196F3;
-        }
-    </style>
+    <title>Crear Nuevo Presupuesto</title>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" th:href="@{/CSS/agregarPresu.css}">
 </head>
 <body>
-<h1>Crear Nuevo Presupuesto</h1>
-
-<!-- Back button -->
-<a th:href="@{/presupuestos/inicioPresupuestos}" class="btn">Regresar</a>
-<br><br>
-
-<!-- Create Form (now the only form) -->
-<form th:action="@{/presupuestos/salvar}" method="post" th:object="${presupuesto}">
-
-    <!-- Work Name Input -->
-    <div>
-        <label><b>Nombre de la obra:</b></label>
-        <input type="text" th:field="*{obraName}" required>
+<div class="container">
+    <!-- Encabezado -->
+    <div class="header">
+        <h1 class="page-title">Crear Nuevo Presupuesto</h1>
     </div>
 
-    <h3>Actividades:</h3>
+    <!-- Botón de regreso -->
+    <a th:href="@{/presupuestos/inicioPresupuestos}" class="back-btn">← Regresar</a>
 
-    <!-- Single dropdown for selection -->
-    <div>
-        <select id="activityDropdown">
-            <option value="">Seleccione...</option>
-            <option th:each="mat : ${matriz}"
-                    th:value="${mat.id_m}"
-                    th:data-nombre="${mat.nombre}"
-                    th:data-unidades="${mat.unidades}"
-                    th:text="${mat.nombre} + ' (' + mat.unidades + ')'">
-            </option>
-        </select>
+    <!-- Formulario -->
+    <div class="form-container">
+        <form th:action="@{/presupuestos/salvar}" method="post" th:object="${presupuesto}">
 
-        <input type="number" id="activityQuantity" step="0.01" min="0.01"
-               placeholder="Cantidad" class="quantity-input">
+            <!-- Nombre de la obra -->
+            <div class="form-group">
+                <label for="obraName"><b>Nombre de la obra:</b></label>
+                <input type="text" id="obraName" th:field="*{obraName}" class="form-input" required>
+            </div>
 
-        <button type="button" onclick="addactivity()" class="btn btn-add">
-            Añadir actividad
-        </button>
+            <!-- Sección de actividades -->
+            <div class="activities-section">
+                <h3 class="section-title">Actividades:</h3>
+
+                <!-- Selector de actividades -->
+                <div class="activity-selector">
+                    <div class="selector-row">
+                        <div class="select-container">
+                            <label for="activityDropdown">Seleccionar actividad:</label>
+                            <select id="activityDropdown" name="actividadIds" class="form-select">
+                                <option value="">Seleccione...</option>
+                                <option th:each="mat : ${matriz}"
+                                        th:value="${mat.id_m}"
+                                        th:data-nombre="${mat.nombre}"
+                                        th:data-unidades="${mat.unidades}"
+                                        th:text="${mat.nombre} + ' (' + mat.unidades + ')'">
+                                </option>
+                            </select>
+                        </div>
+
+                        <div class="quantity-container">
+                            <label for="activityQuantity">Cantidad:</label>
+                            <input type="number" id="activityQuantity" step="0.01" min="0.01"
+                                   placeholder="Cantidad" class="form-input quantity-input" name="cantidades">
+                        </div>
+
+                        <div class="add-btn-container">
+                            <button type="button" onclick="addActivity()" class="btn btn-add">
+                                + Añadir actividad
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Lista de actividades seleccionadas -->
+                <div class="selected-activities-container">
+                    <h4 class="selected-title">Actividades seleccionadas:</h4>
+                    <div id="selectedActivities" class="selected-activities">
+                        <!-- Las actividades seleccionadas aparecerán aquí -->
+                    </div>
+                </div>
+            </div>
+
+            <!-- Inputs ocultos para el formulario -->
+            <div id="hiddenInputs"></div>
+
+            <!-- Botón de envío -->
+            <div class="submit-container">
+                <button type="submit" class="btn btn-submit">Guardar presupuesto</button>
+            </div>
+        </form>
     </div>
-
-    <!-- Container for selected  -->
-    <div id="selectedActivities">
-        <!-- Selected activities will appear here -->
-    </div>
-
-    <!-- Hidden inputs that will be submitted -->
-    <div id="hiddenInputs"></div>
-
-    <!-- Submit Button -->
-    <button type="submit" class="btn">Guardar presupuesto</button>
-</form>
+</div>
 
 <script>
     // Store added activities to prevent duplicates
@@ -128,16 +121,22 @@
         const activityDiv = document.createElement('div');
         activityDiv.className = 'selected-activity';
         activityDiv.innerHTML = `
-            <span>${activityName} (${activityUnits}) - Cantidad: ${quantity}</span>
-            <span class="btn-remove" onclick="removeActivity('${activityId}', this)">✕ Eliminar</span>
+            <div class="activity-info">
+                <span class="activity-name">${activityName}</span>
+                <span class="activity-units">(${activityUnits})</span>
+                <span class="activity-quantity">Cantidad: ${quantity}</span>
+            </div>
+            <button type="button" class="btn-remove" onclick="removeActivity('${activityId}', this)">
+                ✕ Eliminar
+            </button>
         `;
         selectedActivitiesDiv.appendChild(activityDiv);
 
         // Create hidden inputs for form submission
-        const materialIdInput = document.createElement('input');
-        materialIdInput.type = 'hidden';
-        materialIdInput.name = 'activityIds';
-        materialIdInput.value = activityId;
+        const activityIdInput = document.createElement('input');
+        activityIdInput.type = 'hidden';
+        activityIdInput.name = 'activityIds';
+        activityIdInput.value = activityId;
 
         const quantityInputHidden = document.createElement('input');
         quantityInputHidden.type = 'hidden';

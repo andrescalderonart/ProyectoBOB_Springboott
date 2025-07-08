@@ -2,60 +2,69 @@
 <html lang="es" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Pagina de inicio</title>
+    <link rel="stylesheet" href="CSS/indice.css">
 </head>
 <body>
+<div class="container">
+    <header>
+        <h1>Sistema de Gestión de Individuos</h1>
+    </header>
 
-<h2>Agregar un individuo</h2>
-<a th:href="@{/anexar}">Agregar inidividuos</a>
-<br>
+    <section class="add-section">
+        <h2>Agregar un individuo</h2>
+        <a th:href="@{/anexar}" class="btn btn-primary">Agregar individuos</a>
+        <a th:href="@{/dashboardADMIN}" class="btn btn-primary">Regresar</a>
+    </section>
 
-    <h1>Llamo datos de la BD a mi pagina usando Spring</h1>
-    <br>
-    <div th:if="${individuos != null and !individuos.empty}">
-        <table border="2">
-            <tr>
-                <th>Nombre:</th>
-                <th>Apellido:</th>
-                <th>Edad:</th>
-                <th>Correo:</th>
-                <th>Telefono:</th>
-                <th>Editar</th>
-                <th>Eliminar</th>
-            </tr>
-            <tr th:each="individuo : ${individuos}">
-                <td th:text="${individuo.nombre}"></td>
-                <td th:text="${individuo.apellido}"></td>
-                <td th:text="${individuo.edad}"></td>
-                <td th:text="${individuo.correo}"></td>
-                <td th:text="${individuo.telefono}"></td>
-                <td><a th:href="@{/cambiar/} + ${individuo.id_individuo}" th:text="Cambiar">
-                </a></td>
-                <td><a th:href="@{/borrar/} + ${individuo.id_individuo}" th:text="Eliminar">
-                </a></td>
-            </tr>
-        </table>
-    </div>
-<div th:if="${individuos == null or individuos.empty}">
-    La lista no tiene información para mostrar.
+    <section class="data-section">
+        <h2>Lista de Individuos</h2>
+
+        <!-- Tabla con datos de Spring Boot -->
+        <div th:if="${individuos != null and !individuos.empty}" class="table-container">
+            <table class="data-table">
+                <thead>
+                <tr>
+                    <th>Nombre</th>
+                    <th>Apellido</th>
+                    <th>Edad</th>
+                    <th>Correo</th>
+                    <th>Teléfono</th>
+                    <th>Acciones</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr th:each="individuo : ${individuos}">
+                    <td th:text="${individuo.nombre}"></td>
+                    <td th:text="${individuo.apellido}"></td>
+                    <td th:text="${individuo.edad}"></td>
+                    <td th:text="${individuo.correo}"></td>
+                    <td th:text="${individuo.telefono}"></td>
+                    <td class="actions">
+                        <a th:href="@{/cambiar/} + ${individuo.id_individuo}" class="btn btn-edit">Editar</a>
+                        <a th:href="@{/borrar/} + ${individuo.id_individuo}" class="btn btn-delete">Eliminar</a>
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <!-- Mensaje cuando no hay datos -->
+        <div th:if="${individuos == null or individuos.empty}" class="empty-message">
+            <p>La lista no tiene información para mostrar.</p>
+        </div>
+    </section>
+
+    <section class="export-section">
+        <form th:action="@{/exportarExcel}" method="get">
+            <button type="submit" class="btn btn-success">
+                <span></span> Exportar a Excel
+            </button>
+        </form>
+    </section>
 </div>
-<br>
-<form th:action="@{/exportarExcel}" method="get">
-    <button type="submit">Exportar a Excel</button>
-</form>
-<br>
-
-<h2>Agregar un presupuesto</h2>
-<a th:href="@{/presupuestos/anexar}">Agregar presupuesto</a>
-<br>
-
-<form th:action="@{/logout}" method="post">
-    <a href="#" onclick="this.parentNode.submit()">Cerrar sesion</a>
-</form>
 </body>
 </html>
-
-
-
 
 

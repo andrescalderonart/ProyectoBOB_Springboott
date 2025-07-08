@@ -97,6 +97,11 @@ public class ControladorPresupuestos
         return "redirect:/presupuestos/inicioPresupuestos";
     }
 
+    @GetMapping ("/dashboardADMIN")
+    public String ADMIN(){
+        return "dashboardADMIN";
+    }
+
     //funcionalidad para guardar cambios
     @PostMapping("/actualizar/{id_obra}")
     public String actualizarPresupuesto(
