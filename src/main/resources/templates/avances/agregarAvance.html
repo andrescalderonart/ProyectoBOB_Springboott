@@ -3,146 +3,51 @@
 <head>
     <meta charset="UTF-8">
     <title>Reportar nuevo avance de obra</title>
-    <link rel="stylesheet" th:href="@{/CSS/agregarAvance.css}">
-    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="/CSS/agregarAvance.css">
 </head>
 <body>
-<!-- Header -->
-<header>
-    <div class="menu">
-        <div class="logo-container">
-            <div class="logo-text-container">
-                <h1 class="logo-text">Building Optimization Baseline</h1>
-                <p class="logo-subtext">Gestión de Proyectos</p>
-            </div>
-        </div>
-        <nav>
-            <ul class="nav-links">
-                <li><a th:href="${session.dashboardOrigen}" class="active">Inicio</a></li>
-                <li><a href="@{/error404}">Reportes</a></li>
-            </ul>
-        </nav>
-    </div>
-</header>
 
-<!-- Main Content -->
-<main class="main-content">
-    <div class="form-container">
-        <div class="form-header">
-            <div class="form-title">
-                <i class="fas fa-clipboard-list"></i>
-                <h1>Reportar nuevo avance</h1>
-            </div>
-            <a th:href="@{/avances/inicioAvances}" class="btn btn-back">
-                <i class="fas fa-arrow-left"></i>
-                Regresar
-            </a>
+<main>
+    <h1>Reportar nuevo avance</h1>
+
+    <a th:href="@{/avances/inicioAvances}" class="btn">Regresar</a>
+
+    <form th:action="@{/avances/salvar}" method="post" th:object="${avance}" id="avanceForm">
+
+        <div class="form-group">
+            <label for="obraDropdown">Nombre de la obra:</label>
+            <select id="obraDropdown" name="idObra" required>
+                <option value="">Seleccione...</option>
+                <option th:each="pre : ${presupuestos}"
+                        th:value="${pre.id_obra}"
+                        th:data-activities="${pre.activiValues != null ? #strings.listJoin(pre.activiValues.keySet(), ',') : ''}"
+                        th:text="${pre.obraName}">
+                </option>
+            </select>
         </div>
 
-        <div class="form-card">
-            <form th:action="@{/avances/salvar}" method="post" th:object="${avance}" id="avanceForm">
-
-                <!-- Obra Selection -->
-                <div class="form-section">
-                    <h3 class="section-title">
-                        <i class="fas fa-building"></i>
-                        Información del Proyecto
-                    </h3>
-
-                    <div class="form-group">
-                        <label class="form-label">
-                            <i class="fas fa-hammer"></i>
-                            Nombre de la obra
-                        </label>
-                        <select id="obraDropdown" name="id_obra" class="form-select" required>
-                            <option value="">Seleccione una obra...</option>
-                            <option th:each="pre : ${presupuestos}"
-                                    th:value="${pre.id_obra}"
-                                    th:data-activities="${pre.activiValues != null ? #strings.listJoin(pre.activiValues.keySet(), ',') : ''}"
-                                    th:text="${pre.obraName}">
-                            </option>
-                        </select>
-                    </div>
-
-                    <div class="form-group">
-                        <label class="form-label">
-                            <i class="fas fa-calendar-alt"></i>
-                            Fecha
-                        </label>
-                        <input type="date" name="fecha" class="form-input" required>
-                    </div>
-                </div>
-
-                <!-- Activity Selection -->
-                <div class="form-section">
-                    <h3 class="section-title">
-                        <i class="fas fa-tasks"></i>
-                        Actividad y Progreso
-                    </h3>
-
-                    <div class="form-group">
-                        <label class="form-label">
-                            <i class="fas fa-list-ul"></i>
-                            Actividad
-                        </label>
-                        <select id="activityDropdown" name="id_matriz" class="form-select" required disabled>
-                            <option value="">Debe seleccionar una obra</option>
-                        </select>
-                    </div>
-
-                    <div class="form-group">
-                        <label class="form-label">
-                            <i class="fas fa-calculator"></i>
-                            Cantidad
-                        </label>
-                        <input type="number"
-                               id="inputcantidad"
-                               name="cantidad"
-                               step="0.01"
-                               min="0.01"
-                               placeholder="Ingrese la cantidad"
-                               class="form-input">
-                    </div>
-                </div>
-
-                <!-- Hidden Inputs -->
-                <div id="hiddenInputs">
-                    <input type="hidden" name="id_usuario" value="4">
-                </div>
-
-                <!-- Submit Button -->
-                <div class="form-actions">
-                    <button type="submit" class="btn btn-primary">
-                        <i class="fas fa-save"></i>
-                        Guardar Avance
-                    </button>
-                </div>
-            </form>
+        <div class="form-group">
+            <label for="fecha">Fecha:</label>
+            <input type="date" name="fecha" id="fecha" required>
         </div>
-    </div>
+
+        <h3>Actividad</h3>
+
+        <div class="form-group">
+            <select id="activityDropdown" name="idMatriz" required disabled>
+                <option value="">Debe seleccionar una obra</option>
+            </select>
+            <input type="number" id="inputcantidad" name="cantidad" step="0.01" min="0.01"
+                   placeholder="Cantidad" class="quantity-input">
+        </div>
+
+        <div id="hiddenInputs">
+            <input type="hidden" name="idUsuario" value="4">
+        </div>
+
+        <button type="submit" class="btn">Guardar</button>
+    </form>
 </main>
-
-<!-- Footer -->
-<footer>
-    <div class="footer-content">
-
-        <div class="footer-section">
-            <h4>Enlaces</h4>
-            <a th:href="@{/inicioAvances}">Gestión de Avances</a>
-            <a href="/presupuestos">Presupuestos</a>
-            <a href="/reportes">Reportes</a>
-        </div>
-        <div class="footer-section">
-            <h4>Soporte</h4>
-            <a href="/ayuda">Centro de Ayuda</a>
-            <a href="/documentacion">Documentación</a>
-        </div>
-    </div>
-    <div class="footer-bottom">
-        <p>&copy; 2024 Building Optimization Baseline. Todos los derechos reservados.</p>
-    </div>
-</footer>
 
 <script th:inline="javascript">
     document.addEventListener('DOMContentLoaded', function() {
@@ -150,7 +55,6 @@
         const activityDropdown = document.getElementById('activityDropdown');
         const allMatriz = /*[[${matriz}]]*/ [];
 
-        // Create a map of all available activities for quick lookup
         const matrizMap = new Map();
         allMatriz.forEach(mat => {
             matrizMap.set(mat.id_m, mat);
@@ -163,15 +67,12 @@
 
             if (!selectedObraId) return;
 
-            // Get the selected option
             const selectedOption = this.options[this.selectedIndex];
-            // Get the activities IDs from data-attribute
             const activityIdsString = selectedOption.getAttribute('data-activities');
 
             if (activityIdsString && activityIdsString.trim() !== '') {
                 const activityIds = activityIdsString.split(',');
 
-                // Populate the activities dropdown
                 activityIds.forEach(id => {
                     const numericId = parseInt(id.trim());
                     if (!isNaN(numericId)) {
@@ -186,11 +87,10 @@
                 });
 
                 activityDropdown.disabled = false;
-            } else {
-                console.log('No activities found for this work');
             }
         });
     });
 </script>
+
 </body>
 </html>

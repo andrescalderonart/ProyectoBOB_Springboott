@@ -3,246 +3,135 @@
 <head>
   <meta charset="UTF-8">
   <title th:text="${Editando ? 'Editar Presupuesto' : 'Detalle de Presupuesto'}"></title>
-  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-  <link rel="stylesheet" th:href="@{/CSS/verPresu.css}">
+  <link rel="stylesheet" href="/CSS/verPresu.css">
 </head>
 
 <body>
-<div class="container">
-  <!-- Header Section -->
-  <div class="header-section">
-    <h1 th:text="${Editando ? 'Editar Presupuesto (ID: ' + presupuesto.id_obra + ')' : 'Detalle de Presupuesto'}"></h1>
-    <a th:href="@{/presupuestos/inicioPresupuestos}" class="btn btn-secondary">
-      <span class="btn-icon">←</span>
-      Regresar
-    </a>
-  </div>
+<main>
+  <h1 th:text="${Editando ? 'Editar Presupuesto (ID: ' + presupuesto.id_obra + ')' : 'Detalle de Presupuesto'}"></h1>
 
-  <!-- Edit Form -->
+  <a th:href="@{/presupuestos/inicioPresupuestos}" class="btn">Regresar</a>
+
+  <!-- Formulario de edición -->
   <form th:if="${Editando}"
         th:action="@{${presupuesto.id_obra != null ? '/presupuestos/actualizar/' + presupuesto.id_obra : '/presupuestos/salvar'}}"
         method="post"
-        th:object="${presupuesto}"
-        class="edit-form">
+        th:object="${presupuesto}">
 
     <input type="hidden" th:field="*{id_obra}">
 
-    <!-- Work Name Section -->
-    <div class="form-section">
-      <div class="form-group">
-        <label for="obraName" class="form-label">Nombre de la obra:</label>
-        <input type="text"
-               th:field="*{obraName}"
-               id="obraName"
-               name="obraName"
-               class="form-input"
-               required>
-      </div>
+    <div class="form-group">
+      <label for="obraName">Nombre de la obra:</label>
+      <input type="text" th:field="*{obraName}" id="obraName" required>
     </div>
 
-    <!-- Activities Section -->
-    <div class="form-section">
-      <div class="section-header">
-        <h3>Actividades</h3>
-        <button type="button" onclick="addActivity()" class="btn btn-add">
-          <span class="btn-icon">+</span>
-          Añadir actividad
-        </button>
-      </div>
-
-      <div id="actividadesContainer" class="activities-container">
-        <!-- Existing activities -->
-        <div th:if="${not #lists.isEmpty(actividadIds)}">
-          <div th:each="actividadId, stat : ${actividadIds}" class="activity-row">
-            <div class="activity-content">
-              <div class="form-group">
-                <label class="form-label">Actividad:</label>
-                <select name="actividadIds" class="form-select" required>
-                  <option value="">Seleccione...</option>
-                  <option th:each="mat : ${matriz}"
-                          th:value="${mat.id_m}"
-                          th:selected="${mat.id_m == actividadId}"
-                          th:data-nombre="${mat.nombre}"
-                          th:data-unidades="${mat.unidades}"
-                          th:text="${mat.nombre} + ' ('+${mat.unidades}+')'">
-                  </option>
-                </select>
-              </div>
-              <div class="form-group">
-                <label class="form-label">Cantidad:</label>
-                <input type="number"
-                       name="cantidades"
-                       step="0.01"
-                       min="0.01"
-                       th:value="${cantidades[stat.index]}"
-                       placeholder="Cantidad"
-                       class="form-input"
-                       required>
-              </div>
-              <button type="button" class="btn btn-remove" onclick="removeActivity(this)">
-                <span class="btn-icon">×</span>
-                Eliminar
-              </button>
-            </div>
-          </div>
+    <h3>Actividades:</h3>
+    <div id="actividadesContainer">
+      <div th:if="${not #lists.isEmpty(actividadIds)}">
+        <div th:each="actividadId, stat : ${actividadIds}" class="activity-row">
+          <select name="actividadIds" required>
+            <option value="">Seleccione...</option>
+            <option th:each="mat : ${matriz}"
+                    th:value="${mat.id_m}"
+                    th:selected="${mat.id_m == actividadId}"
+                    th:data-nombre="${mat.nombre}"
+                    th:data-unidades="${mat.unidades}"
+                    th:text="${mat.nombre} + ' ('+${mat.unidades}+')'">
+            </option>
+          </select>
+          <input type="number" name="cantidades" step="0.01" min="0.01"
+                 th:value="${cantidades[stat.index]}" placeholder="Cantidad" required>
+          <span class="btn-remove" onclick="removeActivity(this)">✕ Eliminar</span>
         </div>
       </div>
     </div>
 
-    <!-- Form Actions -->
-    <div class="form-actions">
-      <button type="submit" class="btn btn-primary">
-        <span class="btn-icon">💾</span>
-        Guardar presupuesto
-      </button>
-    </div>
+    <button type="button" class="btn btn-add" onclick="addActivity()">+ Añadir otra actividad</button>
+    <button type="submit" class="btn">Guardar presupuesto</button>
   </form>
 
-  <!-- View Mode Display -->
-  <div th:unless="${Editando}" class="view-mode">
-    <div class="work-info">
-      <h2 th:text="${presupuesto.obraName}" class="work-name"></h2>
+  <!-- Vista de solo lectura -->
+  <div th:unless="${Editando}">
+    <h2 th:text="${presupuesto.obraName}"></h2>
+    <h3>Actividades:</h3>
+
+    <div th:if="${listActividades != null and !listActividades.empty}">
+      <table>
+        <thead>
+        <tr>
+          <th>ID Actividad</th>
+          <th>Nombre</th>
+          <th>Unidades</th>
+          <th>Cantidad</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="actividad : ${listActividades}">
+          <td th:text="${actividad.key.id_m}"></td>
+          <td th:text="${actividad.key.nombre}"></td>
+          <td th:text="${actividad.key.unidades}"></td>
+          <td th:text="${actividad.value}"></td>
+        </tr>
+        </tbody>
+      </table>
     </div>
-
-    <div class="activities-section">
-      <h3>Actividades</h3>
-
-      <div th:if="${listActividades != null and !listActividades.empty}" class="table-container">
-        <table class="data-table">
-          <thead>
-          <tr>
-            <th>ID Material</th>
-            <th>Nombre</th>
-            <th>Unidades</th>
-            <th>Cantidad</th>
-          </tr>
-          </thead>
-          <tbody>
-          <tr th:each="actividad : ${listActividades}">
-            <td th:text="${actividad.key.id_m}" class="id-column"></td>
-            <td th:text="${actividad.key.nombre}" class="name-column"></td>
-            <td th:text="${actividad.key.unidades}" class="unit-column"></td>
-            <td th:text="${actividad.value}" class="quantity-column"></td>
-          </tr>
-          </tbody>
-        </table>
-      </div>
-
-      <div th:if="${listActividades == null or listActividades.empty}" class="empty-state">
-        <div class="empty-icon">📋</div>
-        <h4>No hay actividades registradas</h4>
-        <p>Este presupuesto no tiene actividades asociadas</p>
-      </div>
+    <div th:if="${listActividades == null or listActividades.empty}">
+      <p>No hay actividades registradas para este presupuesto</p>
     </div>
   </div>
-</div>
+</main>
 
-<!-- JavaScript for dynamic form behavior -->
+<!-- Script para agregar/quitar dinámicamente -->
 <script th:if="${Editando}">
-  /**
-   * Adds a new activity row to the form
-   */
   function addActivity() {
-      const container = document.getElementById('actividadesContainer');
+    const container = document.getElementById('actividadesContainer');
+    const newRow = document.createElement('div');
+    newRow.className = 'activity-row';
 
-      // Create new row div
-      const newRow = document.createElement('div');
-      newRow.className = 'activity-row';
+    const select = document.createElement('select');
+    select.name = 'actividadIds';
+    select.required = true;
 
-      // Create activity content div
-      const activityContent = document.createElement('div');
-      activityContent.className = 'activity-content';
+    const defaultOption = document.createElement('option');
+    defaultOption.value = '';
+    defaultOption.textContent = 'Seleccione...';
+    select.appendChild(defaultOption);
 
-      // Create select group
-      const selectGroup = document.createElement('div');
-      selectGroup.className = 'form-group';
+    const options = document.querySelectorAll('select[name="actividadIds"] option:not([value=""])');
+    options.forEach(opt => {
+      const cloned = opt.cloneNode(true);
+      select.appendChild(cloned);
+    });
 
-      const selectLabel = document.createElement('label');
-      selectLabel.className = 'form-label';
-      selectLabel.textContent = 'Actividad:';
+    const input = document.createElement('input');
+    input.type = 'number';
+    input.name = 'cantidades';
+    input.step = '0.01';
+    input.min = '0.01';
+    input.placeholder = 'Cantidad';
+    input.required = true;
 
-      const select = document.createElement('select');
-      select.name = 'actividadIds';
-      select.className = 'form-select';
-      select.required = true;
+    const removeBtn = document.createElement('span');
+    removeBtn.className = 'btn-remove';
+    removeBtn.textContent = '✕ Eliminar';
+    removeBtn.onclick = () => removeActivity(removeBtn);
 
-      // Add default option
-      const defaultOption = document.createElement('option');
-      defaultOption.value = '';
-      defaultOption.textContent = 'Seleccione...';
-      select.appendChild(defaultOption);
-
-      // Add options from existing select
-      const existingOptions = document.querySelectorAll('select[name="actividadIds"] option:not([value=""])');
-      existingOptions.forEach(option => {
-          const newOption = option.cloneNode(true);
-          select.appendChild(newOption);
-      });
-
-      selectGroup.appendChild(selectLabel);
-      selectGroup.appendChild(select);
-
-      // Create quantity input group
-      const quantityGroup = document.createElement('div');
-      quantityGroup.className = 'form-group';
-
-      const quantityLabel = document.createElement('label');
-      quantityLabel.className = 'form-label';
-      quantityLabel.textContent = 'Cantidad:';
-
-      const quantityInput = document.createElement('input');
-      quantityInput.type = 'number';
-      quantityInput.name = 'cantidades';
-      quantityInput.step = '0.01';
-      quantityInput.min = '0.01';
-      quantityInput.placeholder = 'Cantidad';
-      quantityInput.className = 'form-input';
-      quantityInput.required = true;
-
-      quantityGroup.appendChild(quantityLabel);
-      quantityGroup.appendChild(quantityInput);
-
-      // Create remove button
-      const removeBtn = document.createElement('button');
-      removeBtn.type = 'button';
-      removeBtn.className = 'btn btn-remove';
-      removeBtn.onclick = function() { removeActivity(this); };
-
-      const removeIcon = document.createElement('span');
-      removeIcon.className = 'btn-icon';
-      removeIcon.textContent = '×';
-
-      const removeText = document.createElement('span');
-      removeText.textContent = 'Eliminar';
-
-      removeBtn.appendChild(removeIcon);
-      removeBtn.appendChild(removeText);
-
-      // Append all elements to the activity content
-      activityContent.appendChild(selectGroup);
-      activityContent.appendChild(quantityGroup);
-      activityContent.appendChild(removeBtn);
-
-      // Append activity content to the row
-      newRow.appendChild(activityContent);
-
-      // Add the row to the container
-      container.appendChild(newRow);
+    newRow.appendChild(select);
+    newRow.appendChild(input);
+    newRow.appendChild(removeBtn);
+    container.appendChild(newRow);
   }
 
-  /**
-   * Removes an activity row
-   */
   function removeActivity(element) {
-      element.closest('.activity-row').remove();
+    element.parentElement.remove();
   }
 
-  // Initialize the form when page loads
-  document.addEventListener('DOMContentLoaded', function() {
-      if (document.querySelectorAll('.activity-row').length === 0) {
-          addActivity();
-      }
+  document.addEventListener('DOMContentLoaded', () => {
+    if (document.querySelectorAll('.activity-row').length === 0) {
+      addActivity();
+    }
   });
 </script>
+
 </body>
 </html>

@@ -9,7 +9,7 @@ public interface AvanceDao extends CrudRepository<Avance, Integer> {
 
     // Find by exact ID matches
     List<Avance> findByIdAvance(Integer idAvance);
-    List<Avance> findByIdUsuario(Integer idUsuario);
+    List<Avance> findByIdUsuario(String idUsuario);
     List<Avance> findByIdObra(Integer idObra);
     List<Avance> findByIdMatriz(Integer idMatriz);
 
@@ -18,8 +18,7 @@ public interface AvanceDao extends CrudRepository<Avance, Integer> {
     List<Avance> findByFechaContaining(String fecha);
 
     // Combined queries using existing fields
-    List<Avance> findByIdUsuarioAndFecha(Integer idUsuario, String fecha);
-
+    List<Avance> findByIdUsuarioAndFecha(String idUsuario, String fecha);
 
 
 }

@@ -12,21 +12,22 @@ import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 @Controller
 @RequestMapping("/presupuestos")
-public class ControladorPresupuestos {
 
+public class ControladorPresupuestos
+{
+    //Presupuesto
     @Autowired
     private PresupuestoServicio presupuestoServicio;
-
-    @Autowired
-    private MatrizServicio matrizServicio;
-
-    // Página de inicio
+    //Acá están los métodos para presupuestos
     @GetMapping("/inicioPresupuestos")
-    public String inicioPresu(Model model, Authentication auth, HttpSession session) {
+    public String inicioPresu(Model model, Authentication auth, HttpSession session){
         String rol = auth.getAuthorities().iterator().next().getAuthority();
 
         switch (rol) {
@@ -45,32 +46,47 @@ public class ControladorPresupuestos {
         }
 
         List<Presupuesto> presupuestos = presupuestoServicio.listaPresupuesto();
-        model.addAttribute("presupuestos", presupuestos);
+        model.addAttribute("presupuestos",presupuestos);
         return "presupuestos/inicioPresupuestos";
     }
 
-    // Formulario para agregar nuevo presupuesto
+    //Agregar nuevo presupuesto
     @GetMapping("/agregarPresupuesto")
-    public String formAnexarPresupuesto(Model model) {
+    public String formAnexarPresupuesto(Model model){
         model.addAttribute("presupuesto", new Presupuesto());
         model.addAttribute("matriz", matrizServicio.listarElementos());
         return "presupuestos/agregarPresupuesto";
     }
 
-    // Guardar nuevo presupuesto
+    //Función de guardado
     @PostMapping("/salvar")
     public String salvarPresupuesto(
+
             @RequestParam String obraName,
-            @RequestParam List<Integer> actividadIds,
+            @RequestParam List<Integer>actividadIds,
             @RequestParam List<Double> cantidades) {
 
+
+        // Validate input sizes match
         if (actividadIds.size() != cantidades.size()) {
-            throw new IllegalArgumentException("Cantidad de actividades y cantidades no coinciden.");
+            throw new IllegalArgumentException("La cantidad de IDs y cantidades no coincide");
         }
 
+
+        // Convert to Map<Integer, Double> for JSON storage
         Map<Integer, Double> activiValues = new HashMap<>();
         for (int i = 0; i < actividadIds.size(); i++) {
-            activiValues.put(actividadIds.get(i), cantidades.get(i));
+            Integer id = actividadIds.get(i);
+            Double cantidad = cantidades.get(i);
+
+            if (id == null) {
+                throw new IllegalArgumentException("ID de actividad no puede ser nulo");
+            }
+            if (cantidad == null || cantidad <= 0) {
+                throw new IllegalArgumentException("Cantidad inválida para actividad ID: " + id);
+            }
+
+            activiValues.put(id, cantidad);
         }
 
         Presupuesto presupuesto = new Presupuesto();
@@ -81,40 +97,42 @@ public class ControladorPresupuestos {
         return "redirect:/presupuestos/inicioPresupuestos";
     }
 
-    // Editar presupuesto existente
+    //Función y forma de editado
     @GetMapping("/cambiar/{id_obra}")
     public String cambiarPresupuesto(@PathVariable Integer id_obra, Model model) {
         Presupuesto presupuesto = presupuestoServicio.localizarPresupuesto(id_obra);
 
+        // Create a list of activity IDs and quantities for editing
         List<Integer> actividadIds = new ArrayList<>();
         List<Double> cantidades = new ArrayList<>();
-        Map<Matriz, Double> listActividades = new HashMap<>();
 
+        // Create a Map of Material to Quantity
+        Map<Matriz, Double> listActividades = new HashMap<>();
         for (Map.Entry<Integer, Double> entry : presupuesto.getActiviValues().entrySet()) {
             Matriz material = matrizServicio.obtenerPorId(entry.getKey());
             listActividades.put(material, entry.getValue());
             actividadIds.add(entry.getKey());
             cantidades.add(entry.getValue());
         }
-
         model.addAttribute("presupuesto", presupuesto);
         model.addAttribute("listActividades", presupuestoServicio.listaPresupuesto());
-        model.addAttribute("Editando", true);
+        model.addAttribute("Editando", true); // ← This forces EDIT mode
         model.addAttribute("matriz", matrizServicio.listarElementos());
+        //Map<Integer, Double> actividades = presupuesto.getActiviValues();
         model.addAttribute("actividadIds", actividadIds);
         model.addAttribute("cantidades", cantidades);
 
         return "presupuestos/verPresupuestos";
     }
 
-    // Eliminar presupuesto
+    //borrar
     @GetMapping("/borrar/{id_obra}")
     public String borrarPresupuesto(Presupuesto presupuesto) {
         presupuestoServicio.borrar(presupuesto);
         return "redirect:/presupuestos/inicioPresupuestos";
     }
 
-    // Guardar cambios del presupuesto editado
+    //funcionalidad para guardar cambios
     @PostMapping("/actualizar/{id_obra}")
     public String actualizarPresupuesto(
             @PathVariable Integer id_obra,
@@ -124,7 +142,6 @@ public class ControladorPresupuestos {
             @RequestParam List<Integer> actividadIds,
             @RequestParam List<Double> cantidades,
             Model model) {
-
         if (result.hasErrors() || actividadIds.isEmpty()) {
             return "redirect:/presupuestos/cambiar/" + id_obra;
         }
@@ -134,6 +151,7 @@ public class ControladorPresupuestos {
             activiValues.put(actividadIds.get(i), cantidades.get(i));
         }
 
+
         presupuesto.setObraName(obraName);
         presupuesto.setActiviValues(activiValues);
 
@@ -141,11 +159,12 @@ public class ControladorPresupuestos {
         return "redirect:/presupuestos/inicioPresupuestos";
     }
 
-    // Ver detalles del presupuesto
+    //Ver presupuesto en detalle (sólo lectura)
     @GetMapping("/detalle/{id_obra}")
     public String detallePresupuesto(@PathVariable Integer id_obra, Model model) {
         Presupuesto presupuesto = presupuestoServicio.localizarPresupuesto(id_obra);
 
+        // Create a Map of Material to Quantity
         Map<Matriz, Double> listActividades = new HashMap<>();
         for (Map.Entry<Integer, Double> entry : presupuesto.getActiviValues().entrySet()) {
             Matriz material = matrizServicio.obtenerPorId(entry.getKey());
@@ -154,11 +173,16 @@ public class ControladorPresupuestos {
 
         model.addAttribute("presupuesto", presupuesto);
         model.addAttribute("listActividades", listActividades);
-        model.addAttribute("Editando", false);
+        model.addAttribute("Editando", false); // ← This forces VIEW mode
         return "presupuestos/verPresupuestos";
     }
 
-    // Filtro de presupuestos
+
+    //Materiales (para el manejo de la matriz)
+    @Autowired
+    private MatrizServicio matrizServicio;
+
+    //Funcionalidad del filtro
     @GetMapping("/filtroPr")
     public String filtroPre(
             @RequestParam(value = "tipoBusqueda", required = false) String tipoBusqueda,
@@ -166,21 +190,19 @@ public class ControladorPresupuestos {
             Integer id_obra,
             Model model) {
 
-        List<Presupuesto> presupuestos = new ArrayList<>();
-        Presupuesto presupuesto = null;
+        List<Presupuesto> presupuestos = new ArrayList<>(); // Initialize with empty list
+        Presupuesto presupuesto = null; // Initialize as null
+        String error = null;
 
         if (tipoBusqueda != null && valorBusqueda != null && !valorBusqueda.isEmpty()) {
             switch (tipoBusqueda) {
                 case "idObra":
-                    try {
-                        presupuesto = presupuestoServicio.localizarPresupuesto(Integer.parseInt(valorBusqueda));
-                    } catch (NumberFormatException e) {
-                        model.addAttribute("error", "ID inválido");
-                    }
+                    presupuesto = presupuestoServicio.localizarPresupuesto(Integer.parseInt(valorBusqueda));
                     break;
                 case "obraName":
                     presupuestos = presupuestoServicio.findByObraNameContaining(valorBusqueda);
                     break;
+
                 default:
                     presupuestos = presupuestoServicio.listaPresupuesto();
             }
@@ -190,6 +212,12 @@ public class ControladorPresupuestos {
 
         model.addAttribute("presupuestos", presupuestos);
         model.addAttribute("presupuesto", presupuesto);
+
+        if (error != null) {
+            model.addAttribute("error", error);
+        }
+
         return "presupuestos/inicioPresupuestos";
     }
+
 }

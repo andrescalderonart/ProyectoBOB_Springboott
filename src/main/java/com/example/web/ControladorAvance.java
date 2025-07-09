@@ -7,14 +7,16 @@ import com.example.servicio.AvanceServicio;
 import com.example.servicio.MatrizServicio;
 import com.example.servicio.PresupuestoServicio;
 import jakarta.servlet.http.HttpSession;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Controller
 @RequestMapping("/avances")
@@ -30,55 +32,67 @@ public class ControladorAvance
     //Acá están los métodos
     @GetMapping("/inicioAvances")
     public String inicioAvance(
-            @RequestParam(required = false) String obraName,
-            @RequestParam(required = false) Integer id_obra,
-            @RequestParam(required = false) Integer id_usuario,
-            @RequestParam(required = false) Integer id_matriz,
+            @RequestParam(required = false) Integer idObraTexto,
+            @RequestParam(required = false) Integer idObraSelect,
+            @RequestParam(required = false) String idUsuario,
+            @RequestParam(required = false) Integer idMatriz,
             @RequestParam(required = false) String fecha,
             Model model,
             Authentication auth,
             HttpSession session) {
 
-        // 🔒 Establecer dashboard según el rol
-        if (auth != null) {
-            String rol = auth.getAuthorities().iterator().next().getAuthority();
-            switch (rol) {
-                case "ROLE_ADMINISTRADOR":
-                    session.setAttribute("dashboardOrigen", "/dashboardADMIN");
-                    break;
-                case "ROLE_OPERATIVO":
-                    session.setAttribute("dashboardOrigen", "/dashboardOPERA");
-                    break;
-                case "ROLE_SUPERVISOR":
-                    session.setAttribute("dashboardOrigen", "/dashboardSUPER");
-                    break;
-                default:
-                    session.setAttribute("dashboardOrigen", "/login?error=sin-permisos");
-                    break;
-            }
+        // 🔒 Establecer dashboard según el rol del usuario autenticado
+        if (auth != null && auth.getAuthorities() != null && !auth.getAuthorities().isEmpty()) {
+            auth.getAuthorities().stream().findFirst().ifPresent(authority -> {
+                String rol = authority.getAuthority();
+                switch (rol) {
+                    case "ROLE_ADMINISTRADOR":
+                        session.setAttribute("dashboardOrigen", "/dashboardADMIN");
+                        break;
+                    case "ROLE_OPERATIVO":
+                        session.setAttribute("dashboardOrigen", "/dashboardOPERA");
+                        break;
+                    case "ROLE_SUPERVISOR":
+                        session.setAttribute("dashboardOrigen", "/dashboardSUPER");
+                        break;
+                    default:
+                        session.setAttribute("dashboardOrigen", "/login?error=sin-permisos");
+                        break;
+                }
+            });
         }
 
-        // Cargar presupuestos para mostrar nombres de obra
+        // 📌 Cargar todos los presupuestos para mostrar nombres de obra en el formulario
         List<Presupuesto> presupuestos = presupuestoServicio.listaPresupuesto();
         model.addAttribute("presupuestos", presupuestos);
 
-        // Buscar avances según los filtros recibidos
-        List<Avance> avances;
-        if (id_usuario != null && fecha != null) {
-            avances = avanceServicio.buscarPorUsuarioYFecha(id_usuario, fecha);
-        } else if (id_obra != null) {
-            avances = avanceServicio.buscarPorIdObra(id_obra);
-        } else if (id_usuario != null) {
-            avances = avanceServicio.buscarPorIdUsuario(id_usuario);
-        } else if (id_matriz != null) {
-            avances = avanceServicio.buscarPorIdMatriz(id_matriz);
-        } else if (fecha != null) {
-            avances = avanceServicio.buscarPorFechaConteniendo(fecha);
-        } else {
-            avances = avanceServicio.listaAvance();
+        // 📌 Iniciar con todos los avances
+        List<Avance> avances = avanceServicio.listaAvance();
+
+        // 📌 Aplicar filtros de forma acumulativa y segura
+        if (idObraSelect != null) {
+            avances = avanceServicio.buscarPorIdObra(idObraSelect);
+        }
+        if (idObraTexto != null) {
+            avances = avanceServicio.buscarPorIdObra(idObraTexto);
+        }
+        if (idUsuario != null && !idUsuario.trim().isEmpty()) {
+            avances = avances.stream()
+                    .filter(a -> a.getIdUsuario() != null && a.getIdUsuario().toString().equals(idUsuario))
+                    .collect(Collectors.toList());
+        }
+        if (fecha != null && !fecha.trim().isEmpty()) {
+            avances = avances.stream()
+                    .filter(a -> a.getFecha() != null && a.getFecha().contains(fecha))
+                    .collect(Collectors.toList());
         }
 
+        // 📌 Cargar los resultados y parámetros al modelo
         model.addAttribute("avances", avances);
+        model.addAttribute("idObraSelect", idObraSelect);
+        model.addAttribute("idObraTexto", idObraTexto);
+        model.addAttribute("idUsuario", idUsuario);
+        model.addAttribute("fecha", fecha);
 
         return "avances/inicioAvances";
     }
@@ -99,17 +113,25 @@ public class ControladorAvance
     //Función de guardado
     @PostMapping("/salvar")
     public String salvarAvance(
-            @RequestParam Integer id_usuario,
-            @RequestParam Integer id_obra,
+            Authentication auth, // Add this parameter to get the logged-in user
+            @RequestParam String idUsuario,
+            @RequestParam Integer idObra,
             @RequestParam String fecha,
-            @RequestParam Integer id_matriz,
+            @RequestParam Integer idMatriz,
             @RequestParam Double cantidad) {
 
+        // Get the username from the authentication object
+        String username = SecurityContextHolder.getContext().getAuthentication().getName();
+
+        // For now, let's just print it to verify it works
+        System.out.println("Logged in username: " + username);
+
+
         Avance avance = new Avance();
-        avance.setIdUsuario(id_usuario);
-        avance.setIdObra(id_obra);
+        avance.setIdUsuario(username);
+        avance.setIdObra(idObra);
         avance.setFecha(fecha);
-        avance.setIdMatriz(id_matriz);
+        avance.setIdMatriz(idMatriz);
         avance.setCantidad(cantidad);
 
 
@@ -133,32 +155,36 @@ public class ControladorAvance
 
 
     //borrar
-    @GetMapping("/borrar/{id_avance}")
+    @GetMapping("/borrar/{idAvance}")
     public String borrarAvance(Avance avance) {
         avanceServicio.borrar(avance);
         return "redirect:/avances/inicioAvances";
     }
 
     //funcionalidad para guardar cambios
-    @PostMapping("/actualizar/{id_avance}")
+    @PostMapping("/actualizar/{idAvance}")
     public String actualizarPresupuesto(
-            @PathVariable Integer id_avance,
+            Authentication auth, // Add this parameter to get the logged-in user
+            @PathVariable Integer idAvance,
             @ModelAttribute Avance avance,
             @RequestParam Double cantidad,
-            @RequestParam Integer id_usuario,
-            @RequestParam Integer id_obra,
+            @RequestParam String idUsuario,
+            @RequestParam Integer idObra,
             @RequestParam String fecha,
             BindingResult result,
-            @RequestParam Integer id_matriz,
+            @RequestParam Integer idMatriz,
             Model model) {
         if (result.hasErrors()) {
-            return "redirect:/avances/cambiar/" + id_avance;
+            return "redirect:/avances/cambiar/" + idAvance;
         }
 
-        avance.setIdUsuario(id_usuario);
-        avance.setIdObra(id_obra);
+        // Get the username from the authentication object
+        String username = SecurityContextHolder.getContext().getAuthentication().getName();
+
+        avance.setIdUsuario(username);
+        avance.setIdObra(idObra);
         avance.setFecha(fecha);
-        avance.setIdMatriz(id_matriz);
+        avance.setIdMatriz(idMatriz);
         avance.setCantidad(cantidad);
 
 
