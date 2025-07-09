@@ -17,6 +17,15 @@ import java.util.Map;
         @Override
         public String convertToDatabaseColumn(Map<Integer, Double> attribute) {
             try {
+
+                if (attribute == null) return "{}";
+
+                // Create a new map filtering out null keys
+                Map<Integer, Double> cleanMap = new HashMap<>();
+                attribute.forEach((k, v) -> {
+                    if (k != null) cleanMap.put(k, v);
+                });
+
                 return objectMapper.writeValueAsString(attribute);
             } catch (JsonProcessingException e) {
                 throw new IllegalArgumentException("Error de map", e);

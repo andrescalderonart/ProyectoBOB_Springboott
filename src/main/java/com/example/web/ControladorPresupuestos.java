@@ -48,10 +48,26 @@ public class ControladorPresupuestos
             @RequestParam List<Double> cantidades) {
 
 
+        // Validate input sizes match
+        if (actividadIds.size() != cantidades.size()) {
+            throw new IllegalArgumentException("La cantidad de IDs y cantidades no coincide");
+        }
+
+
         // Convert to Map<Integer, Double> for JSON storage
         Map<Integer, Double> activiValues = new HashMap<>();
         for (int i = 0; i < actividadIds.size(); i++) {
-            activiValues.put(actividadIds.get(i), cantidades.get(i));
+            Integer id = actividadIds.get(i);
+            Double cantidad = cantidades.get(i);
+
+            if (id == null) {
+                throw new IllegalArgumentException("ID de actividad no puede ser nulo");
+            }
+            if (cantidad == null || cantidad <= 0) {
+                throw new IllegalArgumentException("Cantidad inválida para actividad ID: " + id);
+            }
+
+            activiValues.put(id, cantidad);
         }
 
         Presupuesto presupuesto = new Presupuesto();
