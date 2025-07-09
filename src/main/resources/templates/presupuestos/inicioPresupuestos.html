@@ -3,73 +3,59 @@
 <head>
     <meta charset="UTF-8">
     <title>Presupuestos</title>
-    <link rel="stylesheet" th:href="@{/CSS/inicioPresu.css}">
+
 </head>
 <body>
-<div class="container">
-    <header>
-        <h1>Lista de Presupuestos</h1>
-        <p>Gestión de presupuestos de obras</p>
-    </header>
+<h1>Lista de Presupuestos</h1>
 
-    <section>
-        <a th:href="@{/presupuestos/agregarPresupuesto}" class="btn btn-success">
-            <span>+</span>Crear nuevo presupuesto
-        </a>
-    </section>
+<a th:href="@{/presupuestos/agregarPresupuesto}" class="btn">Crear nuevo presupuesto</a>
+<br>
 
-    <section>
-        <div class="search-container">
-            <h2>Buscar</h2>
-            <form class="search-form" th:action="@{/presupuestos/filtroPr}" method="get">
-                <div class="search-row">
-                    <label for="tipoBusqueda">Buscar por:</label>
-                    <select name="tipoBusqueda" id="tipoBusqueda" class="search-select">
-                        <option value="obraName">Nombre</option>
-                        <option value="idObra">ID</option>
-                    </select>
-                    <input type="text" name="valorBusqueda" placeholder="Término de búsqueda" class="search-input">
-                    <input type="submit" value="Buscar" class="btn btn-primary">
-                </div>
-            </form>
-        </div>
-    </section>
+<div class="search-container">
+    <h2><i class='bx bx-search-alt'></i>Buscar</h2>
+    <form class="search-form" th:action="@{/presupuestos/filtroPr}" method="get">
+        <label for="tipoBusqueda"><i class='bx bx-filter'></i>Buscar por:</label>
+        <select name="tipoBusqueda" id="tipoBusqueda">
+            <option value="obraName">Nombre</option>
+            <option value="idObra">ID</option>
+        </select>
 
-    <section>
-        <div th:if="${presupuestos != null and !presupuestos.empty}">
-            <div class="table-container">
-                <table id="presupuestosTable" class="data-table">
-                    <thead>
-                    <tr>
-                        <th>ID Obra</th>
-                        <th>Nombre de la obra</th>
-                        <th>Acciones</th>
-                    </tr>
-                    </thead>
-                    <tbody>
-                    <tr th:each="presupuesto : ${presupuestos}">
-                        <td th:text="${presupuesto.id_obra}"></td>
-                        <td th:text="${presupuesto.obraName}"></td>
-                        <td class="actions">
-                            <a th:href="@{/presupuestos/cambiar/} + ${presupuesto.id_obra}" class="btn btn-edit">Editar</a>
-                            <a th:href="@{/presupuestos/borrar/} + ${presupuesto.id_obra}" class="btn btn-delete"
-                               onclick="return confirm('¿Está seguro que desea eliminar este presupuesto?')">Eliminar</a>
-                            <a th:href="@{/presupuestos/detalle/}+${presupuesto.id_obra}" class="btn btn-primary">Detalles</a>
-                        </td>
-                    </tr>
-                    </tbody>
-                </table>
-            </div>
-        </div>
+        <input type="text" name="valorBusqueda" placeholder="Término de búsqueda">
 
-        <div th:if="${presupuestos == null or presupuestos.empty}" class="empty-message">
-            <p>No hay presupuestos registrados</p>
-        </div>
-    </section>
-
-    <section>
-        <a th:href="${session.dashboardOrigen}" class="btn btn-primary">Regresar</a>
-    </section>
+        <input type="submit" value="Buscar">
+    </form>
 </div>
+
+<br>
+
+<div th:if="${presupuestos != null and !presupuestos.empty}">
+    <table id="presupuestosTable">
+        <thead>
+        <tr>
+            <th>ID Obra</th>
+            <th>Nombre de la obra</th>
+            <th>Acciones</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="presupuesto : ${presupuestos}">
+            <td th:text="${presupuesto.id_obra}"></td>
+            <td th:text="${presupuesto.obraName}"></td>
+            <td>
+                <a th:href="@{/presupuestos/cambiar/} + ${presupuesto.id_obra}" class="btn">Editar</a>
+                <a th:href="@{/presupuestos/borrar/} + ${presupuesto.id_obra}" class="btn"
+                   onclick="return confirm('¿Está seguro que desea eliminar este presupuesto?')">Eliminar</a>
+                <a th:href="@{/presupuestos/detalle/}+${presupuesto.id_obra}" class="btn">Ver Detalle</a>
+            </td>
+        </tr>
+        </tbody>
+    </table>
+</div>
+<div th:if="${presupuestos == null or presupuestos.empty}">
+    <p>No hay presupuestos registrados</p>
+</div>
+
+<a th:href="@{/}" class="btn btn-secondary">Regresar</a>
+
 </body>
 </html>

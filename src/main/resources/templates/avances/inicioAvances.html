@@ -3,102 +3,95 @@
 <head>
     <meta charset="UTF-8">
     <title>Avances</title>
-    <link rel="stylesheet" th:href="@{/CSS/inicioAvance.css}">
+
 </head>
 <body>
-<div class="container">
-    <header>
-        <h1>Lista de Avances de obra</h1>
-        <p>Gestión y seguimiento de avances de construcción</p>
-    </header>
+<h1>Lista de Avances de obra</h1>
 
-    <section>
-        <a th:href="@{/avances/agregarAvance}" class="btn btn-primary">Reportar nuevo avance</a>
-    </section>
+<a th:href="@{/avances/agregarAvance}" class="btn">Reportar nuevo avance</a>
+<br><br>
 
-    <!-- Search Form -->
-    <section class="search-container">
-        <h2>Filtros de búsqueda</h2>
-        <form th:action="@{/avances/inicioAvances}" method="get" class="search-form">
-            <div class="search-row">
-                <label for="id_obra">ID Obra:</label>
-                <input type="number" id="id_obra" name="id_obra" th:value="${param.id_obra}" class="search-input">
+<!-- Search Form -->
+<div>
+    <form th:action="@{/avances/inicioAvances}" method="get">
+        <div>
+            <div>
+                <label for="idObraSelect">ID Obra:</label>
+                <input type="number" id="idObraSelect" name="idObraSelect" th:value="${param.idObraSelect}">
             </div>
-
-            <div class="search-row">
-                <label for="id_usuario">ID Usuario:</label>
-                <input type="number" id="id_usuario" name="id_usuario" th:value="${param.id_usuario}" class="search-input">
+            <div>
+                <label for="idUsuario">ID Usuario:</label>
+                <input type="number" id="idUsuario" name="idUsuario" th:value="${param.idUsuario}">
             </div>
-
-            <div class="search-row">
-                <label for="id_obraByName">Nombre de la obra:</label>
-                <select id="id_obraByName" name="id_obra" th:value="${param.id_obra}" class="search-select">
+            <div>
+                <label for="idObraByName">Nombre de la obra:</label>
+                <select id="idObraByName" name="idObraTexto" th:value="${param.idObraTexto}">
                     <option value="">-- Todas las obras --</option>
                     <option th:each="presupuesto : ${presupuestos}"
                             th:value="${presupuesto.id_obra}"
                             th:text="${presupuesto.obraName}"
-                            th:selected="${param.id_obra == presupuesto.id_obra}">
+                            th:selected="${param.idObraTexto == presupuesto.id_obra}">
                     </option>
                 </select>
             </div>
+        </div>
 
-            <div class="search-row">
+        <div>
+            <div>
                 <label for="fecha">Fecha:</label>
-                <input type="text" id="fecha" name="fecha" placeholder="YYYY-MM-DD" th:value="${param.fecha}" class="search-input">
-            </div>
-
-            <div class="search-row">
-                <button type="submit" class="btn btn-primary">Buscar</button>
-                <a th:href="@{/avances/inicioAvances}" class="btn btn-secondary">Limpiar filtros</a>
-            </div>
-        </form>
-    </section>
-
-    <section>
-        <div th:if="${avances != null and !avances.empty}">
-            <div class="table-container">
-                <table class="data-table" id="avancesTable">
-                    <thead>
-                    <tr>
-                        <th>ID Avance</th>
-                        <th>ID Obra</th>
-                        <th>Nombre de la obra</th>
-                        <th>Fecha</th>
-                        <th>Acciones</th>
-                    </tr>
-                    </thead>
-                    <tbody>
-                    <tr th:each="avance : ${avances}">
-                        <td th:text="${avance.idAvance}"></td>
-                        <td th:text="${avance.idObra}"></td>
-                        <td>
-                                <span th:each="presupuesto : ${presupuestos}"
-                                      th:if="${presupuesto.id_obra == avance.idObra}"
-                                      th:text="${presupuesto.obraName}">
-                                </span>
-                        </td>
-                        <td th:text="${avance.fecha}"></td>
-                        <td>
-                            <div class="actions">
-                                <a th:href="@{/avances/borrar/} + ${avance.idAvance}" class="btn btn-delete"
-                                   onclick="return confirm('¿Está seguro que desea eliminar este avance?')">Eliminar</a>
-                                <a th:href="@{/avances/detalle/}+${avance.idAvance}" class="btn btn-primary">Ver Detalle</a>
-                            </div>
-                        </td>
-                    </tr>
-                    </tbody>
-                </table>
+                <input type="text" id="fecha" name="fecha" placeholder="YYYY-MM-DD" th:value="${param.fecha}">
             </div>
         </div>
 
-        <div th:if="${avances == null or avances.empty}" class="empty-message">
-            <p>No hay avances registrados</p>
+        <div>
+            <button type="submit">Buscar</button>
+            <a th:href="@{/avances/inicioAvances}">Limpiar filtros</a>
         </div>
-    </section>
-
-    <section>
-        <a th:href="${session.dashboardOrigen}" class="btn btn-primary">Regresar</a>
-    </section>
+    </form>
 </div>
+
+
+<br>
+
+
+<div th:if="${avances != null and !avances.empty}">
+    <table id="avancesTable">
+        <thead>
+        <tr>
+            <th>ID Avance</th>
+            <th>ID Obra</th>
+            <th>Nombre de la obra</th>
+            <th>Fecha</th>
+            <th>Acciones</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="avance : ${avances}">
+            <td th:text="${avance.idAvance}"></td>
+            <td th:text="${avance.idObra}"></td>
+            <td>
+                <span th:each="presupuesto : ${presupuestos}"
+                      th:if="${presupuesto.id_obra == avance.idObra}"
+                      th:text="${presupuesto.obraName}">
+                </span>
+            </td>
+            <td th:text="${avance.fecha}"></td>
+            <td>
+                <!-- Creo que es mejor no editar avances para no complicarse por su formato -->
+                <!--<a th:href="@{/avances/cambiar/} + ${avance.id_avance}" class="btn">Editar</a>-->
+                <a th:href="@{/avances/borrar/} + ${avance.idAvance}" class="btn"
+                   onclick="return confirm('¿Está seguro que desea eliminar este avance?')">Eliminar</a>
+                <a th:href="@{/avances/detalle/}+${avance.idAvance}" class="btn">Ver Detalle</a>
+            </td>
+        </tr>
+        </tbody>
+    </table>
+</div>
+<div th:if="${avances == null or avances.empty}">
+    <p>No hay avances registrados</p>
+</div>
+
+<a th:href="@{/}" class="btn btn-secondary">Regresar</a>
+
 </body>
 </html>

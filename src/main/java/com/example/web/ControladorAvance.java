@@ -6,9 +6,7 @@ import com.example.domain.Presupuesto;
 import com.example.servicio.AvanceServicio;
 import com.example.servicio.MatrizServicio;
 import com.example.servicio.PresupuestoServicio;
-import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -30,59 +28,51 @@ public class ControladorAvance
     //Acá están los métodos
     @GetMapping("/inicioAvances")
     public String inicioAvance(
-            @RequestParam(required = false) String obraName,
-            @RequestParam(required = false) Integer id_obra,
-            @RequestParam(required = false) Integer id_usuario,
-            @RequestParam(required = false) Integer id_matriz,
+           // @RequestParam(required = false) String obraName,
+           @RequestParam(required = false) Integer idObraTexto,
+           @RequestParam(required = false) Integer idObraSelect,
+            @RequestParam(required = false) Integer idUsuario,
+            @RequestParam(required = false) Integer idMatriz,
             @RequestParam(required = false) String fecha,
-            Model model,
-            Authentication auth,
-            HttpSession session) {
-
-        // 🔒 Establecer dashboard según el rol
-        if (auth != null) {
-            String rol = auth.getAuthorities().iterator().next().getAuthority();
-            switch (rol) {
-                case "ROLE_ADMINISTRADOR":
-                    session.setAttribute("dashboardOrigen", "/dashboardADMIN");
-                    break;
-                case "ROLE_OPERATIVO":
-                    session.setAttribute("dashboardOrigen", "/dashboardOPERA");
-                    break;
-                case "ROLE_SUPERVISOR":
-                    session.setAttribute("dashboardOrigen", "/dashboardSUPER");
-                    break;
-                default:
-                    session.setAttribute("dashboardOrigen", "/login?error=sin-permisos");
-                    break;
-            }
-        }
-
-        // Cargar presupuestos para mostrar nombres de obra
-        List<Presupuesto> presupuestos = presupuestoServicio.listaPresupuesto();
-        model.addAttribute("presupuestos", presupuestos);
-
-        // Buscar avances según los filtros recibidos
+            Model model){
+        //En vez de cargar la lista entera al principio sólo declaro la variable
         List<Avance> avances;
-        if (id_usuario != null && fecha != null) {
-            avances = avanceServicio.buscarPorUsuarioYFecha(id_usuario, fecha);
-        } else if (id_obra != null) {
-            avances = avanceServicio.buscarPorIdObra(id_obra);
-        } else if (id_usuario != null) {
-            avances = avanceServicio.buscarPorIdUsuario(id_usuario);
-        } else if (id_matriz != null) {
-            avances = avanceServicio.buscarPorIdMatriz(id_matriz);
-        } else if (fecha != null) {
+
+        //Necesito cargar presupuestos para mostrar nombres de obra
+        List<Presupuesto> presupuestos = presupuestoServicio.listaPresupuesto();
+        model.addAttribute("presupuestos",presupuestos);
+
+//Este if es para las búsquedas por ID
+
+        //Para saber cuál idObra
+        Integer idObra = idObraTexto != null ? idObraTexto : idObraSelect;
+
+        if (idUsuario != null && fecha != null) {
+            avances = avanceServicio.buscarPorUsuarioYFecha(idUsuario, fecha);
+        }
+        else if (idObra != null) {
+            avances = avanceServicio.buscarPorIdObra(idObra);
+        }
+        else if (idUsuario != null) {
+            avances = avanceServicio.buscarPorIdUsuario(idUsuario);
+        }
+        else if (idMatriz != null) {
+            avances = avanceServicio.buscarPorIdMatriz(idMatriz);
+        }
+        else if (fecha != null) {
             avances = avanceServicio.buscarPorFechaConteniendo(fecha);
-        } else {
+        }
+        else {
+            // No filters - get all avances
             avances = avanceServicio.listaAvance();
         }
 
-        model.addAttribute("avances", avances);
+
+
+        model.addAttribute("avances",avances);
 
         return "avances/inicioAvances";
     }
-
 
     //Agregar nuevo
     @GetMapping("/agregarAvance")
@@ -99,17 +89,17 @@ public class ControladorAvance
     //Función de guardado
     @PostMapping("/salvar")
     public String salvarAvance(
-            @RequestParam Integer id_usuario,
-            @RequestParam Integer id_obra,
+            @RequestParam Integer idUsuario,
+            @RequestParam Integer idObra,
             @RequestParam String fecha,
-            @RequestParam Integer id_matriz,
+            @RequestParam Integer idMatriz,
             @RequestParam Double cantidad) {
 
         Avance avance = new Avance();
-        avance.setIdUsuario(id_usuario);
-        avance.setIdObra(id_obra);
+        avance.setIdUsuario(idUsuario);
+        avance.setIdObra(idObra);
         avance.setFecha(fecha);
-        avance.setIdMatriz(id_matriz);
+        avance.setIdMatriz(idMatriz);
         avance.setCantidad(cantidad);
 
 
@@ -133,32 +123,32 @@ public class ControladorAvance
 
 
     //borrar
-    @GetMapping("/borrar/{id_avance}")
+    @GetMapping("/borrar/{idAvance}")
     public String borrarAvance(Avance avance) {
         avanceServicio.borrar(avance);
         return "redirect:/avances/inicioAvances";
     }
 
     //funcionalidad para guardar cambios
-    @PostMapping("/actualizar/{id_avance}")
+    @PostMapping("/actualizar/{idAvance}")
     public String actualizarPresupuesto(
-            @PathVariable Integer id_avance,
-            @ModelAttribute Avance avance,
-            @RequestParam Double cantidad,
-            @RequestParam Integer id_usuario,
-            @RequestParam Integer id_obra,
-            @RequestParam String fecha,
-            BindingResult result,
-            @RequestParam Integer id_matriz,
-            Model model) {
+        @PathVariable Integer idAvance,
+        @ModelAttribute Avance avance,
+        @RequestParam Double cantidad,
+        @RequestParam Integer idUsuario,
+        @RequestParam Integer idObra,
+        @RequestParam String fecha,
+        BindingResult result,
+        @RequestParam Integer idMatriz,
+        Model model) {
         if (result.hasErrors()) {
-            return "redirect:/avances/cambiar/" + id_avance;
+            return "redirect:/avances/cambiar/" + idAvance;
         }
 
-        avance.setIdUsuario(id_usuario);
-        avance.setIdObra(id_obra);
+        avance.setIdUsuario(idUsuario);
+        avance.setIdObra(idObra);
         avance.setFecha(fecha);
-        avance.setIdMatriz(id_matriz);
+        avance.setIdMatriz(idMatriz);
         avance.setCantidad(cantidad);
 
 
