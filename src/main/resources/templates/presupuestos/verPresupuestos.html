@@ -186,7 +186,7 @@
     </table>
   </div>
   <div th:if="${listActividades == null or listActividades.empty}">
-    <p>No hay actividades registrados para este presupuesto</p>
+    <p>No hay actividades registradas para este presupuesto</p>
   </div>
 </div>
 
@@ -233,7 +233,7 @@
         const removeBtn = document.createElement('span');
         removeBtn.className = 'btn-remove';
         removeBtn.textContent = '✕ Eliminar';
-        removeBtn.onclick = function() { removeRow(this); };
+        removeBtn.onclick = function() { removeActivity(this); };
 
         // Append all elements to the row
         newRow.appendChild(select);
@@ -246,7 +246,7 @@
 
 
 
-    function removeActivity(activityId, element) {
+    function removeActivity(element) {
                // Remove visual element
         element.parentElement.remove();
 
