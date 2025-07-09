@@ -117,7 +117,7 @@ public class Controlador {
         String rol = auth.getAuthorities().iterator().next().getAuthority();
         System.out.println("Usuario detectado");
         switch (rol) {
-            case "ROLE_ADMINISTRACION":
+            case "ROLE_ADMINISTRADOR":
                 return "redirect:/dashboardADMIN"; // Redirige al índice específico para administradores
             case "ROLE_OPERATIVO":
                 return "redirect:/dashboardOPERA"; // Redirige a la página de operativo
@@ -126,7 +126,7 @@ public class Controlador {
             default:
                 // Si el rol no coincide con ninguno de los anteriores,
                 // redirige a una página por defecto
-                return "redirect:/dashboardADMIN"; // <-- ¡CAMBIO AQUÍ! Ya no redirige a la raíz
+                return "redirect:/login?error=sin-permisos"; // <-- ¡CAMBIO AQUÍ! Ya no redirige a la raíz
 
         }
     }

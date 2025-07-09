@@ -2,69 +2,88 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Avances de Obra</title>
+    <title>Avances</title>
     <link rel="stylesheet" th:href="@{/CSS/inicioAvance.css}">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
 </head>
 <body>
 <div class="container">
-    <header class="page-header">
-        <h1>Lista de Avances de Obra</h1>
+    <header>
+        <h1>Lista de Avances de obra</h1>
         <p>Gestión y seguimiento de avances de construcción</p>
     </header>
 
-    <section class="actions-section">
-        <a th:href="@{/avances/agregarAvance}" class="btn btn-primary">
-            <i class="fas fa-plus"></i>
-            Reportar Nuevo Avance
-        </a>
+    <section>
+        <a th:href="@{/avances/agregarAvance}" class="btn btn-primary">Reportar nuevo avance</a>
     </section>
 
-    <section class="data-section">
-        <div th:if="${avances != null and !avances.empty}" class="table-container">
-            <div class="table-header">
-                <h2>Avances Registrados</h2>
-                <span class="table-count">Total: <span th:text="${#lists.size(avances)}">0</span> avances</span>
+    <!-- Search Form -->
+    <section class="search-container">
+        <h2>Filtros de búsqueda</h2>
+        <form th:action="@{/avances/inicioAvances}" method="get" class="search-form">
+            <div class="search-row">
+                <label for="id_obra">ID Obra:</label>
+                <input type="number" id="id_obra" name="id_obra" th:value="${param.id_obra}" class="search-input">
             </div>
 
-            <div class="table-wrapper">
-                <table id="avancesTable" class="data-table">
+            <div class="search-row">
+                <label for="id_usuario">ID Usuario:</label>
+                <input type="number" id="id_usuario" name="id_usuario" th:value="${param.id_usuario}" class="search-input">
+            </div>
+
+            <div class="search-row">
+                <label for="id_obraByName">Nombre de la obra:</label>
+                <select id="id_obraByName" name="id_obra" th:value="${param.id_obra}" class="search-select">
+                    <option value="">-- Todas las obras --</option>
+                    <option th:each="presupuesto : ${presupuestos}"
+                            th:value="${presupuesto.id_obra}"
+                            th:text="${presupuesto.obraName}"
+                            th:selected="${param.id_obra == presupuesto.id_obra}">
+                    </option>
+                </select>
+            </div>
+
+            <div class="search-row">
+                <label for="fecha">Fecha:</label>
+                <input type="text" id="fecha" name="fecha" placeholder="YYYY-MM-DD" th:value="${param.fecha}" class="search-input">
+            </div>
+
+            <div class="search-row">
+                <button type="submit" class="btn btn-primary">Buscar</button>
+                <a th:href="@{/avances/inicioAvances}" class="btn btn-secondary">Limpiar filtros</a>
+            </div>
+        </form>
+    </section>
+
+    <section>
+        <div th:if="${avances != null and !avances.empty}">
+            <div class="table-container">
+                <table class="data-table" id="avancesTable">
                     <thead>
                     <tr>
                         <th>ID Avance</th>
                         <th>ID Obra</th>
-                        <th>Nombre de la Obra</th>
+                        <th>Nombre de la obra</th>
                         <th>Fecha</th>
                         <th>Acciones</th>
                     </tr>
                     </thead>
                     <tbody>
                     <tr th:each="avance : ${avances}">
-                        <td th:text="${avance.id_avance}" class="id-column"></td>
-                        <td th:text="${avance.id_obra}" class="id-column"></td>
-                        <td class="obra-name">
-                            <span th:each="presupuesto : ${presupuestos}"
-                                  th:if="${presupuesto.id_obra == avance.id_obra}"
-                                  th:text="${presupuesto.obraName}">
-                            </span>
+                        <td th:text="${avance.idAvance}"></td>
+                        <td th:text="${avance.idObra}"></td>
+                        <td>
+                                <span th:each="presupuesto : ${presupuestos}"
+                                      th:if="${presupuesto.id_obra == avance.idObra}"
+                                      th:text="${presupuesto.obraName}">
+                                </span>
                         </td>
-                        <td th:text="${avance.fecha}" class="fecha-column"></td>
-                        <td class="actions">
-                            <!-- Creo que es mejor no editar avances para no complicarse por su formato -->
-                            <!--<a th:href="@{/avances/cambiar/} + ${avance.id_avance}" class="btn btn-edit">
-                                <i class="fas fa-edit"></i>
-                                Editar
-                            </a>-->
-                            <a th:href="@{/avances/borrar/} + ${avance.id_avance}" class="btn btn-delete"
-                               onclick="return confirm('¿Está seguro que desea eliminar este avance?')">
-                                <i class="fas fa-trash"></i>
-                                Eliminar
-                            </a>
-                            <a th:href="@{/avances/detalle/}+${avance.id_avance}" class="btn btn-info">
-                                <i class="fas fa-eye"></i>
-                                Ver Detalle
-                            </a>
+                        <td th:text="${avance.fecha}"></td>
+                        <td>
+                            <div class="actions">
+                                <a th:href="@{/avances/borrar/} + ${avance.idAvance}" class="btn btn-delete"
+                                   onclick="return confirm('¿Está seguro que desea eliminar este avance?')">Eliminar</a>
+                                <a th:href="@{/avances/detalle/}+${avance.idAvance}" class="btn btn-primary">Ver Detalle</a>
+                            </div>
                         </td>
                     </tr>
                     </tbody>
@@ -73,66 +92,13 @@
         </div>
 
         <div th:if="${avances == null or avances.empty}" class="empty-message">
-            <div class="empty-icon">
-                <i class="fas fa-clipboard-list"></i>
-            </div>
-            <h3>No hay avances registrados</h3>
-            <p>Comienza registrando el primer avance de obra</p>
-            <a th:href="@{/avances/agregarAvance}" class="btn btn-primary">
-                <i class="fas fa-plus"></i>
-                Reportar Primer Avance
-            </a>
+            <p>No hay avances registrados</p>
         </div>
     </section>
 
-    <section class="navigation-section">
-        <a th:href="@{/avances/inicioAvances}" class="btn btn-secondary">
-            <i class="fas fa-arrow-left"></i>
-            Regresar
-        </a>
+    <section>
+        <a th:href="${session.dashboardOrigen}" class="btn btn-primary">Regresar</a>
     </section>
 </div>
-
-<script>
-    // Funciones para mejorar la experiencia del usuario
-    document.addEventListener('DOMContentLoaded', function() {
-        // Efecto hover en las filas de la tabla
-        const tableRows = document.querySelectorAll('#avancesTable tbody tr');
-        tableRows.forEach(row => {
-            row.addEventListener('mouseenter', function() {
-                this.style.transform = 'translateY(-2px)';
-                this.style.boxShadow = '0 4px 12px rgba(0,0,0,0.1)';
-            });
-
-            row.addEventListener('mouseleave', function() {
-                this.style.transform = 'translateY(0)';
-                this.style.boxShadow = 'none';
-            });
-        });
-
-        // Animación de entrada para la tabla
-        const tableContainer = document.querySelector('.table-container');
-        if (tableContainer) {
-            tableContainer.style.opacity = '0';
-            tableContainer.style.transform = 'translateY(20px)';
-
-            setTimeout(() => {
-                tableContainer.style.transition = 'opacity 0.5s ease, transform 0.5s ease';
-                tableContainer.style.opacity = '1';
-                tableContainer.style.transform = 'translateY(0)';
-            }, 100);
-        }
-    });
-
-    // Función para confirmación de eliminación más elegante
-    function confirmarEliminacion(event) {
-        event.preventDefault();
-        const href = event.currentTarget.href;
-
-        if (confirm('¿Está seguro que desea eliminar este avance?\nEsta acción no se puede deshacer.')) {
-            window.location.href = href;
-        }
-    }
-</script>
 </body>
 </html>

@@ -12,7 +12,6 @@
 <header>
     <div class="menu">
         <div class="logo-container">
-            <img th:src="@{../IMG/imagen-bob.png}" alt="Logo BOB" class="logo">
             <div class="logo-text-container">
                 <h1 class="logo-text">Building Optimization Baseline</h1>
                 <p class="logo-subtext">Gestión de Proyectos</p>
@@ -20,10 +19,8 @@
         </div>
         <nav>
             <ul class="nav-links">
-                <li><a href="/" class="active">Inicio</a></li>
-                <li><a href="/avances/inicioAvances">Avances</a></li>
-                <li><a href="/presupuestos">Presupuestos</a></li>
-                <li><a href="/reportes">Reportes</a></li>
+                <li><a th:href="${session.dashboardOrigen}" class="active">Inicio</a></li>
+                <li><a href="@{/error404}">Reportes</a></li>
             </ul>
         </nav>
     </div>

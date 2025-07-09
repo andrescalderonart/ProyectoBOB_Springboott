@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
@@ -18,71 +17,64 @@
     <a th:href="@{/presupuestos/inicioPresupuestos}" class="back-btn">← Regresar</a>
 
     <!-- Formulario -->
-    <div class="form-container">
-        <form th:action="@{/presupuestos/salvar}" method="post" th:object="${presupuesto}">
+    <form th:action="@{/presupuestos/salvar}" method="post" th:object="${presupuesto}">
 
-            <!-- Nombre de la obra -->
-            <div class="form-group">
-                <label for="obraName"><b>Nombre de la obra:</b></label>
-                <input type="text" id="obraName" th:field="*{obraName}" class="form-input" required>
-            </div>
+        <!-- Nombre de la obra -->
+        <div class="form-group">
+            <label for="obraName"><b>Nombre de la obra:</b></label>
+            <input type="text" id="obraName" th:field="*{obraName}" class="form-input" required>
+        </div>
 
-            <!-- Sección de actividades -->
-            <div class="activities-section">
-                <h3 class="section-title">Actividades:</h3>
+        <!-- Sección de actividades -->
+        <div class="activities-section">
+            <h3 class="section-title">Actividades:</h3>
 
-                <!-- Selector de actividades -->
-                <div class="activity-selector">
-                    <div class="selector-row">
-                        <div class="select-container">
-                            <label for="activityDropdown">Seleccionar actividad:</label>
-                            <select id="activityDropdown" name="actividadIds" class="form-select">
-                                <option value="">Seleccione...</option>
-                                <option th:each="mat : ${matriz}"
-                                        th:value="${mat.id_m}"
-                                        th:data-nombre="${mat.nombre}"
-                                        th:data-unidades="${mat.unidades}"
-                                        th:text="${mat.nombre} + ' (' + mat.unidades + ')'">
-                                </option>
-                            </select>
-                        </div>
-
-                        <div class="quantity-container">
-                            <label for="activityQuantity">Cantidad:</label>
-                            <input type="number" id="activityQuantity" step="0.01" min="0.01"
-                                   placeholder="Cantidad" class="form-input quantity-input" name="cantidades">
-                        </div>
-
-                        <div class="add-btn-container">
-                            <button type="button" onclick="addActivity()" class="btn btn-add">
-                                + Añadir actividad
-                            </button>
-                        </div>
+            <div class="activity-selector">
+                <div class="selector-row">
+                    <div class="select-container">
+                        <label for="activityDropdown">Seleccionar actividad:</label>
+                        <select id="activityDropdown" class="form-select">
+                            <option value="">Seleccione...</option>
+                            <option th:each="mat : ${matriz}"
+                                    th:value="${mat.id_m}"
+                                    th:data-nombre="${mat.nombre}"
+                                    th:data-unidades="${mat.unidades}"
+                                    th:text="${mat.nombre} + ' (' + mat.unidades + ')'">
+                            </option>
+                        </select>
                     </div>
-                </div>
 
-                <!-- Lista de actividades seleccionadas -->
-                <div class="selected-activities-container">
-                    <h4 class="selected-title">Actividades seleccionadas:</h4>
-                    <div id="selectedActivities" class="selected-activities">
-                        <!-- Las actividades seleccionadas aparecerán aquí -->
+                    <div class="quantity-container">
+                        <label for="activityQuantity">Cantidad:</label>
+                        <input type="number" id="activityQuantity" step="0.01" min="0.01"
+                               placeholder="Cantidad" class="form-input quantity-input">
+                    </div>
+
+                    <div class="add-btn-container">
+                        <button type="button" onclick="addActivity()" class="btn btn-add">
+                            + Añadir actividad
+                        </button>
                     </div>
                 </div>
             </div>
 
-            <!-- Inputs ocultos para el formulario -->
-            <div id="hiddenInputs"></div>
-
-            <!-- Botón de envío -->
-            <div class="submit-container">
-                <button type="submit" class="btn btn-submit">Guardar presupuesto</button>
+            <div class="selected-activities-container">
+                <h4 class="selected-title">Actividades seleccionadas:</h4>
+                <div id="selectedActivities" class="selected-activities"></div>
             </div>
-        </form>
-    </div>
+        </div>
+
+        <!-- Inputs ocultos para enviar las actividades -->
+        <div id="hiddenInputs"></div>
+
+        <div class="submit-container">
+            <button type="submit" class="btn btn-submit">Guardar presupuesto</button>
+        </div>
+    </form>
 </div>
 
+<!-- JavaScript -->
 <script>
-    // Store added activities to prevent duplicates
     const addedActivities = new Set();
 
     function addActivity() {
@@ -97,7 +89,6 @@
         const activityUnits = selectedOption.getAttribute('data-unidades');
         const quantity = quantityInput.value;
 
-        // Validate selection
         if (!activityId) {
             alert("Por favor seleccione una actividad");
             return;
@@ -108,16 +99,13 @@
             return;
         }
 
-        // Check if activity already added
         if (addedActivities.has(activityId)) {
             alert("Esta actividad ya fue agregada");
             return;
         }
 
-        // Add to set
         addedActivities.add(activityId);
 
-        // Create visible display
         const activityDiv = document.createElement('div');
         activityDiv.className = 'selected-activity';
         activityDiv.innerHTML = `
@@ -132,38 +120,34 @@
         `;
         selectedActivitiesDiv.appendChild(activityDiv);
 
-        // Create hidden inputs for form submission
-        const activityIdInput = document.createElement('input');
-        activityIdInput.type = 'hidden';
-        activityIdInput.name = 'activityIds';
-        activityIdInput.value = activityId;
+        // Crear inputs ocultos
+        const actividadIdInput = document.createElement('input');
+        actividadIdInput.type = 'hidden';
+        actividadIdInput.name = 'actividadIds';
+        actividadIdInput.value = activityId;
 
-        const quantityInputHidden = document.createElement('input');
-        quantityInputHidden.type = 'hidden';
-        quantityInputHidden.name = 'quantities';
-        quantityInputHidden.value = quantity;
+        const cantidadInputHidden = document.createElement('input');
+        cantidadInputHidden.type = 'hidden';
+        cantidadInputHidden.name = 'cantidades';
+        cantidadInputHidden.value = quantity;
 
-        hiddenInputsDiv.appendChild(activityIdInput);
-        hiddenInputsDiv.appendChild(quantityInputHidden);
+        hiddenInputsDiv.appendChild(actividadIdInput);
+        hiddenInputsDiv.appendChild(cantidadInputHidden);
 
-        // Reset inputs
+        // Reset campos
         dropdown.selectedIndex = 0;
         quantityInput.value = '';
     }
 
     function removeActivity(activityId, element) {
-        // Remove from set
         addedActivities.delete(activityId);
-
-        // Remove visual element
         element.parentElement.remove();
 
-        // Remove corresponding hidden inputs
         const hiddenInputs = document.querySelectorAll('#hiddenInputs input');
         for (let i = 0; i < hiddenInputs.length; i++) {
-            if (hiddenInputs[i].name === 'activityIds' && hiddenInputs[i].value === activityId) {
+            if (hiddenInputs[i].name === 'actividadIds' && hiddenInputs[i].value === activityId) {
                 hiddenInputs[i].remove();
-                hiddenInputs[i+1].remove(); // Remove the corresponding quantity input
+                hiddenInputs[i + 1].remove(); // El input siguiente es el de cantidad
                 break;
             }
         }

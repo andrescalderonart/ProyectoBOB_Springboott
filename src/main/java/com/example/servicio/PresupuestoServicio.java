@@ -17,5 +17,9 @@ public interface PresupuestoServicio {
 
     Presupuesto localizarPresupuesto(Integer entryId);
 
+    List<Presupuesto> findByObraName(String obraName);
+    List<Presupuesto> findByObraNameContaining(String obraName);
+    List<Presupuesto> findByObraNameIgnoreCase(String obraName);
+
     public List<Matriz> listarMateriales();
 }

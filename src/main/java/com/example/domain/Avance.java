@@ -16,19 +16,19 @@ public class Avance implements Serializable{
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id_avance")
-    private Integer id_avance;
+    private Integer idAvance;
 
     @Column(name = "id_usuario", nullable = false)
-    private Integer id_usuario;
+    private Integer idUsuario;
 
     @Column(name = "id_obra", nullable = false)
-    private Integer id_obra;
+    private Integer idObra;
 
     @Column(name = "fecha")
     private String fecha;
 
     @Column(name = "id_matriz", nullable = false)
-    private Integer id_matriz;
+    private Integer idMatriz;
 
     @Column(name = "cantidad", nullable = false)
     private Double cantidad;

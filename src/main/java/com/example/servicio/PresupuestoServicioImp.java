@@ -1,7 +1,5 @@
 package com.example.servicio;
 
-
-
 import com.example.dao.MatrizDao;
 import com.example.dao.PersupuestoDao;
 import com.example.domain.Matriz;
@@ -13,7 +11,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
 
 @Service
-public class PresupuestoServicioImp implements PresupuestoServicio {
+public class PresupuestoServicioImp implements PresupuestoServicio{
 
     @Autowired
     private PersupuestoDao presuDao;
@@ -51,6 +49,18 @@ public class PresupuestoServicioImp implements PresupuestoServicio {
     public Presupuesto localizarPresupuesto(Integer entryId) {
         return presuDao.findById(entryId).orElse(null);
     }
+
+    public List<Presupuesto> findByObraName(String obraName) {
+        return presuDao.findByObraName(obraName);
+    }
+    public List<Presupuesto> findByObraNameContaining(String obraName) {
+        return presuDao.findByObraNameContaining(obraName);
+    }
+    public List<Presupuesto> findByObraNameIgnoreCase(String obraName) {
+        return presuDao.findByObraNameIgnoreCase(obraName);
+    }
+
+
     public List<Matriz> listarMateriales() {
         return (List<Matriz>) mateDao.findAll();
     }

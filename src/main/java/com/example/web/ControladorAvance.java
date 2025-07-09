@@ -6,16 +6,15 @@ import com.example.domain.Presupuesto;
 import com.example.servicio.AvanceServicio;
 import com.example.servicio.MatrizServicio;
 import com.example.servicio.PresupuestoServicio;
+import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 @Controller
 @RequestMapping("/avances")
@@ -30,13 +29,60 @@ public class ControladorAvance
     private PresupuestoServicio presupuestoServicio;
     //Acá están los métodos
     @GetMapping("/inicioAvances")
-    public String inicioAvance(Model model){
-        List<Avance> avances = avanceServicio.listaAvance();
+    public String inicioAvance(
+            @RequestParam(required = false) String obraName,
+            @RequestParam(required = false) Integer id_obra,
+            @RequestParam(required = false) Integer id_usuario,
+            @RequestParam(required = false) Integer id_matriz,
+            @RequestParam(required = false) String fecha,
+            Model model,
+            Authentication auth,
+            HttpSession session) {
+
+        // 🔒 Establecer dashboard según el rol
+        if (auth != null) {
+            String rol = auth.getAuthorities().iterator().next().getAuthority();
+            switch (rol) {
+                case "ROLE_ADMINISTRADOR":
+                    session.setAttribute("dashboardOrigen", "/dashboardADMIN");
+                    break;
+                case "ROLE_OPERATIVO":
+                    session.setAttribute("dashboardOrigen", "/dashboardOPERA");
+                    break;
+                case "ROLE_SUPERVISOR":
+                    session.setAttribute("dashboardOrigen", "/dashboardSUPER");
+                    break;
+                default:
+                    session.setAttribute("dashboardOrigen", "/login?error=sin-permisos");
+                    break;
+            }
+        }
+
+        // Cargar presupuestos para mostrar nombres de obra
         List<Presupuesto> presupuestos = presupuestoServicio.listaPresupuesto();
-        model.addAttribute("avances",avances);
-        model.addAttribute("presupuestos",presupuestos);
+        model.addAttribute("presupuestos", presupuestos);
+
+        // Buscar avances según los filtros recibidos
+        List<Avance> avances;
+        if (id_usuario != null && fecha != null) {
+            avances = avanceServicio.buscarPorUsuarioYFecha(id_usuario, fecha);
+        } else if (id_obra != null) {
+            avances = avanceServicio.buscarPorIdObra(id_obra);
+        } else if (id_usuario != null) {
+            avances = avanceServicio.buscarPorIdUsuario(id_usuario);
+        } else if (id_matriz != null) {
+            avances = avanceServicio.buscarPorIdMatriz(id_matriz);
+        } else if (fecha != null) {
+            avances = avanceServicio.buscarPorFechaConteniendo(fecha);
+        } else {
+            avances = avanceServicio.listaAvance();
+        }
+
+        model.addAttribute("avances", avances);
+
         return "avances/inicioAvances";
     }
+
 
     //Agregar nuevo
     @GetMapping("/agregarAvance")
@@ -60,10 +106,10 @@ public class ControladorAvance
             @RequestParam Double cantidad) {
 
         Avance avance = new Avance();
-        avance.setId_usuario(id_usuario);
-        avance.setId_obra(id_obra);
+        avance.setIdUsuario(id_usuario);
+        avance.setIdObra(id_obra);
         avance.setFecha(fecha);
-        avance.setId_matriz(id_matriz);
+        avance.setIdMatriz(id_matriz);
         avance.setCantidad(cantidad);
 
 
@@ -96,23 +142,23 @@ public class ControladorAvance
     //funcionalidad para guardar cambios
     @PostMapping("/actualizar/{id_avance}")
     public String actualizarPresupuesto(
-        @PathVariable Integer id_avance,
-        @ModelAttribute Avance avance,
-        @RequestParam Double cantidad,
-        @RequestParam Integer id_usuario,
-        @RequestParam Integer id_obra,
-        @RequestParam String fecha,
-        BindingResult result,
-        @RequestParam Integer id_matriz,
-        Model model) {
+            @PathVariable Integer id_avance,
+            @ModelAttribute Avance avance,
+            @RequestParam Double cantidad,
+            @RequestParam Integer id_usuario,
+            @RequestParam Integer id_obra,
+            @RequestParam String fecha,
+            BindingResult result,
+            @RequestParam Integer id_matriz,
+            Model model) {
         if (result.hasErrors()) {
             return "redirect:/avances/cambiar/" + id_avance;
         }
 
-        avance.setId_usuario(id_usuario);
-        avance.setId_obra(id_obra);
+        avance.setIdUsuario(id_usuario);
+        avance.setIdObra(id_obra);
         avance.setFecha(fecha);
-        avance.setId_matriz(id_matriz);
+        avance.setIdMatriz(id_matriz);
         avance.setCantidad(cantidad);
 
 
@@ -121,14 +167,14 @@ public class ControladorAvance
     }
 
     //Ver detalle (sólo lectura)
-    @GetMapping("/detalle/{id_avance}")
-    public String detalleAvance(@PathVariable Integer id_avance, Model model) {
-        Avance avance = avanceServicio.localizarAvance(id_avance);
+    @GetMapping("/detalle/{idAvance}")
+    public String detalleAvance(@PathVariable Integer idAvance, Model model) {
+        Avance avance = avanceServicio.localizarAvance(idAvance);
         List<Matriz> matriz = matrizServicio.listarElementos();
         List<Presupuesto> presupuestos = presupuestoServicio.listaPresupuesto();
 
         model.addAttribute("avance", avance);
-        model.addAttribute("actividad", avanceServicio.localizarAvance(id_avance));
+        model.addAttribute("actividad", avanceServicio.localizarAvance(idAvance));
         model.addAttribute("presupuestos",presupuestos);
         model.addAttribute("matriz", matriz);
         model.addAttribute("Editando", false); // ← This forces VIEW mode
@@ -136,8 +182,12 @@ public class ControladorAvance
     }
 
 
+
+
     //Materiales (para el manejo de la matriz)
     @Autowired
     private MatrizServicio matrizServicio;
+
+
 
 }
