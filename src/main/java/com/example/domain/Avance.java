@@ -19,7 +19,7 @@ public class Avance implements Serializable{
     private Integer idAvance;
 
     @Column(name = "id_usuario", nullable = false)
-    private Integer idUsuario;
+    private String idUsuario;
 
     @Column(name = "id_obra", nullable = false)
     private Integer idObra;

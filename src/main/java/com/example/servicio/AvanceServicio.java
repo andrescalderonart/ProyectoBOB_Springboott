@@ -19,7 +19,7 @@ public interface AvanceServicio {
 
     // New search methods
     List<Avance> buscarPorIdAvance(Integer idAvance);
-    List<Avance> buscarPorIdUsuario(Integer idUsuario);
+    List<Avance> buscarPorIdUsuario(String idUsuario);
     List<Avance> buscarPorIdObra(Integer idObra);
     List<Avance> buscarPorIdMatriz(Integer idMatriz);
 
@@ -29,7 +29,7 @@ public interface AvanceServicio {
 
 
     // Combined search methods
-    List<Avance> buscarPorUsuarioYFecha(Integer id_usuario, String fecha);
+    List<Avance> buscarPorUsuarioYFecha(String id_usuario, String fecha);
 
 
 

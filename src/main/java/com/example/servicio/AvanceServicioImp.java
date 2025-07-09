@@ -59,7 +59,7 @@ public class AvanceServicioImp implements AvanceServicio{
 
     @Override
     @Transactional(readOnly = true)
-    public List<Avance> buscarPorIdUsuario(Integer idUsuario) {
+    public List<Avance> buscarPorIdUsuario(String idUsuario) {
         return avanceDao.findByIdUsuario(idUsuario);
     }
 
@@ -89,7 +89,7 @@ public class AvanceServicioImp implements AvanceServicio{
 
     @Override
     @Transactional(readOnly = true)
-    public List<Avance> buscarPorUsuarioYFecha(Integer idUsuario, String fecha) {
+    public List<Avance> buscarPorUsuarioYFecha(String idUsuario, String fecha) {
         return avanceDao.findByIdUsuarioAndFecha(idUsuario, fecha);
     }
 

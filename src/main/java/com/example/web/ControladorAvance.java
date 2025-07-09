@@ -6,13 +6,16 @@ import com.example.domain.Presupuesto;
 import com.example.servicio.AvanceServicio;
 import com.example.servicio.MatrizServicio;
 import com.example.servicio.PresupuestoServicio;
+import org.apache.tomcat.util.net.openssl.ciphers.Authentication;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Controller
 @RequestMapping("/avances")
@@ -31,12 +34,11 @@ public class ControladorAvance
            // @RequestParam(required = false) String obraName,
            @RequestParam(required = false) Integer idObraTexto,
            @RequestParam(required = false) Integer idObraSelect,
-            @RequestParam(required = false) Integer idUsuario,
+            @RequestParam(required = false) String idUsuario,
             @RequestParam(required = false) Integer idMatriz,
             @RequestParam(required = false) String fecha,
             Model model){
-        //En vez de cargar la lista entera al principio sólo declaro la variable
-        List<Avance> avances;
+
 
         //Necesito cargar presupuestos para mostrar nombres de obra
         List<Presupuesto> presupuestos = presupuestoServicio.listaPresupuesto();
@@ -44,32 +46,33 @@ public class ControladorAvance
 
 //Este if es para las búsquedas por ID
 
-        //Para saber cuál idObra
-        Integer idObra = idObraTexto != null ? idObraTexto : idObraSelect;
+// Start with all avances
+        List<Avance> avances = avanceServicio.listaAvance();
 
-        if (idUsuario != null && fecha != null) {
-            avances = avanceServicio.buscarPorUsuarioYFecha(idUsuario, fecha);
+        // Apply filters in a more flexible way
+        if (idObraSelect != null) {
+            avances = avanceServicio.buscarPorIdObra(idObraSelect);
         }
-        else if (idObra != null) {
-            avances = avanceServicio.buscarPorIdObra(idObra);
+        if (idObraTexto != null) {
+            avances = avanceServicio.buscarPorIdObra(idObraTexto);
         }
-        else if (idUsuario != null) {
-            avances = avanceServicio.buscarPorIdUsuario(idUsuario);
+        if (idUsuario != null && !idUsuario.isEmpty()) {
+            avances = avances.stream()
+                    .filter(a -> a.getIdUsuario().equals(idUsuario))
+                    .collect(Collectors.toList());
         }
-        else if (idMatriz != null) {
-            avances = avanceServicio.buscarPorIdMatriz(idMatriz);
-        }
-        else if (fecha != null) {
-            avances = avanceServicio.buscarPorFechaConteniendo(fecha);
-        }
-        else {
-            // No filters - get all avances
-            avances = avanceServicio.listaAvance();
+        if (fecha != null && !fecha.isEmpty()) {
+            avances = avances.stream()
+                    .filter(a -> a.getFecha().contains(fecha))
+                    .collect(Collectors.toList());
         }
 
-
-
-        model.addAttribute("avances",avances);
+        // Add the filtered results and parameters back to the model
+        model.addAttribute("avances", avances);
+        model.addAttribute("idObraSelect", idObraSelect);
+        model.addAttribute("idObraTexto", idObraTexto);
+        model.addAttribute("idUsuario", idUsuario);
+        model.addAttribute("fecha", fecha);
 
         return "avances/inicioAvances";
     }
@@ -89,14 +92,22 @@ public class ControladorAvance
     //Función de guardado
     @PostMapping("/salvar")
     public String salvarAvance(
-            @RequestParam Integer idUsuario,
+            Authentication auth, // Add this parameter to get the logged-in user
+            @RequestParam String idUsuario,
             @RequestParam Integer idObra,
             @RequestParam String fecha,
             @RequestParam Integer idMatriz,
             @RequestParam Double cantidad) {
 
+        // Get the username from the authentication object
+        String username = SecurityContextHolder.getContext().getAuthentication().getName();
+
+        // For now, let's just print it to verify it works
+        System.out.println("Logged in username: " + username);
+
+
         Avance avance = new Avance();
-        avance.setIdUsuario(idUsuario);
+        avance.setIdUsuario(username);
         avance.setIdObra(idObra);
         avance.setFecha(fecha);
         avance.setIdMatriz(idMatriz);
@@ -132,10 +143,11 @@ public class ControladorAvance
     //funcionalidad para guardar cambios
     @PostMapping("/actualizar/{idAvance}")
     public String actualizarPresupuesto(
+        Authentication auth, // Add this parameter to get the logged-in user
         @PathVariable Integer idAvance,
         @ModelAttribute Avance avance,
         @RequestParam Double cantidad,
-        @RequestParam Integer idUsuario,
+        @RequestParam String idUsuario,
         @RequestParam Integer idObra,
         @RequestParam String fecha,
         BindingResult result,
@@ -145,7 +157,10 @@ public class ControladorAvance
             return "redirect:/avances/cambiar/" + idAvance;
         }
 
-        avance.setIdUsuario(idUsuario);
+        // Get the username from the authentication object
+        String username = SecurityContextHolder.getContext().getAuthentication().getName();
+
+        avance.setIdUsuario(username);
         avance.setIdObra(idObra);
         avance.setFecha(fecha);
         avance.setIdMatriz(idMatriz);
