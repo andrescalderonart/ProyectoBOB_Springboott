@@ -2,7 +2,6 @@ package com.example.servicio;
 
 import com.example.domain.Avance;
 import com.example.domain.Matriz;
-import com.example.domain.Presupuesto;
 
 import java.util.List;
 
@@ -19,10 +18,10 @@ public interface AvanceServicio {
     Avance localizarAvance(Integer entryId);
 
     // New search methods
-    List<Avance> buscarPorIdAvance(Integer id_avance);
-    List<Avance> buscarPorIdUsuario(Integer id_usuario);
-    List<Avance> buscarPorIdObra(Integer id_obra);
-    List<Avance> buscarPorIdMatriz(Integer id_matriz);
+    List<Avance> buscarPorIdAvance(Integer idAvance);
+    List<Avance> buscarPorIdUsuario(Integer idUsuario);
+    List<Avance> buscarPorIdObra(Integer idObra);
+    List<Avance> buscarPorIdMatriz(Integer idMatriz);
 
     List<Avance> buscarPorFecha(String fecha);
     List<Avance> buscarPorFechaConteniendo(String fecha);

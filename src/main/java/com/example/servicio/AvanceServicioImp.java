@@ -53,26 +53,26 @@ public class AvanceServicioImp implements AvanceServicio{
     // Implementation of new search methods
     @Override
     @Transactional(readOnly = true)
-    public List<Avance> buscarPorIdAvance(Integer id_avance) {
-        return avanceDao.findByIdAvance(id_avance);
+    public List<Avance> buscarPorIdAvance(Integer idAvance) {
+        return avanceDao.findByIdAvance(idAvance);
     }
 
     @Override
     @Transactional(readOnly = true)
-    public List<Avance> buscarPorIdUsuario(Integer id_usuario) {
-        return avanceDao.findByIdUsuario(id_usuario);
+    public List<Avance> buscarPorIdUsuario(Integer idUsuario) {
+        return avanceDao.findByIdUsuario(idUsuario);
     }
 
     @Override
     @Transactional(readOnly = true)
-    public List<Avance> buscarPorIdObra(Integer id_obra) {
-        return avanceDao.findByIdObra(id_obra);
+    public List<Avance> buscarPorIdObra(Integer idObra) {
+        return avanceDao.findByIdObra(idObra);
     }
 
     @Override
     @Transactional(readOnly = true)
-    public List<Avance> buscarPorIdMatriz(Integer id_matriz) {
-        return avanceDao.findByIdMatriz(id_matriz);
+    public List<Avance> buscarPorIdMatriz(Integer idMatriz) {
+        return avanceDao.findByIdMatriz(idMatriz);
     }
 
     @Override
@@ -89,8 +89,8 @@ public class AvanceServicioImp implements AvanceServicio{
 
     @Override
     @Transactional(readOnly = true)
-    public List<Avance> buscarPorUsuarioYFecha(Integer id_usuario, String fecha) {
-        return avanceDao.findByIdUsuarioAndFecha(id_usuario, fecha);
+    public List<Avance> buscarPorUsuarioYFecha(Integer idUsuario, String fecha) {
+        return avanceDao.findByIdUsuarioAndFecha(idUsuario, fecha);
     }
 
 

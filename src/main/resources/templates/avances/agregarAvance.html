@@ -51,7 +51,7 @@
     <!-- Work Name Input -->
     <div>
         <label><b>Nombre de la obra:</b></label>
-        <select id="obraDropdown" name="id_obra" required>
+        <select id="obraDropdown" name="idObra" required>
             <option value="">Seleccione...</option>
             <option th:each="pre : ${presupuestos}"
                     th:value="${pre.id_obra}"
@@ -70,7 +70,7 @@
 
     <!-- Single dropdown for selection -->
     <div>
-        <select id="activityDropdown" name="id_matriz" required disabled>
+        <select id="activityDropdown" name="idMatriz" required disabled>
             <option value="">Debe seleccionar una obra</option>
             <!--<option th:each="mat : ${matriz}"
                     th:value="${mat.id_m}"
@@ -95,7 +95,7 @@
 
     <!-- Hidden inputs that will be submitted -->
     <div id="hiddenInputs">
-        <input type="hidden" name="id_usuario" value="4">
+        <input type="hidden" name="idUsuario" value="4">
         <!-- Hidden input for user ID (you might want to set this from session) -->
         <!-- Hidden input for user ID (you might want to set this from session) -->
         <!-- Hidden input for user ID (you might want to set this from session) -->

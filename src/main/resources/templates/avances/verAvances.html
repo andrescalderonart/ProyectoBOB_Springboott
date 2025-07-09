@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <!-- Dynamic title based on edit/view mode -->
-  <title th:text="${'Detalle de Avance ID#'+ avance.id_avance}"></title>
+  <title th:text="${'Detalle de Avance ID#'+ avance.idAvance}"></title>
 
   <style>
     /* Style for each material row */
@@ -60,71 +60,8 @@
 
 <body>
 <!-- heading -->
-<h1 th:text="${'Detalle de Avance (ID: ' + avance.id_avance + ')'}"></h1>
+<h1 th:text="${'Detalle de Avance (ID: ' + avance.idAvance + ')'}"></h1>
 
-<!-- Edit form (shown only in edit mode) -->
-<!--<form th:if="${Editando}"
-      th:action="@{${presupuesto.id_obra != null ? '/presupuestos/actualizar/' + presupuesto.id_obra : '/presupuestos/salvar'}}"
-      method="post"
-      th:object="${presupuesto}">
-
-  <input type="hidden" th:field="*{id_obra}">-->
-
-  <!-- Work name input (editable in edit mode) -->
-<!--<div th:if="${Editando}">
-  <label><b>Nombre de la obra:</b></label>
-  <input type="text" th:field="*{obraName}" name="obraName" required>
-</div>-->
-
-<!-- Display work name (view mode) -->
-<!--<h2 th:unless="${Editando}" th:text="${presupuesto.obraName}"></h2>
-
-<h3>Actividades:</h3>-->
-
-<!--  different display based on mode -->
-<!--<div th:if="${Editando}">-->
-<!-- Edit mode  interface
-    <div id="actividadesContainer">
-      Check if there are existing activities
-      <div th:if="${not #lists.isEmpty(actividadIds)}">
-      Loop through existing activities
-      <div th:each="actividadId, stat : ${actividadIds}" class="material-row">
-        <select name="actividadIds" required>
-          <option value="">Seleccione...</option>
-          <option th:each="mat : ${matriz}"
-                  th:value="${mat.id_m}"
-                  th:selected="${mat.id_m == actividadId}"
-                  th:data-nombre="${mat.nombre}"
-                  th:data-unidades="${mat.unidades}"
-                  th:text="${mat.nombre} + ' ('+${mat.unidades}+')'">
-          </option>
-        </select>
-        <input type="number" name="cantidades" step="0.01" min="0.01"
-               th:value="${cantidades[stat.index]}" placeholder="Cantidad" required>
-        <span class="btn-remove" onclick="removeActivity(this)">✕ Eliminar</span>
-      </div>
-      </div>-->
-      <!-- Empty row template for new materials -->
-      <!-- <div th:if="${actividadesConCantidad == null or actividadesConCantidad.empty}" class="material-row">
-        <select name="actividadIds" required>
-          <option value="">Seleccione actividad...</option>
-          <option th:each="act : ${actividades}"
-                  th:value="${act.id_m}"
-                  th:text="${#strings.abbreviate(act.nombre, 100) + ' (' + act.unidades + ')'}">
-          </option>
-        </select>
-        <input type="number" name="quantities" step="0.01" min="0.01" placeholder="Cantidad" required>
-        <span class="btn-remove" onclick="removeRow(this)">✕ Eliminar</span>
-      </div>
-    </div>
-
-    <button type="button" onclick="addActivity()" class="btn" style="background-color: #2196F3;">
-      + Añadir otra actividad
-    </button>
-    <br><br>
-
-    <button type="submit" class="btn">Guardar presupuesto</button>
-  </div>-->
 
   <!-- View mode display -->
   <div th:unless="${Editando}">
@@ -148,7 +85,7 @@
       </table>
     </div>
     <h2 th:each="presupuesto : ${presupuestos}"
-        th:if="${presupuesto.id_obra == avance.id_obra}"
+        th:if="${presupuesto.id_obra == avance.idObra}"
         th:text="${'Obra: ' + presupuesto.obraName}"></h2>
   </div>
   </div>
@@ -159,9 +96,9 @@
 
 <!-- View mode display when not editing -->
 <div th:unless="${Editando}">
-  <h2 th:text="${avance.id_avance}"></h2>
+  <h2 th:text="${avance.idAvance}"></h2>
   <h2 th:each="presupuesto : ${presupuestos}"
-      th:if="${presupuesto.id_obra == avance.id_obra}"
+      th:if="${presupuesto.id_obra == avance.idObra}"
       th:text="${'Obra: ' + presupuesto.obraName}"></h2>
 
   <h3>Avance reportado:</h3>
@@ -177,13 +114,13 @@
       </thead>
       <tbody>
       <tr>
-        <td th:text="${avance.id_matriz}"></td>
+        <td th:text="${avance.idMatriz}"></td>
         <td th:each="item : ${matriz}"
-            th:if="${avance.id_matriz == item.id_m}"
+            th:if="${avance.idMatriz == item.id_m}"
             th:text="${item.nombre}">
         </td>
         <td th:each="item : ${matriz}"
-            th:if="${avance.id_matriz == item.id_m}"
+            th:if="${avance.idMatriz == item.id_m}"
             th:text="${item.unidades}">
         </td>
         <td th:text="${avance.cantidad}"></td>
