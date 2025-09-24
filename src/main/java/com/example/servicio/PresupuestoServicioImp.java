@@ -22,7 +22,7 @@ public class PresupuestoServicioImp implements PresupuestoServicio{
     @Override
     @Transactional(readOnly = true)
     public List<Presupuesto> listaPresupuesto() {
-        return (List<Presupuesto>) presuDao.findAll();
+        return presuDao.findByArchivadoFalse();
     }
 
     @Override
@@ -39,9 +39,24 @@ public class PresupuestoServicioImp implements PresupuestoServicio{
 
     @Override
     @Transactional
+    public void archivar(Presupuesto presu) {
+        presu.setArchivado(true);
+        presuDao.save(presu);
+    }
+
+
+    @Override
+    @Transactional
     public void actualizar(Presupuesto presu) {
         presuDao.save(presu);
     }
+
+    @Override
+    @Transactional(readOnly = true)
+    public List<Presupuesto> listaArchivados() {
+        return presuDao.findByArchivadoTrue();
+    }
+
 
     @Override
     @Transactional(readOnly = true)

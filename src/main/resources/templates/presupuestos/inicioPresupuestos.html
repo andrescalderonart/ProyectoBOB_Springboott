@@ -43,11 +43,18 @@
                 <td th:text="${presupuesto.obraName}"></td>
                 <td>
                     <a th:href="@{/presupuestos/cambiar/} + ${presupuesto.id_obra}" class="btn btn-edit">Editar</a>
-                    <a th:href="@{/presupuestos/borrar/} + ${presupuesto.id_obra}" class="btn btn-danger"
-                       onclick="return confirm('¿Está seguro que desea eliminar este presupuesto?')">Eliminar</a>
+
                     <a th:href="@{/presupuestos/detalle/}+${presupuesto.id_obra}" class="btn btn-secondary">Ver Detalle</a>
+
+                    <a th:href="@{/presupuestos/archivar/${p.id_obra}}"
+                       onclick="return confirm('¿Seguro que deseas archivar este presupuesto?');">
+                        Archivar
+                    </a>
                 </td>
             </tr>
+            <a class="enlace" th:href="@{/reportes/presupuestos.pdf}">
+                <i class="bx bx-file"></i><span>Reporte Presupuestos</span>
+            </a>
             </tbody>
         </table>
     </div>

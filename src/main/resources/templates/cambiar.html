@@ -2,37 +2,54 @@
 <html lang="es" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <title>Modificar individuo</title>
+    <title>Modificar Individuo</title>
+    <link rel="stylesheet" href="/CSS/modificar-individuo.css">
 </head>
 <body>
-<h1>Modificar individuos</h1>
-<br>
-<a th:href="@{/}">Regresar</a>
-<br>
-<br>
-<form th:action="@{/salvar}" method="post" th:object="${individuo}">
-    <input type="hidden" name="id_individuo" th:field="*{id_individuo}">
-    <label>Nombre:</label>
-    <input type="text" name="nombre" th:field="*{nombre}">
-    <span th:if="${#fields.hasErrors('nombre')}" th:errores="*{nombre}">Campo obligatorio</span>
-    <br>
-    <label>Apellido:</label>
-    <input type="text" name="apellido" th:field="*{apellido}">
-    <span th:if="${#fields.hasErrors('apellido')}" th:errores="*{apellido}">Campo obligatorio</span>
-    <br>
-    <label>Edad:</label>
-    <input type="number" name="edad" th:field="*{edad}">
-    <span th:if="${#fields.hasErrors('edad')}" th:errores="*{edad}">Campo obligatorio</span>
-    <br>
-    <label>Correo:</label>
-    <input type="email" name="correo" th:field="*{correo}">
-    <span th:if="${#fields.hasErrors('correo')}" th:errores="*{correo}">Campo obligatorio</span>
-    <br>
-    <label>Telefono:</label>
-    <input type="tel" name="telefono" th:field="*{telefono}">
-    <span th:if="${#fields.hasErrors('telefono')}" th:errores="*{telefono}">Campo obligatorio</span>
-    <br>
-    <input type="submit" name="salvar" value="Modificar">
-</form>
+
+<main>
+    <h1>Modificar Individuo</h1>
+
+    <a th:href="@{/}" class="btn">Regresar</a>
+
+    <form th:action="@{/salvar}" method="post" th:object="${individuo}" class="formulario">
+        <input type="hidden" th:field="*{id_individuo}">
+
+        <div class="form-group">
+            <label for="nombre">Nombre:</label>
+            <input type="text" th:field="*{nombre}" id="nombre" required>
+            <span class="error" th:if="${#fields.hasErrors('nombre')}" th:errors="*{nombre}">Campo obligatorio</span>
+        </div>
+
+        <div class="form-group">
+            <label for="apellido">Apellido:</label>
+            <input type="text" th:field="*{apellido}" id="apellido" required>
+            <span class="error" th:if="${#fields.hasErrors('apellido')}" th:errors="*{apellido}">Campo obligatorio</span>
+        </div>
+
+        <div class="form-group">
+            <label for="edad">Edad:</label>
+            <input type="number" th:field="*{edad}" id="edad" min="0" required>
+            <span class="error" th:if="${#fields.hasErrors('edad')}" th:errors="*{edad}">Campo obligatorio</span>
+        </div>
+
+        <div class="form-group">
+            <label for="correo">Correo:</label>
+            <input type="email" th:field="*{correo}" id="correo" required>
+            <span class="error" th:if="${#fields.hasErrors('correo')}" th:errors="*{correo}">Campo obligatorio</span>
+        </div>
+
+        <div class="form-group">
+            <label for="telefono">Teléfono:</label>
+            <input type="tel" th:field="*{telefono}" id="telefono" required>
+            <span class="error" th:if="${#fields.hasErrors('telefono')}" th:errors="*{telefono}">Campo obligatorio</span>
+        </div>
+
+        <div class="form-actions">
+            <input type="submit" class="btn" value="Modificar">
+        </div>
+    </form>
+</main>
+
 </body>
 </html>

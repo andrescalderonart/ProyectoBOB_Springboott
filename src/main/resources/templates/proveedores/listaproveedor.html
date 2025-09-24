@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Lista de Proveedores</title>
+</head>
+<body>
+<h1>Lista de Proveedores</h1>
+
+<div class="top-actions">
+  <a th:href="@{/proveedores/formulario}" class="btn">Crear nuevo proveedor</a>
+</div>
+
+<table border="1">
+  <thead>
+  <tr>
+    <th>ID</th>
+    <th>Individuo</th>
+    <th>NIT</th>
+    <th>Banco</th>
+    <th>Cuenta</th>
+  </tr>
+  </thead>
+  <tbody>
+  <tr th:if="${#lists.isEmpty(proveedores)}">
+    <td colspan="5">No hay proveedores registrados.</td>
+  </tr>
+
+  <tr th:each="prov : ${proveedores}">
+    <!-- Ajusta a tu getter real: getIdProveedor() o getId() -->
+    <td th:text="${prov.idProveedor}">1</td>
+
+    <!-- Coincide con tu modelo: individuo en vez de persona -->
+    <td th:text="${prov.individuo != null ? prov.individuo.nombre : '—'}">Nombre</td>
+
+    <!-- Null-safe para info comercial -->
+    <td th:text="${prov.informacionComercial != null ? prov.informacionComercial.nitRut : '—'}">NIT</td>
+    <td th:text="${prov.informacionComercial != null ? prov.informacionComercial.banco : '—'}">Banco</td>
+    <td th:text="${prov.informacionComercial != null ? prov.informacionComercial.numCuenta : '—'}">Cuenta</td>
+  </tr>
+  </tbody>
+</table>
+</body>
+</html>

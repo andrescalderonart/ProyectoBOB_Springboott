@@ -18,4 +18,7 @@ public interface PersupuestoDao extends CrudRepository<Presupuesto, Integer> {
     // Find budgets by work name containing the given string (case-insensitive)
     List<Presupuesto> findByObraNameContainingIgnoreCase(String obraName);
 
+    List<Presupuesto> findByArchivadoTrue();
+    List<Presupuesto> findByArchivadoFalse();
+
 }

@@ -15,6 +15,8 @@ public interface PresupuestoServicio {
 
     public void borrar(Presupuesto presu);
 
+    public void archivar(Presupuesto presu);
+
     Presupuesto localizarPresupuesto(Integer entryId);
 
     List<Presupuesto> findByObraName(String obraName);
@@ -22,4 +24,5 @@ public interface PresupuestoServicio {
     List<Presupuesto> findByObraNameIgnoreCase(String obraName);
 
     public List<Matriz> listarMateriales();
+    List<Presupuesto> listaArchivados();
 }

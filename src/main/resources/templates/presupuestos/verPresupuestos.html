@@ -42,6 +42,11 @@
           <input type="number" name="cantidades" step="0.01" min="0.01"
                  th:value="${cantidades[stat.index]}" placeholder="Cantidad" required>
           <span class="btn-remove" onclick="removeActivity(this)">✕ Eliminar</span>
+
+          <a class="enlace" th:href="@{/reportes/presupuestos-detalle.pdf}">
+            <i class="bx bx-file"></i><span>Reporte Presupuestos (detalle)</span>
+          </a>
+
         </div>
       </div>
     </div>

@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Nuevo Proveedor</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <link rel="stylesheet" th:href="@{/CSS/styles.css}"/>
+    <link rel="stylesheet" href="https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css"/>
+    <style>
+        .container { max-width: 980px; margin: 2rem auto; background: #fff; padding: 1.5rem; border-radius: 8px; box-shadow: 0 2px 6px rgba(0,0,0,.06); }
+        .title { display:flex; align-items:center; gap:.5rem; margin-bottom:1rem; }
+        .row { display: grid; grid-template-columns: repeat(12, 1fr); gap: 1rem; }
+        .col-6 { grid-column: span 6; } .col-12{ grid-column: span 12; } .col-4{ grid-column: span 4; } .col-8{ grid-column: span 8; }
+        label { display:block; font-weight:600; margin-bottom:.35rem; }
+        input, select, textarea { width:100%; padding:.6rem .7rem; border:1px solid #dcdcdc; border-radius:6px; font-size:.95rem; background:#fafafa; }
+        .actions { display:flex; gap:.75rem; justify-content:flex-end; margin-top:1rem; }
+        .btn { border:none; border-radius:6px; padding:.6rem 1rem; cursor:pointer; font-weight:600; }
+        .btn-primary { background:#0d6efd; color:#fff; }
+        .btn-secondary { background:#6c757d; color:#fff; text-decoration:none; display:inline-flex; align-items:center; }
+        .error { color:#b42318; font-size:.85rem; margin-top:.25rem; }
+        .card { border:1px solid #eee; border-radius:8px; padding:1rem; background:#fcfcfc; }
+        .section-title { font-weight:700; margin:.25rem 0 .75rem 0; color:#333; }
+        .help { font-size:.85rem; color:#666; }
+    </style>
+</head>
+<body>
+
+<header class="container" style="box-shadow:none;background:transparent;padding:0;">
+    <a th:href="${session.dashboardOrigen}" class="btn btn-secondary" style="margin-bottom:.5rem;">
+        <i class="bx bx-left-arrow-alt" style="margin-right:.35rem;"></i>Volver al inicio
+    </a>
+</header>
+
+<main class="container">
+    <div class="title">
+        <i class='bx bx-hard-hat' style="font-size:1.6rem;"></i>
+        <h1 style="margin:0;">Crear nuevo proveedor</h1>
+    </div>
+
+    <!-- FORMULARIO -->
+    <form th:action="@{/proveedores/salvar}" method="post" th:object="${proveedor}">
+        <!-- CSRF -->
+        <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}"/>
+
+        <!-- Selección de Individuo (dueño/contacto del proveedor) -->
+        <div class="card" style="margin-bottom:1rem;">
+            <div class="section-title">Individuo asociado</div>
+            <div class="row">
+                <div class="col-8">
+                    <label for="individuo">Individuo</label>
+                    <!--
+                      Importante:
+                      - El binding es al id del Individuo dentro del objeto Proveedor: *{individuo.id_individuo}
+                      - Tu entidad Individuo (según compartiste) usa 'id_individuo' como PK.
+                    -->
+                    <select id="individuo" th:field="*{individuo.id_individuo}">
+                        <option value="" disabled selected>Selecciona un individuo...</option>
+                        <option th:each="ind : ${individuos}"
+                                th:value="${ind.id_individuo}"
+                                th:text="${ind.nombre + ' ' + ind.apellido + ' - ' + ind.telefono}">
+                        </option>
+                    </select>
+                    <div class="error" th:if="${#fields.hasErrors('individuo.id_individuo')}" th:errors="*{individuo.id_individuo}"></div>
+                    <p class="help">Si no aparece la persona, crea primero el Individuo en su módulo correspondiente.</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Información Comercial del Proveedor -->
+        <div class="card" style="margin-bottom:1rem;">
+            <div class="section-title">Información comercial</div>
+            <div class="row">
+                <div class="col-6">
+                    <!-- Nota: si en tu entidad el campo se llama 'nitRut', deja así; si es 'nit', cambia th:field a *{informacionComercial.nit} -->
+                    <label for="nitRut">NIT / RUT</label>
+                    <input id="nitRut" type="text" th:field="*{informacionComercial.nitRut}" placeholder="Ej. 900123456-7"/>
+                    <div class="error" th:if="${#fields.hasErrors('informacionComercial.nitRut')}" th:errors="*{informacionComercial.nitRut}"></div>
+                </div>
+
+                <div class="col-6">
+                    <label for="direccion">Dirección</label>
+                    <input id="direccion" type="text" th:field="*{informacionComercial.direccion}" placeholder="Calle 123 #45-67"/>
+                    <div class="error" th:if="${#fields.hasErrors('informacionComercial.direccion')}" th:errors="*{informacionComercial.direccion}"></div>
+                </div>
+
+                <div class="col-4">
+                    <label for="banco">Banco</label>
+                    <input id="banco" type="text" th:field="*{informacionComercial.banco}" placeholder="Bancolombia"/>
+                    <div class="error" th:if="${#fields.hasErrors('informacionComercial.banco')}" th:errors="*{informacionComercial.banco}"></div>
+                </div>
+
+                <div class="col-4">
+                    <label for="numCuenta">Número de cuenta</label>
+                    <input id="numCuenta" type="text" th:field="*{informacionComercial.numCuenta}" placeholder="000123456789"/>
+                    <div class="error" th:if="${#fields.hasErrors('informacionComercial.numCuenta')}" th:errors="*{informacionComercial.numCuenta}"></div>
+                </div>
+
+                <div class="col-4">
+                    <label for="tipoCuenta">Tipo de cuenta (opcional)</label>
+                    <!-- Si tu entidad tiene este campo, déjalo; si no, bórralo o cámbialo -->
+                    <input id="tipoCuenta" type="text" th:field="*{informacionComercial.tipoCuenta}" placeholder="Ahorros / Corriente"/>
+                    <div class="error" th:if="${#fields.hasErrors('informacionComercial.tipoCuenta')}" th:errors="*{informacionComercial.tipoCuenta}"></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Datos generales del Proveedor (si aplica en tu entidad) -->
+        <div class="card" style="margin-bottom:1rem;">
+            <div class="section-title">Datos del proveedor</div>
+            <div class="row">
+                <div class="col-6">
+                    <!-- Cambia el nombre del campo si en tu entidad se llama distinto (ej. 'razonSocial' o 'nombreProveedor') -->
+                    <label for="nombreProveedor">Nombre / Razón social</label>
+                    <input id="nombreProveedor" type="text" th:field="*{nombreProveedor}" placeholder="Nombre del proveedor"/>
+                    <div class="error" th:if="${#fields.hasErrors('nombreProveedor')}" th:errors="*{nombreProveedor}"></div>
+                </div>
+
+                <div class="col-6">
+                    <!-- Un correo de contacto a nivel proveedor; elimina si tu modelo no lo tiene -->
+                    <label for="correo">Correo de contacto (opcional)</label>
+                    <input id="correo" type="email" th:field="*{correo}" placeholder="contacto@proveedor.com"/>
+                    <div class="error" th:if="${#fields.hasErrors('correo')}" th:errors="*{correo}"></div>
+                </div>
+            </div>
+        </div>
+
+        <div class="actions">
+            <a th:href="@{/proveedores/inicioProveedor}" class="btn btn-secondary">
+                <i class="bx bx-x" style="margin-right:.35rem;"></i>Cancelar
+            </a>
+            <button type="submit" class="btn btn-primary">
+                <i class="bx bx-save" style="margin-right:.35rem;"></i>Guardar
+            </button>
+        </div>
+    </form>
+</main>
+
+<footer class="container" style="margin-top:1rem;background:transparent;box-shadow:none;">
+    <p class="help" style="text-align:center;">
+        Consejo: si recibes 404 al enviar, revisa que este formulario use <code>th:action="@{/proveedores/salvar}"</code> y <code>method="post"</code>,
+        y que el nombre del atributo sea <code>proveedor</code> (coincide con tu <code>@ModelAttribute("proveedor")</code>).
+    </p>
+</footer>
+
+</body>
+</html>

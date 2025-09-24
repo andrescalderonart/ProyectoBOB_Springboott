@@ -26,5 +26,7 @@ public class Presupuesto implements Serializable{
     @Convert(converter = ViernesTrece.class)
     private Map<Integer, Double> activiValues;
 
+    @Column(name = "archivado", nullable = false)
+    private boolean archivado = false;
 
 }

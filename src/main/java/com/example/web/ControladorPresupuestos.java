@@ -132,6 +132,22 @@ public class ControladorPresupuestos
         return "redirect:/presupuestos/inicioPresupuestos";
     }
 
+    @GetMapping("/archivar/{id_obra}")
+    public String archivarPresupuesto(@PathVariable Integer id_obra) {
+        Presupuesto presupuesto = presupuestoServicio.localizarPresupuesto(id_obra);
+        if (presupuesto != null) {
+            presupuestoServicio.archivar(presupuesto);
+        }
+        return "redirect:/presupuestos/inicioPresupuestos";
+    }
+
+    @GetMapping("/archivados")
+    public String listarArchivados(Model model) {
+        model.addAttribute("presupuestos", presupuestoServicio.listaArchivados());
+        return "presupuestos/archivados"; // crea la vista archivados.html
+    }
+
+
     //funcionalidad para guardar cambios
     @PostMapping("/actualizar/{id_obra}")
     public String actualizarPresupuesto(

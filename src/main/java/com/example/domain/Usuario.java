@@ -29,4 +29,5 @@ public class Usuario implements Serializable {
     @ManyToOne
     @JoinColumn(name = "id_individuo", referencedColumnName = "id_individuo")
     private Individuo individuo;
+
 }
