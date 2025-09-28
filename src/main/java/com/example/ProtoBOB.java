@@ -151,8 +151,6 @@ public class ProtoBOB {
                             .requestMatchers("/obra/editar").hasAuthority("EDITAR_OBRA")
                             .requestMatchers("/permiso/crear").hasAuthority("CREAR_PERMISO")
                             .requestMatchers("/permiso/editar").hasAuthority("EDITAR_PERMISO")
-                            .requestMatchers("/proveedor/crear").hasAuthority("CREAR_PROVEEDOR")
-                            .requestMatchers("/proveedor/editar").hasAuthority("EDITAR_PROVEEDOR")
                             .requestMatchers("/rol/crear").hasAuthority("CREAR_ROL")
                             .requestMatchers("/rol/editar").hasAuthority("EDITAR_ROL")
                             .requestMatchers("/usuario/crear").hasAuthority("CREAR_USUARIO")

@@ -44,7 +44,7 @@ public class ControladorInv {
     public String inventario(Model model) {
         List<Inventario> inventarios = inventarioServicio.listaInventarios();
         model.addAttribute("inventarios", inventarios);
-        return "/inventario";
+        return "/inventarios/inventario";
     }
 
     @GetMapping("/crearInv")
