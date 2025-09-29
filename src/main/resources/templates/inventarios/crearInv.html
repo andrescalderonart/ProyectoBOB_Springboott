@@ -33,7 +33,10 @@
             <a class="enlace" th:href="@{/inventario}"><i class="bx bx-box"></i><span>Inventario</span></a>
             <a class="enlace" th:href="@{/avances/inicioAvances}"><i class="bx bx-buildings"></i><span>Avances</span></a>
             <a class="enlace" th:href="@{/contratista}"><i class="bx bx-receipt"></i><span>Contratista</span></a>
-            <a class="enlace" th:href="@{/presupuestos/inicioPresupuestos}"><i class="bx bx-money-withdraw"></i><span>Presupuesto</span></a>
+            <a class="enlace" th:href="@{/presupuestos/inicioPresupuestos}">
+                <i class="bx bx-money-withdraw"></i>
+                <span>Presupuesto</span>
+            </a>
             <a class="enlace" href="proveedores.html"><i class="bx bx-hard-hat"></i><span>Proveedores</span></a>
             <a class="enlace" href="#reportes"><i class="bx bx-line-chart"></i><span>Reportes</span></a>
             <a class="enlace" href="#configuracion"><i class="bx bx-cog"></i><span>Configuración</span></a>
@@ -59,8 +62,10 @@
 
                     <div class="form-group">
                         <label>Usuario Actual:</label>
-                        <input type="text" th:value="${inventario.idUsuario.nombreUsuario} + ' ' + ${inventario.idUsuario.apellidoUsuario}"
+                        <input type="text"
+                               th:value="${inventario.idUsuario.nombreUsuario + ' ' + inventario.idUsuario.apellidoUsuario}"
                                readonly class="readonly-field">
+
                     </div>
 
                     <div class="form-group">
@@ -109,8 +114,9 @@
                                 <div class="form-group">
                                     <label>Cantidad para este material:</label>
 
-                                    <input type="number" name="cantidad" th:field="*{cantidadMat}" placeholder="Ingrese cantidad" min="0">
-                                    <span class="error-message" th:if="${#fields.hasErrors('cantidadMat')}" th:errors="*{cantidadMat}">Campo obligatorio</span>
+                                    <input type="number" class="material-quantity"
+                                           name="materialCantidades" placeholder="Ingrese cantidad" min="0">
+
 
 
                                 </div>

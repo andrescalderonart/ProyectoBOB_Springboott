@@ -44,7 +44,7 @@ public class ControladorInv {
     public String inventario(Model model) {
         List<Inventario> inventarios = inventarioServicio.listaInventarios();
         model.addAttribute("inventarios", inventarios);
-        return "/inventario";
+        return "/inventarios/inventario";
     }
 
     @GetMapping("/crearInv")
@@ -66,7 +66,7 @@ public class ControladorInv {
         model.addAttribute("inventario", inventario);
         model.addAttribute("obras", obras);
         model.addAttribute("materiales", materiales);
-        return "crearInv";
+        return "inventarios/crearInv";
     }
 
     @PostMapping("/guardarInv")
@@ -103,14 +103,14 @@ public class ControladorInv {
         // The inventario object already has the usuario set from the form
         inventarioServicio.guardarInv(inventario);
 
-        return "redirect:/inventario";
+        return "/inventarios/inventario";
     }
 
     @GetMapping("/verInv")
     public String verInventario(Model model) {
         List<Inventario> inventarios = inventarioServicio.listaInventarios();
         model.addAttribute("inventarios", inventarios);
-        return "verInv";
+        return "/inventarios/verInv";
     }
 
     @GetMapping("/cambiarInv")
@@ -149,7 +149,7 @@ public class ControladorInv {
             model.addAttribute("error", error);
         }
 
-        return "cambiarInv";
+        return "inventarios/cambiarInv";
     }
 
     @GetMapping("/cambiarInv/{id_Inventario}")
@@ -208,7 +208,7 @@ public class ControladorInv {
     public void exportarExcelInv(@PathVariable("idInventario") Long id,HttpServletResponse response) throws IOException {
 
         Inventario inventario = inventarioServicio.localizarInventarioPorId(id);
-        String nombreArchivo = obraServicio.localizarObra(inventario.getIdObra().getIdObra()).getNombreObra().replaceAll("[^a-zA-Z0-9]", "_") + "_" + id + ".xlsx";
+        String nombreArchivo = obraServicio.localizarObra(inventario.getIdObra().getIdObra()).getNombreObra().replaceAll("[^a-zA-Z0-9]", "") + "" + id + ".xlsx";
 
         response.setContentType("application/vnd.openxmlformats-officedocument.spreadsheetml.sheet");
         response.setHeader("Content-Disposition", "attachment; filename=" + nombreArchivo);

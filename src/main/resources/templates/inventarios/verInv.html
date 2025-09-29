@@ -79,33 +79,31 @@
                     <td th:text="${inv.cantidad}"></td>
                     <td th:text="${inv.material}"></td>
                     <td th:text="${inv.precioUnidad}"></td>
+
+                    <td>
+                        <a th:href="@{'/exportarExcelInv/' + ${inv.id_Inventario}}">
+                            <i class='bx bx-export'></i> Exportar
+                        </a>
+                    </td>
+
+                    <td>
+                        <form th:action="@{'/api/reportes/email/inventario/' + ${inv.id_Inventario}}" method="post">
+                            <input type="email" name="destinatario" placeholder="Correo destinatario" required>
+                            <button type="submit">
+                                <i class='bx bx-envelope'></i> Enviar por correo
+                            </button>
+                        </form>
+                    </td>
                 </tr>
                 </tbody>
+
             </table>
         </div>
 
         <div class="no-records" th:if="${inventarios == null or inventarios.empty}">
             <p>No hay registros de inventario para mostrar.</p>
         </div>
-
-        <div class="export-container">
-            <form th:action="@{/exportarExcelInv}" method="get">
-                <button type="submit">
-                    <i class='bx bx-export'></i> Exportar a Excel
-                </button>
-            </form>
-        </div>
-        <div class="email-container">
-            <form th:action="@{/api/reportes/email/inventario/} + ${inv.id_Inventario}" method="post">
-                <input type="email" name="destinatario" placeholder="Correo destinatario" required>
-                <button type="submit">
-                    <i class='bx bx-envelope'></i> Enviar por correo
-                </button>
-            </form>
-        </div>
     </div>
 </main>
-
-
 </body>
 </html>

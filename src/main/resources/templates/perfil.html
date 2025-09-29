@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Perfil de Usuario</title>
+    <style>
+        /* Fondo gris claro para resaltar la tarjeta */
+        body{
+            margin:0;
+            font-family: 'Segoe UI', Tahoma, sans-serif;
+            background:#f0f2f5;
+            display:flex;
+            justify-content:center;
+            align-items:center;
+            height:100vh;
+        }
+
+        /* Tarjeta moderna */
+        .container{
+            background:#fff;
+            border-radius:16px;
+            box-shadow:0 8px 25px rgba(0,0,0,0.15);
+            padding:40px 60px;
+            max-width:420px;
+            width:90%;
+            text-align:center;
+            transition:transform .3s;
+        }
+        .container:hover{
+            transform:translateY(-4px);
+        }
+
+        h1{
+            margin-top:0;
+            margin-bottom:25px;
+            font-size:2em;
+            color:#333;
+        }
+
+        .dato{
+            margin:12px 0;
+            font-size:1.1em;
+            color:#555;
+            text-align:left;
+        }
+
+        .label{
+            font-weight:bold;
+            color:#222;
+            display:inline-block;
+            width:100px; /* alinea los títulos */
+        }
+
+        /* Botón opcional */
+        .btn{
+            display:inline-block;
+            margin-top:30px;
+            padding:12px 24px;
+            background:#2575fc;
+            color:#fff;
+            text-decoration:none;
+            border-radius:8px;
+            font-weight:600;
+            transition:background .3s;
+        }
+        .btn:hover{
+            background:#1a5ed8;
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <h1>Perfil de Usuario</h1>
+
+    <img th:src="@{/perfil/foto}" alt="Foto de perfil"
+         style="width:150px;height:150px;border-radius:50%;border:4px solid #2575fc;">
+
+    <div class="dato">
+        <span class="label">Nombre:</span>
+        <span th:text="${usuario.persona.nombre}">Nombre</span>
+    </div>
+
+    <div class="dato">
+        <span class="label">Apellido:</span>
+        <span th:text="${usuario.persona.apellido}">Apellido</span>
+    </div>
+
+    <div class="dato">
+        <span class="label">Teléfono:</span>
+        <span th:text="${usuario.persona.telefono}">Teléfono</span>
+    </div>
+
+    <div class="dato">
+        <span class="label">Correo:</span>
+        <span th:text="${usuario.persona.correo}">Correo</span>
+    </div>
+
+</div>
+</body>
+</html>
