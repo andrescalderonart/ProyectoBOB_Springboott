@@ -12,10 +12,12 @@ import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
+import org.springframework.beans.propertyeditors.StringTrimmerEditor;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
+import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
@@ -39,6 +41,12 @@ public class ControladorProveedores {
                                   PersonaDao personaDao) {
         this.proveedorServicio = proveedorServicio;
         this.personaDao = personaDao;
+    }
+
+    @InitBinder
+    public void initBinder(WebDataBinder binder) {
+        StringTrimmerEditor stringTrimmer = new StringTrimmerEditor(true);
+        binder.registerCustomEditor(String.class, stringTrimmer);
     }
 
     @ModelAttribute("persona")
@@ -72,50 +80,129 @@ public class ControladorProveedores {
     @GetMapping("/inicioProveedor")
     public String inicioProveedor(Model model, Authentication auth, HttpSession session) {
         setDashboard(auth, session);
-        model.addAttribute("proveedores", proveedorServicio.listar()); // LISTA real
+        model.addAttribute("proveedores", proveedorServicio.listar());
         return "proveedores/inicioProveedor";
     }
 
-    // NUEVO
     @GetMapping("/formulario")
     public String nuevo(Model model) {
         Proveedor p = new Proveedor();
         if (p.getInformacionComercial() == null) {
             p.setInformacionComercial(new InformacionComercial());
         }
-        if (p.getIdPersona()==null){
-            p.setIdPersona(new Persona());
-        }
+        // NO inicializar idPersona aquí
         model.addAttribute("proveedor", p);
         model.addAttribute("Editando", false);
-        return "proveedores/formulario"; // tu vista existente
+        return "proveedores/formulario";
     }
 
-    // GUARDAR (crear/actualizar)
     @PostMapping("/salvar")
-    public String salvar(@Valid @ModelAttribute("proveedor") Proveedor proveedor,
+    public String salvar(@ModelAttribute("proveedor") Proveedor proveedor,
                          BindingResult result,
                          Model model,
                          RedirectAttributes flash) {
-        if (result.hasErrors()) {
-            model.addAttribute("Editando", proveedor.getIdProveedor() != null);
-            return "/proveedores/inicioProveedor";
+
+        System.out.println("\n========================================");
+        System.out.println("MÉTODO SALVAR EJECUTADO");
+        System.out.println("========================================");
+
+        // Debug: Verificar qué llega
+        System.out.println("ID Proveedor recibido: " + proveedor.getIdProveedor());
+        System.out.println("ID Persona recibido: " + (proveedor.getIdPersona() != null ? proveedor.getIdPersona().getIdPersona() : "NULL"));
+        System.out.println("Info Comercial: " + (proveedor.getInformacionComercial() != null ? "Existe" : "NULL"));
+
+        if (proveedor.getInformacionComercial() != null) {
+            System.out.println("  - NIT: " + proveedor.getInformacionComercial().getNitRut());
+            System.out.println("  - Email: " + proveedor.getInformacionComercial().getCorreoElectronico());
+            System.out.println("  - Producto: " + proveedor.getInformacionComercial().getProducto());
         }
+
+        // Validar persona seleccionada
+        if (proveedor.getIdPersona() == null || proveedor.getIdPersona().getIdPersona() == null) {
+            result.rejectValue("idPersona.idPersona", "NotNull", "Debe seleccionar una persona");
+            System.out.println("ERROR: No se seleccionó persona");
+        }
+
+        // Validar información comercial
+        if (proveedor.getInformacionComercial() == null) {
+            result.reject("informacionComercial", "Información comercial es requerida");
+            System.out.println("ERROR: Información comercial es null");
+        } else {
+            InformacionComercial info = proveedor.getInformacionComercial();
+
+            if (info.getCorreoElectronico() == null || info.getCorreoElectronico().trim().isEmpty()) {
+                result.rejectValue("informacionComercial.correoElectronico",
+                        "NotEmpty", "El correo electrónico es obligatorio");
+                System.out.println("ERROR: Email vacío");
+            }
+
+            if (info.getProducto() == null || info.getProducto().trim().isEmpty()) {
+                result.rejectValue("informacionComercial.producto",
+                        "NotEmpty", "El producto/servicio es obligatorio");
+                System.out.println("ERROR: Producto vacío");
+            }
+
+            if (info.getNitRut() == null || info.getNitRut().trim().isEmpty()) {
+                result.rejectValue("informacionComercial.nitRut",
+                        "NotEmpty", "El NIT/RUT es obligatorio");
+                System.out.println("ERROR: NIT vacío");
+            }
+        }
+
+        // Si hay errores, volver al formulario
+        if (result.hasErrors()) {
+            System.out.println("\n=== ERRORES DE VALIDACIÓN ===");
+            result.getAllErrors().forEach(error -> {
+                System.out.println("  - " + error.getDefaultMessage());
+            });
+            System.out.println("========================================\n");
+
+            model.addAttribute("Editando", proveedor.getIdProveedor() != null);
+            model.addAttribute("proveedor", proveedor);
+            return "proveedores/formulario";
+        }
+
+        // Intentar guardar
         try {
+            System.out.println("\n=== INICIANDO GUARDADO ===");
+
             proveedorServicio.guardar(proveedor);
+
+            System.out.println("=== GUARDADO EXITOSO ===");
+            System.out.println("Redirigiendo a /proveedores/inicioProveedor");
+            System.out.println("========================================\n");
+
             flash.addFlashAttribute("ok", proveedor.getIdProveedor() == null
                     ? "Proveedor creado correctamente"
                     : "Proveedor actualizado correctamente");
+
             return "redirect:/proveedores/inicioProveedor";
+
         } catch (IllegalArgumentException ex) {
-            result.rejectValue("informacionComercial.nitRut", "duplicado", "El NIT ya está registrado.");
+            System.err.println("\n=== ERROR: IllegalArgumentException ===");
+            System.err.println(ex.getMessage());
+            ex.printStackTrace();
+            System.err.println("========================================\n");
+
+            result.rejectValue("informacionComercial.nitRut", "duplicado", ex.getMessage());
             model.addAttribute("error", ex.getMessage());
             model.addAttribute("Editando", proveedor.getIdProveedor() != null);
+            model.addAttribute("proveedor", proveedor);
+            return "proveedores/formulario";
+
+        } catch (Exception ex) {
+            System.err.println("\n=== ERROR GENERAL ===");
+            System.err.println(ex.getMessage());
+            ex.printStackTrace();
+            System.err.println("========================================\n");
+
+            model.addAttribute("error", "Error al guardar: " + ex.getMessage());
+            model.addAttribute("Editando", proveedor.getIdProveedor() != null);
+            model.addAttribute("proveedor", proveedor);
             return "proveedores/formulario";
         }
     }
 
-    // EDITAR (carga form con datos)
     @GetMapping("/editar/{id}")
     public String editar(@PathVariable Long id, Model model) {
         Proveedor p = proveedorServicio.buscarPorId(id)
@@ -128,7 +215,6 @@ public class ControladorProveedores {
         return "proveedores/formulario";
     }
 
-    // ELIMINAR
     @PostMapping("/borrar/{id}")
     public String borrar(@PathVariable Long id, RedirectAttributes flash) {
         proveedorServicio.eliminar(id);
@@ -136,11 +222,12 @@ public class ControladorProveedores {
         return "redirect:/proveedores/inicioProveedor";
     }
 
-    // Ping opcional
     @GetMapping("/ping")
-    @ResponseBody public String ping() { return "ok"; }
+    @ResponseBody
+    public String ping() {
+        return "ok";
+    }
 
-    // Reporte de proveedores
     @GetMapping("/proveedores/excel")
     public void exportarProveedoresExcel(HttpServletResponse response) throws IOException {
         List<Proveedor> proveedores = proveedorServicio.listar();
@@ -152,7 +239,6 @@ public class ControladorProveedores {
         Workbook libro = new XSSFWorkbook();
         Sheet hoja = libro.createSheet("Proveedores");
 
-        // Crear encabezados
         Row header = hoja.createRow(0);
         header.createCell(0).setCellValue("ID");
         header.createCell(1).setCellValue("Nombre");
@@ -162,7 +248,6 @@ public class ControladorProveedores {
         header.createCell(5).setCellValue("Contacto");
         header.createCell(6).setCellValue("Productos/Servicios");
 
-        // Llenar datos
         int fila = 1;
         for (Proveedor proveedor : proveedores) {
             Row row = hoja.createRow(fila++);
@@ -173,31 +258,25 @@ public class ControladorProveedores {
             row.createCell(4).setCellValue(proveedor.getInformacionComercial().getNumCuenta());
             row.createCell(5).setCellValue(proveedor.getInformacionComercial().getCorreoElectronico());
             row.createCell(6).setCellValue(proveedor.getInformacionComercial().getProducto());
-            for (Material material : proveedor.getMaterialList()){
+            for (Material material : proveedor.getMaterialList()) {
                 row = hoja.createRow(fila++);
                 row.createCell(0).setCellValue(material.getNombreMaterial());
                 row.createCell(1).setCellValue(material.getPrecioMaterial().longValue());
                 row.createCell(3).setCellValue(material.getUnidadMaterial());
-
             }
-
-
         }
 
         libro.write(response.getOutputStream());
         libro.close();
     }
 
-    // Reporte de proveedores PARA CORREOS
     @GetMapping("/proveedores/excelCorreo")
-    // Métod0 para generar el reporte y devolverlo como byte array
     public byte[] generarReporteProveedoresExcel() throws IOException {
         List<Proveedor> proveedores = proveedorServicio.listar();
 
         Workbook libro = new XSSFWorkbook();
         Sheet hoja = libro.createSheet("Proveedores");
 
-        // Crear encabezados
         Row header = hoja.createRow(0);
         header.createCell(0).setCellValue("ID");
         header.createCell(1).setCellValue("Nombre");
@@ -206,7 +285,6 @@ public class ControladorProveedores {
         header.createCell(4).setCellValue("Teléfono");
         header.createCell(5).setCellValue("Email");
 
-        // Llenar datos
         int fila = 1;
         for (Proveedor proveedor : proveedores) {
             Row row = hoja.createRow(fila++);
@@ -215,7 +293,6 @@ public class ControladorProveedores {
             row.createCell(4).setCellValue(proveedor.getIdPersona().getTelefono());
             row.createCell(5).setCellValue(proveedor.getIdPersona().getCorreo());
 
-            // Materiales
             for (Material material : proveedor.getMaterialList()) {
                 Row materialRow = hoja.createRow(fila++);
                 materialRow.createCell(0).setCellValue("Material: " + material.getNombreMaterial());

@@ -2,16 +2,22 @@ package com.example.servicio;
 
 import com.example.dao.APUDao;
 import com.example.domain.Apu;
-import com.lowagie.text.*;
+import com.lowagie.text.Document;
+import com.lowagie.text.DocumentException;
+import com.lowagie.text.Element;
+import com.lowagie.text.PageSize;
+import com.lowagie.text.Paragraph;
+import com.lowagie.text.Phrase;
+import com.lowagie.text.pdf.PdfPCell;
+import com.lowagie.text.pdf.PdfPTable;
+import com.lowagie.text.pdf.PdfWriter;
 import com.lowagie.text.Font;
-import com.lowagie.text.pdf.*;
 
+import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import jakarta.servlet.http.HttpServletResponse;
-
-import java.awt.*;
+import java.awt.Color;
 import java.io.IOException;
 import java.math.BigDecimal;
 import java.nio.charset.StandardCharsets;
@@ -28,55 +34,64 @@ public class ReporteAPUService {
         this.apuDao = apuDao;
     }
 
+    // ====== PUBLIC: TODOS LOS APUs ======
     @Transactional(readOnly = true)
     public void exportarListadoApusPdf(HttpServletResponse response) throws IOException, DocumentException {
-
-        // 1) Datos
-        // Usa el que mejor te funcione en tu contexto:
-        // List<Apu> apus = apuDao.findAllWithRels();
         List<Apu> apus = apuDao.findAll();
+        renderApusPdf(apus, "apus.pdf", "Listado de APU", response);
+    }
 
-        // 2) Config respuesta HTTP
+    // ====== PUBLIC: APUs SELECCIONADOS POR ID ======
+    @Transactional(readOnly = true)
+    public void exportarApusSeleccionadosPdf(List<Long> ids, HttpServletResponse response)
+            throws IOException, DocumentException {
+
+        if (ids == null || ids.isEmpty()) {
+            // Si no llegan IDs, exporta todos
+            exportarListadoApusPdf(response);
+            return;
+        }
+
+        List<Apu> apus = apuDao.findAllById(ids);
+        renderApusPdf(apus, "apus_seleccionados.pdf",
+                "APU seleccionados (" + apus.size() + ")", response);
+    }
+
+    // ====== PRIVATE: RENDER PDF REUTILIZABLE ======
+    private void renderApusPdf(List<Apu> apus, String fileName, String tituloDoc, HttpServletResponse response)
+            throws IOException, DocumentException {
+
+        // Respuesta HTTP
         response.setContentType("application/pdf");
-        response.setHeader("Content-Disposition", "inline; filename=apus.pdf");
+        response.setHeader("Content-Disposition", "inline; filename=" + fileName);
 
-        // 3) Documento
-        Document document = new Document(PageSize.A4.rotate(), 36, 36, 40, 36); // apaisado
+        // Documento
+        Document document = new Document(PageSize.A4.rotate(), 36, 36, 40, 36);
         PdfWriter writer = PdfWriter.getInstance(document, response.getOutputStream());
         document.addAuthor("TuApp");
-        document.addTitle("Listado de APU");
+        document.addTitle(tituloDoc);
         document.open();
 
-        // 4) Fuentes (asegura tildes/ñ)
-        // BaseFont bf = BaseFont.createFont(BaseFont.HELVETICA, BaseFont.CP1252, BaseFont.EMBEDDED);
-        // Para UTF-8 robusto, podrías incrustar una TTF de tu proyecto (resources/fonts/FreeSans.ttf)
-        // BaseFont bf = BaseFont.createFont("fonts/FreeSans.ttf", BaseFont.IDENTITY_H, BaseFont.EMBEDDED);
+        // Fuentes
         Font titleFont = new Font(Font.HELVETICA, 16, Font.BOLD);
         Font headerFont = new Font(Font.HELVETICA, 10, Font.BOLD, Color.WHITE);
         Font cellFont = new Font(Font.HELVETICA, 9, Font.NORMAL);
 
-        // 5) Título
-        Paragraph titulo = new Paragraph("Listado de APU", titleFont);
+        // Título
+        Paragraph titulo = new Paragraph(tituloDoc, titleFont);
         titulo.setAlignment(Element.ALIGN_CENTER);
         titulo.setSpacingAfter(10f);
         document.add(titulo);
 
-        // 6) Tabla
+        // Tabla
         PdfPTable table = new PdfPTable(8);
         table.setWidthPercentage(100);
-        table.setWidths(new float[]{10f, 30f, 42f, 10f, 14f, 14f, 14f, 14f});
+        table.setWidths(new float[]{10f, 30f, 42f, 10f, 14f, 14f, 14f, 20f});
         table.setHeaderRows(1);
 
-        // Encabezados
         String[] headers = {
-                "ID",
-                "Nombre",
-                "Descripción",
-                "Unidad",
-                "Materiales",
-                "Mano de Obra",
-                "Transporte",
-                "Misceláneo / Total"
+                "ID", "Nombre", "Descripción", "Unidad",
+                "Materiales", "Mano de Obra", "Transporte", "Misceláneo / Total"
         };
 
         for (String h : headers) {
@@ -87,10 +102,8 @@ public class ReporteAPUService {
             table.addCell(hc);
         }
 
-        // 7) Formateo moneda
         NumberFormat nf = NumberFormat.getCurrencyInstance(new Locale("es", "CO"));
 
-        // 8) Filas
         BigDecimal sumMat = BigDecimal.ZERO;
         BigDecimal sumMano = BigDecimal.ZERO;
         BigDecimal sumTrans = BigDecimal.ZERO;
@@ -120,12 +133,13 @@ public class ReporteAPUService {
 
             PdfPCell miscTotal = new PdfPCell();
             miscTotal.setPadding(5f);
-            miscTotal.addElement(new Phrase(nf.format(misc) + "   |   Total: " + nf.format(total), cellFont));
+            miscTotal.addElement(new Phrase(
+                    nf.format(misc) + "   |   Total: " + nf.format(total), cellFont));
             miscTotal.setHorizontalAlignment(Element.ALIGN_RIGHT);
             table.addCell(miscTotal);
         }
 
-        // 9) Fila totales
+        // Totales
         PdfPCell totLabel = new PdfPCell(new Phrase("TOTALES", new Font(Font.HELVETICA, 10, Font.BOLD)));
         totLabel.setColspan(4);
         totLabel.setHorizontalAlignment(Element.ALIGN_RIGHT);
@@ -134,12 +148,12 @@ public class ReporteAPUService {
         table.addCell(numBoldCell(nf.format(sumMat)));
         table.addCell(numBoldCell(nf.format(sumMano)));
         table.addCell(numBoldCell(nf.format(sumTrans)));
-        table.addCell(numBoldCell(nf.format(sumTotal))); // aquí ponemos el total global
+        table.addCell(numBoldCell(nf.format(sumTotal)));
 
         document.add(table);
 
-        // 10) Pie
-        Paragraph foot = new Paragraph("Generado automáticamente – " + new java.util.Date(), new Font(Font.HELVETICA, 8));
+        Paragraph foot = new Paragraph("Generado automáticamente – " + new java.util.Date(),
+                new Font(Font.HELVETICA, 8));
         foot.setSpacingBefore(10f);
         document.add(foot);
 
@@ -147,6 +161,7 @@ public class ReporteAPUService {
         writer.close();
     }
 
+    // ====== HELPERS ======
     private static PdfPCell cell(String text, Font f) {
         PdfPCell c = new PdfPCell(new Phrase(bytesafe(text), f));
         c.setPadding(5f);
@@ -174,7 +189,7 @@ public class ReporteAPUService {
         return s == null ? "" : s;
     }
 
-    // Evita problemas con caracteres fuera de CP1252 cuando NO incrustas TTF
+    // Evita problemas con caracteres
     private static String bytesafe(String s) {
         if (s == null) return "";
         byte[] b = s.getBytes(StandardCharsets.UTF_8);

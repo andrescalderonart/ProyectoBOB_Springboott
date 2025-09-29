@@ -58,15 +58,24 @@
       </div>
     </div>
 
+    <!-- Mostrar mensajes de error -->
+    <div th:if="${error}" class="alert alert-danger" style="margin: 20px; padding: 15px; background: #f8d7da; color: #721c24; border-radius: 4px;">
+      <i class='bx bx-error'></i> <span th:text="${error}"></span>
+    </div>
+
     <!-- Formulario estilizado -->
     <div class="form-container">
-      <form th:action="@{/proveedores/salvar}" method="post" th:object="${proveedor}" class="supplier-form">
-        <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
-        <!-- Sección: Selección de Individuo -->
-        <input type="hidden" th:if="${Editando}" th:field="*{idProveedor}"/>
-        <h3 th:text="${Editando} ? 'Editar proveedor' : 'Nuevo proveedor'"></h3>
-        <button type="submit" class="btn-save" th:text="${Editando} ? 'Actualizar' : 'Guardar Proveedor'"></button>
+      <form th:action="@{/proveedores/salvar}"
+            method="post"
+            th:object="${proveedor}"
+            class="supplier-form">
 
+        <!-- Campo oculto para ID al editar -->
+        <input type="hidden" th:if="${Editando}" th:field="*{idProveedor}"/>
+
+        <h3 th:text="${Editando} ? 'Editar proveedor' : 'Nuevo proveedor'"></h3>
+
+        <!-- Sección: Selección de Individuo -->
         <div class="form-section">
           <div class="section-header">
             <i class='bx bx-user'></i>
@@ -76,19 +85,20 @@
           <div class="form-group">
             <label for="idPersona">
               <i class='bx bx-user-circle'></i>
-              Seleccionar Persona
+              Seleccionar Persona *
             </label>
             <select id="idPersona"
                     th:field="*{idPersona.idPersona}"
                     required
                     class="form-select">
-              <option value="" disabled>-- Seleccione un persona --</option>
-
+              <option value="">-- Seleccione una persona --</option>
               <option th:each="per : ${persona}"
                       th:value="${per.idPersona}"
                       th:text="|${per.nombre} ${per.apellido} (${per.correo})|">
               </option>
-            </select><input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}"/>
+            </select>
+            <span class="error" th:errors="*{idPersona}" style="color: red; font-size: 0.9em;"></span>
+            <span class="error" th:errors="*{idPersona.idPersona}" style="color: red; font-size: 0.9em;"></span>
           </div>
         </div>
 
@@ -103,11 +113,44 @@
             <div class="form-group">
               <label for="nitRut">
                 <i class='bx bx-id-card'></i>
-                NIT/RUT
+                NIT/RUT *
               </label>
-              <input type="text" id="nitRut" th:field="*{informacionComercial.nitRut}" required
+              <input type="text"
+                     id="nitRut"
+                     th:field="*{informacionComercial.nitRut}"
+                     required
                      th:readonly="${Editando}"
-                     class="form-input" placeholder="Ej: 890.123.456-7" />
+                     class="form-input"
+                     placeholder="Ej: 890.123.456-7" />
+              <span class="error" th:errors="*{informacionComercial.nitRut}" style="color: red; font-size: 0.9em;"></span>
+            </div>
+
+            <div class="form-group">
+              <label for="correoElectronico">
+                <i class='bx bx-envelope'></i>
+                Correo Electrónico *
+              </label>
+              <input type="email"
+                     id="correoElectronico"
+                     th:field="*{informacionComercial.correoElectronico}"
+                     required
+                     class="form-input"
+                     placeholder="ejemplo@correo.com" />
+              <span class="error" th:errors="*{informacionComercial.correoElectronico}" style="color: red; font-size: 0.9em;"></span>
+            </div>
+
+            <div class="form-group full-width">
+              <label for="producto">
+                <i class='bx bx-package'></i>
+                Producto/Servicio *
+              </label>
+              <input type="text"
+                     id="producto"
+                     th:field="*{informacionComercial.producto}"
+                     required
+                     class="form-input"
+                     placeholder="Descripción del producto o servicio" />
+              <span class="error" th:errors="*{informacionComercial.producto}" style="color: red; font-size: 0.9em;"></span>
             </div>
 
             <div class="form-group">
@@ -115,8 +158,10 @@
                 <i class='bx bx-credit-card'></i>
                 Forma de Pago
               </label>
-              <select id="formaPago" th:field="*{informacionComercial.formaPago}" required class="form-select">
-                <option value="" disabled>-- Seleccione --</option>
+              <select id="formaPago"
+                      th:field="*{informacionComercial.formaPago}"
+                      class="form-select">
+                <option value="">-- Seleccione --</option>
                 <option value="EFECTIVO">Efectivo</option>
                 <option value="TRANSFERENCIA">Transferencia Bancaria</option>
                 <option value="CHEQUE">Cheque</option>
@@ -129,9 +174,11 @@
                 <i class='bx bx-bank'></i>
                 Banco
               </label>
-              <input type="text" id="banco" th:field="*{informacionComercial.banco}" required
-                     th:readonly="${Editando}"
-                     class="form-input" placeholder="Ej: Bancolombia" />
+              <input type="text"
+                     id="banco"
+                     th:field="*{informacionComercial.banco}"
+                     class="form-input"
+                     placeholder="Ej: Bancolombia" />
             </div>
 
             <div class="form-group">
@@ -139,9 +186,11 @@
                 <i class='bx bx-credit-card-alt'></i>
                 Número de Cuenta
               </label>
-              <input type="text" id="numCuenta" th:field="*{informacionComercial.numCuenta}" required
-                     th:readonly="${Editando}"
-                     class="form-input" placeholder="Ej: 123456789" />
+              <input type="text"
+                     id="numCuenta"
+                     th:field="*{informacionComercial.numCuenta}"
+                     class="form-input"
+                     placeholder="Ej: 123456789" />
             </div>
 
             <div class="form-group full-width">
@@ -149,8 +198,11 @@
                 <i class='bx bx-map'></i>
                 Dirección
               </label>
-              <input type="text" id="direccion" th:field="*{informacionComercial.direccion}" required
-                     class="form-input" placeholder="Dirección completa" />
+              <input type="text"
+                     id="direccion"
+                     th:field="*{informacionComercial.direccion}"
+                     class="form-input"
+                     placeholder="Dirección completa" />
             </div>
           </div>
 
@@ -162,7 +214,7 @@
             </a>
             <button type="submit" class="btn-save">
               <i class='bx bx-save'></i>
-              Guardar Proveedor
+              <span th:text="${Editando} ? 'Actualizar Proveedor' : 'Guardar Proveedor'"></span>
             </button>
           </div>
         </div>

@@ -5,13 +5,16 @@ import com.example.servicio.ReporteProveedorService;
 
 import com.lowagie.text.DocumentException;
 import jakarta.servlet.http.HttpServletResponse;
+import org.springframework.http.MediaType;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import java.io.IOException;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
+import java.util.List;
 
 @Controller
 @RequestMapping("/reportes")
@@ -38,9 +41,19 @@ public class ControladorReportes {
 
     }
 
-    @GetMapping("/apus.pdf")
-    public void apusPdf(HttpServletResponse response) throws IOException, DocumentException {
-        reporteApuService.exportarListadoApusPdf(response);
+    // Controlador de reportes
+    @GetMapping(value = "/apus.pdf", produces = MediaType.APPLICATION_PDF_VALUE)
+    public void apusPdf(
+            @RequestParam(name = "ids", required = false) List<Long> ids,
+            HttpServletResponse response
+    ) throws IOException, DocumentException {
+
+        if (ids == null || ids.isEmpty()) {
+            reporteApuService.exportarListadoApusPdf(response);      // todos
+        } else {
+            reporteApuService.exportarApusSeleccionadosPdf(ids, response); // seleccionados
+        }
     }
+
 }
 
