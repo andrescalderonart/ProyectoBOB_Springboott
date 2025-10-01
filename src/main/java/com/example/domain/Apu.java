@@ -41,6 +41,10 @@ public class Apu implements Serializable {
     private String nombreAPU;
 
     @NotEmpty
+    @Column(name = "codigo_apu", table = "caracteristicas_apu") // 👈 aquí agregamos el campo
+    private String codigoAPU;
+
+    @NotEmpty
     @Column(name = "descripcion", table = "caracteristicas_apu")
     private String descAPU;
 

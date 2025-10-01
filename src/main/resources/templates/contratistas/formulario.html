@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title th:text="${Editando} ? 'Editar Contratista' : 'Nuevo Contratista'">Contratista</title>
+    <link rel="stylesheet" href="https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css"/>
+    <style>
+        body{font-family:Roboto, sans-serif; background:#f1f5f9; margin:0; padding:2rem;}
+        .card{background:#fff;border-radius:12px;padding:1.5rem;box-shadow:0 2px 6px rgba(0,0,0,.08);max-width:980px;margin:0 auto}
+        .row{display:grid;grid-template-columns:1fr 1fr;gap:1rem}
+        .row.full{grid-template-columns:1fr}
+        label{font-weight:600;margin-bottom:.25rem}
+        input,select{padding:.7rem;border:2px solid #e9ecef;border-radius:6px;font-size:1rem}
+        .actions{display:flex;justify-content:flex-end;gap:.7rem;margin-top:1rem}
+        .btn{border:none;border-radius:6px;padding:.7rem 1.2rem;color:#fff;cursor:pointer}
+        .btn-save{background:#10b981}.btn-cancel{background:#64748b;text-decoration:none;display:inline-block}
+        .alert{background:#fcebea;color:#cc1f1a;padding:.8rem 1rem;border-radius:6px;margin-bottom:1rem}
+    </style>
+</head>
+<body>
+
+<div class="card">
+    <h2 th:text="${Editando} ? 'Editar Contratista' : 'Nuevo Contratista'"></h2>
+
+    <div th:if="${error}" class="alert">
+        <i class='bx bx-error'></i> <span th:text="${error}"></span>
+    </div>
+
+    <form th:action="@{/contratista/salvar}" method="post" th:object="${contratista}">
+        <input type="hidden" th:if="${Editando}" th:field="*{idContratista}"/>
+
+        <h3>Información Personal</h3>
+        <div class="row">
+            <div>
+                <label for="idPersona">Seleccionar Persona *</label>
+                <select id="idPersona" th:field="*{idPersona.idPersona}" required>
+                    <option value="">-- Seleccione una persona --</option>
+                    <option th:each="per : ${persona}" th:value="${per.idPersona}"
+                            th:text="|${per.nombre} ${per.apellido} (${per.correo})|"></option>
+                </select>
+            </div>
+        </div>
+
+        <h3>Información Comercial</h3>
+        <div class="row">
+            <div>
+                <label for="nitRut">NIT/RUT *</label>
+                <input id="nitRut" type="text" th:field="*{informacionComercial.nitRut}" required
+                       th:readonly="${Editando}" placeholder="890123456-7"/>
+            </div>
+
+            <div>
+                <label for="correoElectronico">Correo *</label>
+                <input id="correoElectronico" type="email" th:field="*{informacionComercial.correoElectronico}" required/>
+            </div>
+
+            <div>
+                <label for="banco">Banco</label>
+                <input id="banco" type="text" th:field="*{informacionComercial.banco}"/>
+            </div>
+
+            <div>
+                <label for="numCuenta">Número de Cuenta</label>
+                <input id="numCuenta" type="text" th:field="*{informacionComercial.numCuenta}"/>
+            </div>
+
+            <div>
+                <label for="formaPago">Forma de Pago</label>
+                <select id="formaPago" th:field="*{informacionComercial.formaPago}">
+                    <option value="">-- Seleccione --</option>
+                    <option value="EFECTIVO">Efectivo</option>
+                    <option value="TRANSFERENCIA">Transferencia Bancaria</option>
+                    <option value="CHEQUE">Cheque</option>
+                    <option value="CREDITO">Crédito</option>
+                </select>
+            </div>
+
+            <div>
+                <label for="producto">Producto/Servicio</label>
+                <input id="producto" type="text" th:field="*{informacionComercial.producto}"/>
+            </div>
+
+            <div class="row full">
+                <div>
+                    <label for="direccion">Dirección</label>
+                    <input id="direccion" type="text" th:field="*{informacionComercial.direccion}"/>
+                </div>
+            </div>
+        </div>
+
+        <div class="actions">
+            <a th:href="@{/contratista}" class="btn btn-cancel">Cancelar</a>
+            <button type="submit" class="btn btn-save">Guardar</button>
+        </div>
+    </form>
+</div>
+
+</body>
+</html>

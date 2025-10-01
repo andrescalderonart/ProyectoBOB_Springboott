@@ -32,7 +32,7 @@ public class ControladorAPU {
     @GetMapping("/inicioAPU")
     public String inicioAPU(Model model) {
         model.addAttribute("apus", apuServicio.listarElementos());
-        return "apus/inicioAPU"; // You'll need to create this template
+        return "apus/inicioAPU";
     }
 
     @GetMapping("/crearAPU")
@@ -41,41 +41,71 @@ public class ControladorAPU {
         return "apus/crearAPU";
     }
 
+    // ✅ NUEVO: Método para mostrar formulario de edición
+    @GetMapping("/editar/{id}")
+    public String mostrarFormularioEditar(@PathVariable Long id, Model model) {
+        Apu apu = apuServicio.obtenerPorId(id);
+        if (apu == null) {
+            return "redirect:/apu/inicioAPU";
+        }
+        model.addAttribute("apu", apu);
+        return "apus/editarAPU";
+    }
+
     @PostMapping("/salvar")
     public String salvarAPU(@ModelAttribute Apu apu, BindingResult result) {
         if (result.hasErrors()) {
             return "apus/crearAPU";
         }
 
-        // Set default values for optional fields if null
         if (apu.getVMaterialesAPU() == null) {
-            apu.setVMaterialesAPU(java.math.BigDecimal.ZERO);
+            apu.setVMaterialesAPU(BigDecimal.ZERO);
         }
         if (apu.getVManoDeObraAPU() == null) {
-            apu.setVManoDeObraAPU(java.math.BigDecimal.ZERO);
+            apu.setVManoDeObraAPU(BigDecimal.ZERO);
         }
         if (apu.getVTransporteAPU() == null) {
-            apu.setVTransporteAPU(java.math.BigDecimal.ZERO);
+            apu.setVTransporteAPU(BigDecimal.ZERO);
         }
 
         apuServicio.guardar(apu);
-        return "redirect:/apus/inicioAPU";
+        return "redirect:/apu/inicioAPU";
+    }
+
+    // ✅ NUEVO: Método para actualizar APU existente
+    @PostMapping("/actualizar")
+    public String actualizarAPU(@ModelAttribute Apu apu, BindingResult result) {
+        if (result.hasErrors()) {
+            return "apus/editarAPU";
+        }
+
+        if (apu.getVMaterialesAPU() == null) {
+            apu.setVMaterialesAPU(BigDecimal.ZERO);
+        }
+        if (apu.getVManoDeObraAPU() == null) {
+            apu.setVManoDeObraAPU(BigDecimal.ZERO);
+        }
+        if (apu.getVTransporteAPU() == null) {
+            apu.setVTransporteAPU(BigDecimal.ZERO);
+        }
+
+        apuServicio.guardar(apu);
+        return "redirect:/apu/inicioAPU";
     }
 
     @GetMapping("/detalle/{id}")
     public String verDetalleAPU(@PathVariable Long id, Model model) {
         Apu apu = apuServicio.obtenerPorId(id);
         model.addAttribute("apu", apu);
-        return "apu/detalleAPU"; // You'll need to create this template
+        return "apus/detalleAPU";
     }
 
     @GetMapping("/eliminar/{id}")
     public String eliminarAPU(@PathVariable Long id) {
         apuServicio.eliminar(apuServicio.obtenerPorId(id));
-        return "redirect:/apus/inicioAPU";
+        return "redirect:/apu/inicioAPU";
     }
 
-    // NEW: CSV Import endpoint
     @PostMapping("/importar")
     public String importarAPUsDesdeCSV(
             @RequestParam("archivoCSV") MultipartFile archivo,
@@ -94,7 +124,6 @@ public class ControladorAPU {
         }
 
         try {
-            // Get current user
             String username = authentication.getName();
             Usuario usuario = usuarioServicio.encontrarPorNombreUsuario(username);
 
@@ -103,10 +132,8 @@ public class ControladorAPU {
                 return "redirect:/apu/inicioAPU";
             }
 
-            // Import APUs from CSV
             List<Apu> apusImportados = apuServicio.importarAPUsDesdeCSV(archivo, usuario);
 
-            // Save all imported APUs
             for (Apu apu : apusImportados) {
                 apuServicio.guardar(apu);
             }
@@ -124,5 +151,4 @@ public class ControladorAPU {
 
         return "redirect:/apu/inicioAPU";
     }
-
 }

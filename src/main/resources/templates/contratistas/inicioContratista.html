@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Gestión de Contratistas</title>
+    <link rel="stylesheet" href="https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css"/>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        body {font-family: Roboto, sans-serif; background:#f1f5f9; margin:0; padding:2rem;}
+        .header{background:#fff;padding:1rem 1.5rem;border-radius:8px;display:flex;justify-content:space-between;align-items:center;margin-bottom:1rem;box-shadow:0 2px 6px rgba(0,0,0,.08)}
+        .btn{display:inline-flex;align-items:center;gap:.5rem;padding:.6rem 1rem;border-radius:6px;text-decoration:none;color:#fff}
+        .btn-success{background:#10b981}.btn-warning{background:#f59e0b}.btn-danger{background:#ef4444}.btn-secondary{background:#64748b}
+        .card{background:#fff;border-radius:8px;box-shadow:0 2px 6px rgba(0,0,0,.08);overflow:hidden}
+        table{width:100%;border-collapse:collapse}
+        th,td{padding:.9rem 1rem;border-bottom:1px solid #e2e8f0;text-align:left;background:#fff}
+        th{background:#f8fafc}
+        .actions{display:flex;gap:.5rem;flex-wrap:wrap}
+        .top-actions{display:flex;gap:.75rem;justify-content:flex-end;margin:.8rem 0}
+        .btn-sm{padding:.4rem .8rem;font-size:.875rem}
+    </style>
+</head>
+<body>
+
+<div class="header">
+    <div>
+        <h2><i class="fas fa-handshake"></i> Gestión de Contratistas</h2>
+        <p>Administra los contratistas del sistema</p>
+    </div>
+    <a th:href="@{/dashboard}" class="btn btn-secondary"><i class="fas fa-arrow-left"></i> Volver</a>
+</div>
+
+<div class="top-actions">
+    <a th:href="@{/contratista/formulario}" class="btn btn-success"><i class="fas fa-plus"></i> Nuevo Contratista</a>
+</div>
+
+<div class="card">
+    <table>
+        <thead>
+        <tr>
+            <th>ID</th>
+            <th>Nombre</th>
+            <th>NIT</th>
+            <th>Banco</th>
+            <th>Cuenta</th>
+            <th>Contacto</th>
+            <th>Dirección</th>
+            <th>Producto/Servicio</th>
+            <th>Acciones</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:if="${#lists.isEmpty(contratistas)}">
+            <td colspan="9" style="text-align:center;color:#64748b;padding:2rem">No hay contratistas registrados</td>
+        </tr>
+        <tr th:each="c : ${contratistas}">
+            <td th:text="${c.idContratista}">1</td>
+            <td th:text="${c.idPersona != null ? c.idPersona.nombre : '—'}">Nombre</td>
+            <td th:text="${c.informacionComercial != null ? c.informacionComercial.nitRut : '—'}">NIT</td>
+            <td th:text="${c.informacionComercial != null ? c.informacionComercial.banco : '—'}">Banco</td>
+            <td th:text="${c.informacionComercial != null ? c.informacionComercial.numCuenta : '—'}">Cuenta</td>
+            <td th:text="${c.informacionComercial != null ? c.informacionComercial.correoElectronico : '—'}">Contacto</td>
+            <td th:text="${c.informacionComercial != null ? c.informacionComercial.direccion : '—'}">Dirección</td>
+            <td th:text="${c.informacionComercial != null ? c.informacionComercial.producto : '—'}">Producto</td>
+            <td class="actions">
+                <!-- FIXED: Use proper Thymeleaf path variable syntax -->
+                <a th:href="@{/contratista/editar/{id}(id=${c.idContratista})}" class="btn btn-warning btn-sm">
+                    <i class="fas fa-edit"></i> Editar
+                </a>
+                <!-- Also fix the delete form -->
+                <form th:action="@{/contratista/borrar/{id}(id=${c.idContratista})}" method="post" style="display:inline">
+                    <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
+                    <button type="submit" class="btn btn-danger btn-sm" onclick="return confirm('¿Eliminar contratista?');">
+                        <i class="fas fa-trash"></i> Eliminar
+                    </button>
+                </form>
+            </td>
+        </tr>
+        </tbody>
+    </table>
+</div>
+
+</body>
+</html>

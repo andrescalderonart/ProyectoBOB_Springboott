@@ -1,16 +1,14 @@
+// src/main/java/com/example/servicio/ContratistaServicio.java
 package com.example.servicio;
 
 import com.example.domain.Contratista;
-import com.example.domain.Usuario;
 
 import java.util.List;
+import java.util.Optional;
 
 public interface ContratistaServicio {
-    public List<Contratista> listarContratistas();
-    public void guardar(Contratista contratista);
-    public void borrar(Contratista contratista);
-    public Contratista encontrarPorId(Long id);
-    Contratista encontrarPorNombreContratista(String nombreContratista);
-    public List<Contratista> buscarPorNombreObra(String nombreObra);
-
+    List<Contratista> listar();
+    Optional<Contratista> buscarPorId(Long id);
+    Contratista guardar(Contratista contratista); // crea/actualiza
+    void eliminar(Long id);
 }

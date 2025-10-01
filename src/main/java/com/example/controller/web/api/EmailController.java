@@ -1,7 +1,8 @@
 package com.example.controller.web.api;
 
 import com.example.controller.web.ControladorAvance;
-import com.example.controller.web.ControladorContratistas;
+import com.example.controller.web.ControladorContratista;
+
 import com.example.controller.web.ControladorProveedores;
 import com.example.dto.EmailRequest;
 import com.example.servicioWeb.EmailService;
@@ -23,7 +24,7 @@ public class EmailController {
     private ControladorProveedores controladorProveedores;
 
     @Autowired
-    private ControladorContratistas controladorContratistas;
+    private ControladorContratista controladorContratistas;
 
     @Autowired
     private ControladorAvance controladorAvance;
@@ -64,9 +65,9 @@ public class EmailController {
             if ("proveedores".equalsIgnoreCase(emailRequest.getReportType())) {
                 excelReport = controladorProveedores.generarReporteProveedoresExcel();
                 fileName = "reporte_proveedores.xlsx";
-            } else if ("contratistas".equalsIgnoreCase(emailRequest.getReportType())) {
-                excelReport = controladorContratistas.generarReporteContratistasExcel();
-                fileName = "reporte_contratistas.xlsx";
+           // } else if ("contratistas".equalsIgnoreCase(emailRequest.getReportType())) {
+             //   excelReport = controladorContratistas.generarReporteContratistasExcel();
+               // fileName = "reporte_contratistas.xlsx";
             } else if ("avances".equalsIgnoreCase(emailRequest.getReportType())) {
                 // Pasar los filtros al métod0 de generación de reportes
                 excelReport = controladorAvance.generarReporteAvancesConFiltros(

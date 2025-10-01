@@ -121,7 +121,7 @@ public class ControladorAvance
         model.addAttribute("idObraTexto", idObraTexto);
         model.addAttribute("idUsuario", idUsuario);
         model.addAttribute("fecha", fecha);
-        model.addAttribute("contratistas", contratistaServicio.listarContratistas());
+        //model.addAttribute("contratistas", contratistaServicio.listarContratistas());
 
         return "avances/inicioAvances";
     }
@@ -304,7 +304,7 @@ public class ControladorAvance
             row.createCell(1).setCellValue(avance.getFechaAvance().toString());
             row.createCell(2).setCellValue(avance.getCantEjec());
             row.createCell(3).setCellValue(avance.getIdApu().getNombreAPU());
-            row.createCell(4).setCellValue(avance.getIdContratista().getNombreContratista());
+          //  row.createCell(4).setCellValue(avance.getIdContratista().getNombreContratista());
         }
 
         libro.write(response.getOutputStream());
@@ -419,7 +419,7 @@ public class ControladorAvance
         for (Avance avance:avancesObra) {
             Row row = hoja.createRow(fila++);
             row.createCell(0).setCellValue(avance.getIdAvance());
-            row.createCell(1).setCellValue(avance.getIdContratista().getNombreContratista());
+         //   row.createCell(1).setCellValue(avance.getIdContratista().getNombreContratista());
             row.createCell(2).setCellValue(avance.getIdUsuario().getNombreUsuario());
             row.createCell(3).setCellValue(avance.getIdApu().getNombreAPU());
             row.createCell(4).setCellValue(avance.getCantEjec());
