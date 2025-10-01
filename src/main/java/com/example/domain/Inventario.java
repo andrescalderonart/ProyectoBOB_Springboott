@@ -60,7 +60,4 @@ public class Inventario implements Serializable {
     // Many-to-many relationship for materiales (separate table)
     @OneToMany(mappedBy = "inventario", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<MaterialesInventario> materialesInventarios = new ArrayList<>();
-
-
-
 }

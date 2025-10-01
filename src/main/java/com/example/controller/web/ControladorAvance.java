@@ -10,6 +10,7 @@ import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.apache.tomcat.util.net.openssl.ciphers.Authentication;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -20,6 +21,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.time.LocalDate;
 import java.time.format.DateTimeParseException;
+import java.util.Collection;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -48,12 +50,38 @@ public class ControladorAvance
             @RequestParam(required = false) String idUsuario,
             @RequestParam(required = false) Long idAPU,
             @RequestParam(required = false) String fecha,
-            Model model){
+            Model model, org.springframework.security.core.Authentication authentication){
 
 
         //Necesito cargar obras para mostrar nombres
         List<Obra> obras = obraServicio.listaObra();
         model.addAttribute("presupuestos", obras);
+
+        //INFORMACION DE USUARIO PARA HEADER Y PERMISOS
+        if (authentication != null && authentication.isAuthenticated()) {
+            String username = authentication.getName();
+            Collection<? extends GrantedAuthority> authorities = authentication.getAuthorities();
+
+            // Debug información del usuario
+            System.out.println("Usuario autenticado: " + username);
+            System.out.println("Autoridades: " + authorities);
+
+            // Agregar información específica del usuario al modelo
+            model.addAttribute("nombreUsuario", username);
+            model.addAttribute("autoridades", authorities);
+
+            // Verificar roles específicos
+            boolean isAdmin = authorities.stream()
+                    .anyMatch(auth -> auth.getAuthority().equals("ROLE_ADMIN"));
+            boolean isSupervisor = authorities.stream()
+                    .anyMatch(auth -> auth.getAuthority().equals("ROLE_SUPERVISOR"));
+            boolean isOperativo = authorities.stream()
+                    .anyMatch(auth -> auth.getAuthority().equals("ROLE_OPERATIVO"));
+
+            model.addAttribute("isAdmin", isAdmin);
+            model.addAttribute("isSupervisor", isSupervisor);
+            model.addAttribute("isOperativo", isOperativo);
+        }
 
 //Este if es para las búsquedas por ID
 
