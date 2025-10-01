@@ -1,100 +1,100 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
+<html lang="es" xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
+      xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <title>Perfil de Usuario</title>
-    <style>
-        /* Fondo gris claro para resaltar la tarjeta */
-        body{
-            margin:0;
-            font-family: 'Segoe UI', Tahoma, sans-serif;
-            background:#f0f2f5;
-            display:flex;
-            justify-content:center;
-            align-items:center;
-            height:100vh;
-        }
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Building Optimization Baseline - Perfil</title>
+    <link rel="stylesheet" href="CSS/perfil.css"/>
 
-        /* Tarjeta moderna */
-        .container{
-            background:#fff;
-            border-radius:16px;
-            box-shadow:0 8px 25px rgba(0,0,0,0.15);
-            padding:40px 60px;
-            max-width:420px;
-            width:90%;
-            text-align:center;
-            transition:transform .3s;
-        }
-        .container:hover{
-            transform:translateY(-4px);
-        }
-
-        h1{
-            margin-top:0;
-            margin-bottom:25px;
-            font-size:2em;
-            color:#333;
-        }
-
-        .dato{
-            margin:12px 0;
-            font-size:1.1em;
-            color:#555;
-            text-align:left;
-        }
-
-        .label{
-            font-weight:bold;
-            color:#222;
-            display:inline-block;
-            width:100px; /* alinea los títulos */
-        }
-
-        /* Botón opcional */
-        .btn{
-            display:inline-block;
-            margin-top:30px;
-            padding:12px 24px;
-            background:#2575fc;
-            color:#fff;
-            text-decoration:none;
-            border-radius:8px;
-            font-weight:600;
-            transition:background .3s;
-        }
-        .btn:hover{
-            background:#1a5ed8;
-        }
-    </style>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
 </head>
 <body>
-<div class="container">
-    <h1>Perfil de Usuario</h1>
+<div class="app-container">
+    <!-- Sidebar -->
+    <aside class="sidebar">
+        <div class="sidebar-header">
+            <img th:src="@{/IMG/imagen-bob.png}" alt="BOB Logo">
+            <h1>BOB</h1>
+        </div>
+        <ul class="nav-links">
+            <div sec:authorize="hasRole('ADMIN')">
+                <li><a th:href="@{/dashboard}"><i class="fas fa-tachometer-alt"></i><span>Dashboard</span></a></li>
+                <li><a th:href="@{/usuarios}"><i class="fas fa-users-cog"></i><span>Gestión de Usuarios</span></a></li>
+            </div>
 
-    <img th:src="@{/perfil/foto}" alt="Foto de perfil"
-         style="width:150px;height:150px;border-radius:50%;border:4px solid #2575fc;">
+            <div sec:authorize="hasAnyAuthority('VER_INVENTARIO', 'CREAR_INVENTARIO', 'EDITAR_INVENTARIO')">
+                <li><a th:href="@{/inventario/inventario}"><i class="fas fa-box"></i><span>Inventario</span></a></li>
+            </div>
 
-    <div class="dato">
-        <span class="label">Nombre:</span>
-        <span th:text="${usuario.persona.nombre}">Nombre</span>
-    </div>
+            <div sec:authorize="hasAnyAuthority('CREAR_APU', 'EDITAR_APU', 'VER_APU')">
+                <li><a th:href="@{/apu/inicioAPU}"><i class="fas fa-calculator"></i><span>Gestión de APUs</span></a></li>
+            </div>
 
-    <div class="dato">
-        <span class="label">Apellido:</span>
-        <span th:text="${usuario.persona.apellido}">Apellido</span>
-    </div>
+            <div sec:authorize="hasAnyAuthority('VER_AVANCES', 'REGISTRAR_AVANCES')">
+                <li><a th:href="@{/avances/inicioAvances}"><i class="fas fa-hard-hat"></i><span>Avances</span></a></li>
+            </div>
 
-    <div class="dato">
-        <span class="label">Teléfono:</span>
-        <span th:text="${usuario.persona.telefono}">Teléfono</span>
-    </div>
+            <div sec:authorize="hasAnyAuthority('VER_OBRAS','GESTIONAR_OBRAS','LEER OBRAS')">
+                <li><a th:href="@{/obras/inicioObra}"><i class="fas fa-money-bill-wave"></i><span>Obras</span></a></li>
+            </div>
 
-    <div class="dato">
-        <span class="label">Correo:</span>
-        <span th:text="${usuario.persona.correo}">Correo</span>
-    </div>
+            <div sec:authorize="hasAnyRole('SUPERVISOR','ADMIN')">
+                <li><a th:href="@{/contratistas/inicioContratista}"><i class="fas fa-handshake"></i><span>Contratistas</span></a></li>
+            </div>
 
+            <div sec:authorize="hasAnyRole('SUPERVISOR','ADMIN')">
+                <li><a th:href="@{/proveedores/inicioProveedor}"><i class="fas fa-truck-loading"></i><span>Proveedores</span></a></li>
+            </div>
+
+            <li>
+                <form th:action="@{/logout}" method="post" id="logoutForm">
+                    <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}"/>
+                    <a th:href="@{/login}" onclick="document.getElementById('logoutForm').submit()">
+                        <i class="fas fa-sign-out-alt"></i> <span>Cerrar Sesión</span>
+                    </a>
+                </form>
+            </li>
+        </ul>
+    </aside>
+
+    <!-- Main -->
+    <main class="main-content">
+        <div class="header">
+            <h2>Perfil de Usuario</h2>
+        </div>
+        <div class="volver-contenedor">
+            <a th:href="@{/dashboard}" class="btn-volver">
+                ← Regresar
+            </a>
+        </div>
+        <div class="perfil-container">
+            <div class="perfil-card">
+                <img th:src="@{/perfil/foto}" alt="Foto de perfil" class="perfil-foto">
+
+                <div class="dato">
+                    <span class="label">Nombre:</span>
+                    <span th:text="${usuario.persona.nombre}">Nombre</span>
+                </div>
+
+                <div class="dato">
+                    <span class="label">Apellido:</span>
+                    <span th:text="${usuario.persona.apellido}">Apellido</span>
+                </div>
+
+                <div class="dato">
+                    <span class="label">Teléfono:</span>
+                    <span th:text="${usuario.persona.telefono}">Teléfono</span>
+                </div>
+
+                <div class="dato">
+                    <span class="label">Correo:</span>
+                    <span th:text="${usuario.persona.correo}">Correo</span>
+                </div>
+            </div>
+        </div>
+    </main>
 </div>
 </body>
 </html>

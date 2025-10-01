@@ -46,7 +46,7 @@
       <!-- Supervisor and Admin menu items -->
       <div sec:authorize="hasAnyRole('SUPERVISOR', 'ADMIN')">
         <li><a th:href="@{/contratista/contratista}"><i class="fas fa-handshake"></i> <span>Contratistas</span></a></li>
-        <li><a href="#"><i class="fas fa-truck-loading"></i> <span>Proveedores</span></a></li>
+        <li><a th:href="@{/proveedores/inicioProveedor}"><i class="fas fa-truck-loading"></i> <span>Proveedores</span></a></li>
       </div>
 
       <!-- Menu items for users with report permissions
