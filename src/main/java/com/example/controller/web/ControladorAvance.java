@@ -1,6 +1,5 @@
 package com.example.controller.web;
 
-import com.example.dao.UsuarioDao;
 import com.example.domain.*;
 import com.example.servicio.*;
 import jakarta.servlet.http.HttpServletResponse;
@@ -17,11 +16,14 @@ import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
+
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.time.LocalDate;
 import java.time.format.DateTimeParseException;
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -38,24 +40,22 @@ public class ControladorAvance
     @Autowired
     private APUServicio apuServicio;
     @Autowired
-    private UsuarioServicio usuarioServicio; // Use the interface, not implementation
+    private UsuarioServicio usuarioServicio;
+    @Autowired
+    private ContratistaServicio contratistaServicio;
 
 
     //Acá están los métodos
     @GetMapping("/inicioAvances")
     public String inicioAvance(
-           // @RequestParam(required = false) String obraName,
-           @RequestParam(required = false) Long idObraTexto,
-           @RequestParam(required = false) Long idObraSelect,
+            // @RequestParam(required = false) String obraName,
+            @RequestParam(required = false) Long idObraTexto,
+            @RequestParam(required = false) Long idObraSelect,
             @RequestParam(required = false) String idUsuario,
             @RequestParam(required = false) Long idAPU,
             @RequestParam(required = false) String fecha,
+
             Model model, org.springframework.security.core.Authentication authentication){
-
-
-        //Necesito cargar obras para mostrar nombres
-        List<Obra> obras = obraServicio.listaObra();
-        model.addAttribute("presupuestos", obras);
 
         //INFORMACION DE USUARIO PARA HEADER Y PERMISOS
         if (authentication != null && authentication.isAuthenticated()) {
@@ -83,9 +83,12 @@ public class ControladorAvance
             model.addAttribute("isOperativo", isOperativo);
         }
 
-//Este if es para las búsquedas por ID
+        //Necesito cargar obras para mostrar nombres
+        List<Obra> obras = obraServicio.listaObra();
+        model.addAttribute("presupuestos", obras);
 
-// Start with all avances
+
+        // Start with all avances
         List<Avance> avances = avanceServicio.listaAvance();
 
         // Apply filters in a more flexible way
@@ -118,19 +121,47 @@ public class ControladorAvance
         model.addAttribute("idObraTexto", idObraTexto);
         model.addAttribute("idUsuario", idUsuario);
         model.addAttribute("fecha", fecha);
+        model.addAttribute("contratistas", contratistaServicio.listarContratistas());
 
         return "avances/inicioAvances";
     }
 
     //Agregar nuevo
     @GetMapping("/agregarAvance")
-    public String formAnexarAvance(Model model){
+    public String formAnexarAvance(Model model, org.springframework.security.core.Authentication authentication){
         List<Obra> obras = obraServicio.listaObra();
-        List<Apu> matriz = APUServicio.listarElementos();
+
 
         model.addAttribute("avance", new Avance());
         model.addAttribute("obras",obras);
-        model.addAttribute("matriz", matriz);
+
+
+        //INFORMACION DE USUARIO PARA HEADER Y PERMISOS
+        if (authentication != null && authentication.isAuthenticated()) {
+            String username = authentication.getName();
+            Collection<? extends GrantedAuthority> authorities = authentication.getAuthorities();
+
+            // Debug información del usuario
+            System.out.println("Usuario autenticado: " + username);
+            System.out.println("Autoridades: " + authorities);
+
+            // Agregar información específica del usuario al modelo
+            model.addAttribute("nombreUsuario", username);
+            model.addAttribute("autoridades", authorities);
+
+            // Verificar roles específicos
+            boolean isAdmin = authorities.stream()
+                    .anyMatch(auth -> auth.getAuthority().equals("ROLE_ADMIN"));
+            boolean isSupervisor = authorities.stream()
+                    .anyMatch(auth -> auth.getAuthority().equals("ROLE_SUPERVISOR"));
+            boolean isOperativo = authorities.stream()
+                    .anyMatch(auth -> auth.getAuthority().equals("ROLE_OPERATIVO"));
+
+            model.addAttribute("isAdmin", isAdmin);
+            model.addAttribute("isSupervisor", isSupervisor);
+            model.addAttribute("isOperativo", isOperativo);
+        }
+
         return "avances/agregarAvance";
     }
 
@@ -154,7 +185,6 @@ public class ControladorAvance
         // Load the full user object from database
         Usuario usuarioLogeado = usuarioServicio.encontrarPorId(idUsuario) ;
 
-
         Avance avance = new Avance();
         avance.setIdUsuario(usuarioServicio.encontrarPorId(idUsuario) );
         avance.setIdObra(obraServicio.localizarObra(idObra));
@@ -162,24 +192,21 @@ public class ControladorAvance
         avance.setIdApu(APUServicio.obtenerPorId(idApu));
         avance.setCantEjec(cantidad);
 
-
         avanceServicio.salvar(avance);
         return "redirect:/avances/inicioAvances";
     }
 
 
     //Función y forma de editado
-    /*@GetMapping("/cambiar/{id_avance}")
-    public String cambiarAvance(@PathVariable Integer id_avance, Model model) {
-        Avance avance = avanceServicio.localizarAvance(id_avance);
-
+    @GetMapping("/cambiar/{idAvance}")
+    public String cambiarAvance(@PathVariable Long idAvance, Model model) {
+        Avance avance = avanceServicio.localizarAvance(idAvance);
         model.addAttribute("avance", avance);
-        model.addAttribute("Actividad", avanceServicio.localizarAvance(id_avance));
+        model.addAttribute("Actividad", avanceServicio.localizarAvance(idAvance));
         model.addAttribute("Editando", true); // ← This forces EDIT mode
-        model.addAttribute("matriz", matrizServicio.listarElementos());
-
+        model.addAttribute("matriz", apuServicio.listarElementos());
         return "avances/verAvances";
-    }*/
+    }
 
 
     //borrar
@@ -189,19 +216,25 @@ public class ControladorAvance
         return "redirect:/avances/inicioAvances";
     }
 
+    @GetMapping("/anular/{idAvance}")
+    public String anularAvance(Avance avance) {
+        avance.setAnular(true);
+        return "redirect:/avances/inicioAvances";
+    }
+
     //funcionalidad para guardar cambios
     @PostMapping("/actualizar/{idAvance}")
     public String actualizarPresupuesto(
-        Authentication auth, // Add this parameter to get the logged-in user
-        @PathVariable Long idAvance,
-        @ModelAttribute Avance avance,
-        @RequestParam Double cantidad,
-        @RequestParam Long idUsuario,
-        @RequestParam Long idObra,
-        @RequestParam String fecha,
-        BindingResult result,
-        @RequestParam Long idApu,
-        Model model) {
+            Authentication auth, // Add this parameter to get the logged-in user
+            @PathVariable Long idAvance,
+            @ModelAttribute Avance avance,
+            @RequestParam Double cantidad,
+            @RequestParam Long idUsuario,
+            @RequestParam Long idObra,
+            @RequestParam String fecha,
+            BindingResult result,
+            @RequestParam Long idApu,
+            Model model) {
         if (result.hasErrors()) {
             return "redirect:/avances/cambiar/" + idAvance;
         }
@@ -214,6 +247,7 @@ public class ControladorAvance
         avance.setFechaAvance(LocalDate.parse(fecha));
         avance.setIdApu(APUServicio.obtenerPorId(idApu));
         avance.setCantEjec(cantidad);
+        avance.setAnular(false);
 
 
         avanceServicio.actualizar(avance);
@@ -332,10 +366,148 @@ public class ControladorAvance
         return outputStream.toByteArray();
     }
 
+    // Métod0 para obtener APUs por obra (para el dropdown dinámico)
+    @GetMapping("/obtenerAPUsPorObra/{idObra}")
+    @ResponseBody
+    public List<Apu> obtenerAPUsPorObra(@PathVariable Long idObra) {
+        Obra obra = obraServicio.localizarObra(idObra);
+        if (obra != null && obra.getApusObraList() != null) {
+            // Extraer los APUs de la lista de ApusObra
+            return obra.getApusObraList().stream()
+                    .map(ApusObra::getApu)
+                    .collect(Collectors.toList());
+        }
+        return Collections.emptyList();
+    }
 
+    @GetMapping("/excelCorreo")
+    public byte[] generarReporteAvancesExcel(@RequestParam(required = false) Long idObraTexto,
+                                             @RequestParam(required = false) Long idObraSelect,
+                                             @RequestParam(required = false) String idUsuario,
+                                             @RequestParam(required = false) Long idAPU,
+                                             @RequestParam(required = false) String fecha) throws IOException {
+        Obra obra = new Obra();
+        List<Avance> avancesObra = new ArrayList<>();
+        if(idObraSelect!=null)
+        {
+            obra = obraServicio.localizarObra(idObraSelect);
+            avancesObra = avanceServicio.buscarPorIdObra(idObraSelect);
+        }
+        if(idObraTexto!=null)
+        {
+            obra = obraServicio.localizarObra(idObraTexto);
+            avancesObra = avanceServicio.buscarPorIdObra(idObraTexto);
+        }
 
+        Workbook libro = new XSSFWorkbook();
+        Sheet hoja = libro.createSheet("Avances");
+
+        // Crear encabezados
+        Row header = hoja.createRow(0);
+        header.createCell(0).setCellValue("Avances obra - " + obra.getNombreObra());
+
+        header = hoja.createRow(1);
+        header.createCell(0).setCellValue("ID");
+        header.createCell(1).setCellValue("Contratista");
+        header.createCell(2).setCellValue("Gestor");
+        header.createCell(3).setCellValue("Actividad");
+        header.createCell(4).setCellValue("Cantidad");
+        header.createCell(5).setCellValue("Fecha");
+
+        // Llenar datos
+        int fila = 2;
+        for (Avance avance:avancesObra) {
+            Row row = hoja.createRow(fila++);
+            row.createCell(0).setCellValue(avance.getIdAvance());
+            row.createCell(1).setCellValue(avance.getIdContratista().getNombreContratista());
+            row.createCell(2).setCellValue(avance.getIdUsuario().getNombreUsuario());
+            row.createCell(3).setCellValue(avance.getIdApu().getNombreAPU());
+            row.createCell(4).setCellValue(avance.getCantEjec());
+            row.createCell(5).setCellValue(avance.getFechaAvance());
+        }
+
+        ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+        libro.write(outputStream);
+        libro.close();
+
+        return outputStream.toByteArray();
+    }
+
+    // Reporte para correo masivo
+    public byte[] generarReporteAvancesConFiltros(Long idObraSelect, Long idObraTexto, String idUsuario, Long idAPU, String fecha) throws IOException {
+        try {
+            // Obtener avances con los mismos filtros que en inicioAvances
+            List<Avance> avances = avanceServicio.listaAvance();
+
+            // Aplicar filtros de la misma manera que en inicioAvances
+            if (idObraSelect != null) {
+                avances = avanceServicio.buscarPorIdObra(idObraSelect);
+            }
+            if (idObraTexto != null) {
+                avances = avanceServicio.buscarPorIdObra(idObraTexto);
+            }
+            if (idUsuario != null && !idUsuario.isEmpty()) {
+                avances = avances.stream()
+                        .filter(a -> a.getIdUsuario() != null && a.getIdUsuario().getIdUsuario().toString().equals(idUsuario))
+                        .collect(Collectors.toList());
+            }
+            if (fecha != null && !fecha.isEmpty()) {
+                try {
+                    LocalDate filterDate = LocalDate.parse(fecha);
+                    avances = avances.stream()
+                            .filter(a -> a.getFechaAvance() != null && a.getFechaAvance().equals(filterDate))
+                            .collect(Collectors.toList());
+                } catch (DateTimeParseException e) {
+                    throw new RuntimeException("Formato de fecha inválido: " + fecha);
+                }
+            }
+
+            // Crear el reporte Excel
+            Workbook libro = new XSSFWorkbook();
+            Sheet hoja = libro.createSheet("Avances Filtrados");
+
+            // Crear encabezados
+            Row header = hoja.createRow(0);
+            header.createCell(0).setCellValue("ID Avance");
+            header.createCell(1).setCellValue("ID Obra");
+            header.createCell(2).setCellValue("Nombre Obra");
+            header.createCell(3).setCellValue("Fecha");
+            header.createCell(4).setCellValue("Actividad");
+            header.createCell(5).setCellValue("Cantidad Ejecutada");
+            header.createCell(6).setCellValue("Usuario");
+            header.createCell(7).setCellValue("Contratista");
+
+            // Llenar datos
+            int fila = 1;
+            for (Avance avance : avances) {
+                if (avance != null && !avance.isAnular()) {
+                    Row row = hoja.createRow(fila++);
+                    row.createCell(0).setCellValue(avance.getIdAvance());
+                    row.createCell(1).setCellValue(avance.getIdObra().getIdObra());
+                    row.createCell(2).setCellValue(avance.getIdObra() != null && avance.getIdObra().getNombreObra() != null ? avance.getIdObra().getNombreObra() : "");
+                    row.createCell(3).setCellValue(avance.getFechaAvance() != null ? avance.getFechaAvance().toString() : "");
+                    row.createCell(4).setCellValue(avance.getIdApu() != null && avance.getIdApu().getNombreAPU() != null ? avance.getIdApu().getNombreAPU() : "");
+                    row.createCell(5).setCellValue(avance.getCantEjec() != null ? avance.getCantEjec() : 0);
+                    row.createCell(6).setCellValue(avance.getIdUsuario() != null && avance.getIdUsuario().getNombreUsuario() != null ? avance.getIdUsuario().getNombreUsuario() : "");
+                    row.createCell(7).setCellValue(avance.getIdContratista() != null && avance.getIdContratista().getIdPersona() != null ?
+                            avance.getIdContratista().getIdPersona().getNombre() + " " + avance.getIdContratista().getIdPersona().getApellido() : "");
+                }
+            }
+
+            // Autoajustar columnas
+            for (int i = 0; i < 8; i++) {
+                hoja.autoSizeColumn(i);
+            }
+
+            ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+            libro.write(outputStream);
+            libro.close();
+
+            return outputStream.toByteArray();
+
+        } catch (Exception e) {
+            throw new RuntimeException("Error al generar reporte de avances con filtros: " + e.getMessage(), e);
+        }
+    }
 
 }
-
-
-

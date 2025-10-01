@@ -53,16 +53,16 @@
         <li><a href="#"><i class="fas fa-truck-loading"></i> <span>Proveedores</span></a></li>
       </div>
 
-      <!-- Menu items for users with report permissions -->
+      <!-- Menu items for users with report permissions
       <div sec:authorize="hasAnyAuthority('VER_REPORTES', 'GENERAR_REPORTES')">
         <li><a href="#"><i class="fas fa-chart-line"></i> <span>Reportes</span></a></li>
       </div>
 
-      <!-- Admin-only configuration -->
+       Admin-only configuration
       <div sec:authorize="hasRole('ADMIN')">
         <li><a href="#"><i class="fas fa-cog"></i> <span>Configuración</span></a></li>
       </div>
-
+          -->
       <li>
         <form th:action="@{/logout}" method="post" id="logoutForm">
           <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}"/>

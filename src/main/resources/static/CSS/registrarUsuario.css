@@ -301,183 +301,94 @@ img {
   }
 }
 
-/* === VER INVENTARIO: BLOQUE DE BÚSQUEDA Y TABLA === */
-
-/* Contenedor de búsqueda */
-.search-container {
-    background: linear-gradient(135deg, #f8f9fa, #e9ecef);
-    padding: 25px;
-    border-radius: 15px;
-    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.12);
-    margin: 30px 0;
-    border: 1px solid rgba(28, 93, 174, 0.15);
-    transition: all 0.4s ease;
-    animation: fadeIn 0.6s ease-out forwards;
-}
-
-.search-container:hover {
-    box-shadow: 0 12px 30px rgba(0, 0, 0, 0.18);
-    transform: translateY(-3px);
-}
-
-.search-container h2 {
-    color: #1e3c72;
-    margin-bottom: 20px;
-    font-size: 1.6rem;
-    font-weight: 700;
-    display: flex;
-    align-items: center;
-    gap: 12px;
-}
-
-.search-form {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 15px;
-    align-items: center;
-}
-
-.search-form label {
-    font-weight: 600;
-    color: #1e3c72;
-    font-size: 1.05rem;
-    min-width: 120px;
-    display: flex;
-    align-items: center;
-    gap: 8px;
-}
-
-.search-form select,
-.search-form input[type="text"] {
-    flex: 1;
-    min-width: 200px;
-    padding: 14px 20px;
-    border: 2px solid #d1d9e6;
-    border-radius: 10px;
-    font-size: 1.05rem;
-    transition: all 0.3s ease;
-    background: white;
-    box-shadow: inset 0 2px 5px rgba(0, 0, 0, 0.05);
-}
-
-.search-form select:focus,
-.search-form input[type="text"]:focus {
-    outline: none;
-    border-color: #1c5dae;
-    box-shadow: 0 0 0 4px rgba(28, 93, 174, 0.15);
-}
-
-.search-form input[type="submit"] {
-    background: linear-gradient(135deg, #1e3c72, #2a5298);
-    color: white;
-    border: none;
-    padding: 14px 30px;
-    font-size: 1.1rem;
-    font-weight: 600;
-    border-radius: 10px;
-    cursor: pointer;
-    transition: all 0.3s ease;
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    box-shadow: 0 6px 15px rgba(30, 60, 114, 0.3);
-}
-
-.search-form input[type="submit"]:hover {
-    background: linear-gradient(135deg, #172b4d, #1e3c72);
-    transform: translateY(-3px);
-    box-shadow: 0 8px 20px rgba(30, 60, 114, 0.4);
-}
-
-/* Tabla de inventarios */
-.table-container {
-    display: flex;
-    justify-content: center;
-    width: 100%;
-}
-
-table {
-    width: auto;
-    border-collapse: collapse;
-    margin: 25px 0;
-    font-size: 1rem;
-    min-width: 800px;
-    max-width: 100%;
-    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.08);
-    border-radius: 10px;
-    overflow: hidden;
-}
-
-table thead {
-    background: linear-gradient(135deg, #1e3c72, #2a5298);
-    color: white;
-    text-align: left;
-}
-
-table th {
-    padding: 16px 15px;
-    font-weight: 600;
-    font-size: 1.05rem;
-    text-transform: uppercase;
-    letter-spacing: 0.5px;
-}
-
-table td {
-    padding: 14px 15px;
-    color: #444;
-    font-size: 1rem;
-}
-
-table tbody tr {
-    border-bottom: 1px solid #eef2f7;
-    transition: all 0.2s ease;
-}
-
-table tbody tr:hover {
-    background-color: #f8fbff;
-}
-
-table tbody tr:nth-child(even) {
-    background-color: #f9fbfd;
-}
-
-table tbody tr:nth-child(even):hover {
-    background-color: #f0f7ff;
-}
-
-/* Mensaje sin registros */
-.no-records {
-    text-align: center;
-    padding: 30px;
-    color: #777;
-    font-style: italic;
-    font-size: 1.1rem;
-    background: white;
-    border-radius: 10px;
-    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
-    margin: 25px 0;
-}
-
-/* Responsive */
-@media (max-width: 992px) {
-    .table-container {
-        justify-content: flex-start;
-        overflow-x: auto;
-        padding: 0 15px;
+.registrar {
+        max-width: 600px;
+        margin: 0 auto;
+        padding: 20px;
     }
-    table {
-        min-width: 900px;
+
+    .registrar form {
+        background: white;
+        padding: 30px;
+        border-radius: 10px;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
     }
-    .search-form {
-        flex-direction: column;
-        align-items: stretch;
+
+    .registrar h1 {
+        text-align: center;
+        margin-bottom: 30px;
+        color: var(--primary);
     }
-    .search-form input[type="submit"] {
+
+    .registrar label {
+        display: block;
+        margin-bottom: 5px;
+        font-weight: 500;
+        color: var(--dark);
+    }
+
+    .registrar input, .registrar select, .registrar .file-input {
         width: 100%;
-        justify-content: center;
-        margin-top: 10px;
+        padding: 10px;
+        margin-bottom: 20px;
+        border: 1px solid #ddd;
+        border-radius: 4px;
+        font-size: 1rem;
     }
-}
+
+    .registrar fieldset {
+        border: 1px solid #ddd;
+        border-radius: 8px;
+        padding: 20px;
+        margin-bottom: 20px;
+    }
+
+    .registrar legend {
+        padding: 0 10px;
+        font-weight: 600;
+        color: var(--primary);
+    }
+
+    .enlace {
+        text-align: center;
+        margin-top: 20px;
+    }
+
+    .enlace a {
+        color: var(--secondary);
+        text-decoration: none;
+    }
+
+    .enlace a:hover {
+        text-decoration: underline;
+    }
+
+    .file-input {
+        background: #f8f9fa;
+        cursor: pointer;
+    }
+
+    .file-input:hover {
+        background: #e9ecef;
+    }
+
+    .file-preview {
+        text-align: center;
+        margin: 10px 0;
+    }
+
+    .file-preview img {
+        max-width: 150px;
+        max-height: 150px;
+        border-radius: 50%;
+        border: 2px solid #ddd;
+    }
+
+    .file-info {
+        font-size: 0.9rem;
+        color: #666;
+        margin-top: 5px;
+    }
 
 .back-link {
     display: inline-flex;
@@ -492,4 +403,29 @@ table tbody tr:nth-child(even):hover {
     transition: all 0.3sease;
     margin-bottom: 15px;
     font-size: 1.1rem;
+}
+
+/* Centrado del botón Registrar */
+.form-actions {
+    display: flex;
+    justify-content: center;  /* Centra horizontalmente */
+    margin-top: 20px;
+}
+
+/* Estilos del botón Registrar */
+.btn-registrar {
+    background-color: #28a745; /* Verde */
+    color: white;
+    padding: 10px 20px;
+    font-size: 16px;
+    font-weight: bold;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+/* Hover (cuando pasas el mouse encima) */
+.btn-registrar:hover {
+    background-color: #218838; /* Verde más oscuro */
 }
