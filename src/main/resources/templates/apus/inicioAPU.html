@@ -430,7 +430,7 @@
             <!-- Supervisor and Admin menu items -->
             <div sec:authorize="hasAnyRole('SUPERVISOR', 'ADMIN')">
                 <li><a th:href="@{/contratista}"><i class="fas fa-handshake"></i> <span>Contratistas</span></a></li>
-                <li><a href="#"><i class="fas fa-truck-loading"></i> <span>Proveedores</span></a></li>
+                <li><a th:href="@{/proveedores/inicioProveedor}"><i class="fas fa-truck-loading"></i> <span>Proveedores</span></a></li>
             </div>
 
             <!-- Menu items for users with report permissions -->
@@ -557,8 +557,17 @@
                                onclick="return confirm('¿Está seguro de que desea eliminar este APU?')">
                                 <i class="fas fa-trash"></i> Eliminar
                             </a>
+
+                            <a th:href="@{/reportes/apus.pdf}" class="btn btn-warning btn-sm"style="margin-left:12px !important;">
+                                <i class="fa-solid fa-download"></i> Reporte PDF
+                            </a>
                         </td>
                     </tr>
+                    </a>
+
+                    <a th:href="@{/reportes/apus.pdf}" class="btn btn-warning btn-sm"style="margin-left:12px !important;">
+                        <i class="fa-solid fa-download"></i> Reporte PDF General
+                    </a>
                     </tbody>
                 </table>
             </div>
