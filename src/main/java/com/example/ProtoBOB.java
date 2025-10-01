@@ -159,6 +159,7 @@ public class ProtoBOB {
                             // Combined role and permission access
                             .requestMatchers("/inventario/**").hasAnyRole("ADMIN", "SUPERVISOR")
                             .requestMatchers("/reportes/**").hasAnyRole("ADMIN", "SUPERVISOR")
+                            .requestMatchers("/proveedores/**").hasAnyRole("ADMIN", "SUPERVISOR")
 
                             // Public endpoints
                             .requestMatchers("/css/**", "/js/**", "/login", "/presupuestos/**").permitAll()
