@@ -322,7 +322,6 @@
     @media (max-width: 992px) {
       .sidebar {
         width: 70px;
-        overflow: visible;
       }
 
       .sidebar-header h1, .nav-links span {

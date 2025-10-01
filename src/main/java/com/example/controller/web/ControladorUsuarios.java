@@ -13,6 +13,7 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Controller;
@@ -21,6 +22,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import java.util.Collection;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -53,7 +55,7 @@ public class ControladorUsuarios {
      */
     @GetMapping
     @PreAuthorize("hasRole('ADMIN')")
-    public String mostrarGestionUsuarios(Model model) {
+    public String mostrarGestionUsuarios(Model model, org.springframework.security.core.Authentication authentication) {
         try {
             // Obtener lista REAL de usuarios
             List<Usuario> usuarios = usuarioServicio.listarUsuarios();
@@ -97,6 +99,32 @@ public class ControladorUsuarios {
             model.addAttribute("adminCount", 0);
             model.addAttribute("supervisorCount", 0);
             model.addAttribute("operativoCount", 0);
+        }
+
+        //INFORMACION DE USUARIO PARA HEADER Y PERMISOS
+        if (authentication != null && authentication.isAuthenticated()) {
+            String username = authentication.getName();
+            Collection<? extends GrantedAuthority> authorities = authentication.getAuthorities();
+
+            // Debug información del usuario
+            System.out.println("Usuario autenticado: " + username);
+            System.out.println("Autoridades: " + authorities);
+
+            // Agregar información específica del usuario al modelo
+            model.addAttribute("nombreUsuario", username);
+            model.addAttribute("autoridades", authorities);
+
+            // Verificar roles específicos
+            boolean isAdmin = authorities.stream()
+                    .anyMatch(auth -> auth.getAuthority().equals("ROLE_ADMIN"));
+            boolean isSupervisor = authorities.stream()
+                    .anyMatch(auth -> auth.getAuthority().equals("ROLE_SUPERVISOR"));
+            boolean isOperativo = authorities.stream()
+                    .anyMatch(auth -> auth.getAuthority().equals("ROLE_OPERATIVO"));
+
+            model.addAttribute("isAdmin", isAdmin);
+            model.addAttribute("isSupervisor", isSupervisor);
+            model.addAttribute("isOperativo", isOperativo);
         }
 
         return "usuarios/usuarios";

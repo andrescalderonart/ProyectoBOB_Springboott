@@ -13,19 +13,19 @@ import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.Errors;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.*;
 
 import java.io.IOException;
+import java.util.Collection;
 import java.util.List;
 
 @Controller
+@RequestMapping("/inventario")
 public class ControladorInv {
 
     @Autowired
@@ -41,10 +41,37 @@ public class ControladorInv {
     private UsuarioServicio usuarioServicio;
 
     @GetMapping("/inventario")
-    public String inventario(Model model) {
+    public String inventario(Model model, org.springframework.security.core.Authentication authentication) {
         List<Inventario> inventarios = inventarioServicio.listaInventarios();
         model.addAttribute("inventarios", inventarios);
-        return "/inventarios/inventario";
+
+        //INFORMACION DE USUARIO PARA HEADER Y PERMISOS
+        if (authentication != null && authentication.isAuthenticated()) {
+            String username = authentication.getName();
+            Collection<? extends GrantedAuthority> authorities = authentication.getAuthorities();
+
+            // Debug información del usuario
+            System.out.println("Usuario autenticado: " + username);
+            System.out.println("Autoridades: " + authorities);
+
+            // Agregar información específica del usuario al modelo
+            model.addAttribute("nombreUsuario", username);
+            model.addAttribute("autoridades", authorities);
+
+            // Verificar roles específicos
+            boolean isAdmin = authorities.stream()
+                    .anyMatch(auth -> auth.getAuthority().equals("ROLE_ADMIN"));
+            boolean isSupervisor = authorities.stream()
+                    .anyMatch(auth -> auth.getAuthority().equals("ROLE_SUPERVISOR"));
+            boolean isOperativo = authorities.stream()
+                    .anyMatch(auth -> auth.getAuthority().equals("ROLE_OPERATIVO"));
+
+            model.addAttribute("isAdmin", isAdmin);
+            model.addAttribute("isSupervisor", isSupervisor);
+            model.addAttribute("isOperativo", isOperativo);
+        }
+
+        return "inventarios/inventario";
     }
 
     @GetMapping("/crearInv")
@@ -66,6 +93,7 @@ public class ControladorInv {
         model.addAttribute("inventario", inventario);
         model.addAttribute("obras", obras);
         model.addAttribute("materiales", materiales);
+        model.addAttribute("usuario", usuarioLogeado);
         return "inventarios/crearInv";
     }
 
@@ -103,14 +131,14 @@ public class ControladorInv {
         // The inventario object already has the usuario set from the form
         inventarioServicio.guardarInv(inventario);
 
-        return "/inventarios/inventario";
+        return "redirect:/inventario/inventario";
     }
 
     @GetMapping("/verInv")
     public String verInventario(Model model) {
         List<Inventario> inventarios = inventarioServicio.listaInventarios();
         model.addAttribute("inventarios", inventarios);
-        return "/inventarios/verInv";
+        return "inventarios/verInv";
     }
 
     @GetMapping("/cambiarInv")
@@ -162,7 +190,7 @@ public class ControladorInv {
         List<Inventario> inventarios = inventarioServicio.listaInventarios();
         model.addAttribute("inventarios", inventarios);
 
-        return "cambiarInv";
+        return "inventarios/cambiarInv";
     }
 
     @GetMapping("/borrarInv")
@@ -192,15 +220,16 @@ public class ControladorInv {
         }
 
         model.addAttribute("inventarios", inventarios);
-        return "borrarInv";
+        return "inventarios/borrarInv";
     }
+
 
     @GetMapping("/borrarInv/{id_Inventario}")
     public String borrarInventario(
             @PathVariable("id_Inventario") Long id) {
         Inventario inventario = inventarioServicio.localizarInventarioPorId(id);
         inventarioServicio.borrarInv(inventario);
-        return "redirect:/borrarInv";
+        return "redirect:/inventarios/inventario";
     }
 
     //Exportar excel de inventario
@@ -208,7 +237,7 @@ public class ControladorInv {
     public void exportarExcelInv(@PathVariable("idInventario") Long id,HttpServletResponse response) throws IOException {
 
         Inventario inventario = inventarioServicio.localizarInventarioPorId(id);
-        String nombreArchivo = obraServicio.localizarObra(inventario.getIdObra().getIdObra()).getNombreObra().replaceAll("[^a-zA-Z0-9]", "") + "" + id + ".xlsx";
+        String nombreArchivo = obraServicio.localizarObra(inventario.getIdObra().getIdObra()).getNombreObra().replaceAll("[^a-zA-Z0-9]", "_") + "_" + id + ".xlsx";
 
         response.setContentType("application/vnd.openxmlformats-officedocument.spreadsheetml.sheet");
         response.setHeader("Content-Disposition", "attachment; filename=" + nombreArchivo);
