@@ -478,18 +478,3 @@ table tbody tr:nth-child(even):hover {
         margin-top: 10px;
     }
 }
-
-.back-link {
-    display: inline-flex;
-    align-items: center;
-    gap: 6px;
-    padding: 10px 20px;
-    background: #f0f5ff;
-    color: #1e3c72;
-    text-decoration: none;
-    border-radius: 8px;
-    font-weight: 500;
-    transition: all 0.3sease;
-    margin-bottom: 15px;
-    font-size: 1.1rem;
-}

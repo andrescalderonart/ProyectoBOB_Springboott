@@ -262,7 +262,7 @@ img {
   background: #c0392b;
 }
 
-/* 📌 Responsive */
+/* Responsive */
 @media (max-width: 992px) {
   .sidebar {
     width: 70px;
