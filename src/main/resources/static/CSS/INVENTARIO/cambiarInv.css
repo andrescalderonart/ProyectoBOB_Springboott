@@ -596,3 +596,32 @@ ease;
     margin-bottom: 15px;
     font-size: 1.1rem;
 }
+/* Contenedor de botones */
+.form-buttons {
+    display: flex;
+    justify-content: center; /* centra horizontalmente */
+    margin-top: 20px;
+}
+
+/* Botón Guardar Cambios */
+.btn-guardar {
+    background-color: #28a745;   /* verde */
+    color: white;
+    border: none;
+    padding: 12px 25px;
+    border-radius: 8px;
+    font-size: 16px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: background 0.3s ease;
+}
+
+/* Efecto hover */
+.btn-guardar:hover {
+    background-color: #218838; /* verde más oscuro */
+}
+
+/* Efecto al presionar */
+.btn-guardar:active {
+    background-color: #1e7e34;
+}

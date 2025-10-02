@@ -158,13 +158,21 @@
 </div>
 
 <script>
-    document.addEventListener("DOMContentLoaded", function () {
-        const hoy = new Date().toISOString().split("T")[0];
-        const inputFecha = document.getElementById("fecha");
-        inputFecha.setAttribute("min", hoy);
-        inputFecha.setAttribute("max", hoy);
-        inputFecha.value = hoy;
-    });
+    document.addEventListener("DOMContentLoaded", function() {
+    let hoy = new Date();
+
+    // Usa la hora local, no UTC
+    let year = hoy.getFullYear();
+    let month = String(hoy.getMonth() + 1).padStart(2, '0');
+    let day = String(hoy.getDate()).padStart(2, '0');
+
+    let fechaLocal = `${year}-${month}-${day}`;
+
+    let inputFecha = document.getElementById("fecha");
+    inputFecha.value = fechaLocal;  // valor por defecto = hoy
+    inputFecha.min = fechaLocal;    // no deja fechas anteriores
+    inputFecha.max = fechaLocal;    // no deja fechas posteriores
+  });
 
     function addMaterial() {
         const materialItems = document.getElementById('materialItems');
